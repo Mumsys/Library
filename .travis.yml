@@ -24,3 +24,4 @@ before_script:
 # phpunit --configuration phpunit.xml
 # script: ../vendor/bin/phpunit --no-coverage
 script: ./runTests.sh
+
