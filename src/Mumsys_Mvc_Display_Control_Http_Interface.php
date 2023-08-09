@@ -31,7 +31,7 @@ interface Mumsys_Mvc_Display_Control_Http_Interface
 
     /**
      * Adds header to be send on output.
-     * @param string $s content of a Html header line
+     * @param string $header content of a Html header line
      */
     public function addHeader( $header = '' );
 

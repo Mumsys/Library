@@ -26,13 +26,13 @@ class Mumsys_Weather_Item_DefaultTest
     /**
      * @var Mumsys_Weather_Item_Default
      */
-    protected $_object;
+    private $_object;
 
     /**
      * Complete list of item properties
      * @var array
      */
-    protected $_prps;
+    private $_prps;
 
 
     /**
@@ -195,7 +195,6 @@ class Mumsys_Weather_Item_DefaultTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
         unset( $this->_object );
     }
 

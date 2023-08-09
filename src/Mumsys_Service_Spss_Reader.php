@@ -102,7 +102,7 @@ class Mumsys_Service_Spss_Reader
     /**
      * Returns a list of variable mapping for required variable names.
      *
-     * @param string $labels to search for
+     * @param array $labels List of labels to search for
      *
      * @return array List of public name/internal key name variables
      */

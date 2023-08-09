@@ -54,11 +54,12 @@ class Mumsys_Service_SshTool_DefaultTest
             'Mumsys_Abstract' => Mumsys_Abstract::VERSION,
         );
 
-        $basePath = MumsysTestHelper::getTestsBaseDir();
-        $this->_sshFile = $basePath . '/testfiles/Service/Ssh/ssh-config-generated';
-        $this->_pathConfigs = $basePath . '/testfiles/Service/Ssh/Config/conffiles';
+        $basePathService = MumsysTestHelper::getTestsBaseDir()
+            . '/testfiles/Domain/Service/Ssh';
+        $this->_sshFile = $basePathService . '/ssh-config-generated';
+        $this->_pathConfigs = $basePathService . '/Config/conffiles';
         $this->_testConfigFile = $this->_pathConfigs . '/localhost.php';
-        $this->_pathEmptyDir = $basePath . '/testfiles/Service/Ssh/Config/empty';
+        $this->_pathEmptyDir = $basePathService . '/Config/empty';
         $this->_dynTestFile = '';
 
         $this->_object = new Mumsys_Service_SshTool_Default(
@@ -99,7 +100,7 @@ class Mumsys_Service_SshTool_DefaultTest
             unlink( $this->_dynTestFile );
         }
 
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 
@@ -147,8 +148,12 @@ class Mumsys_Service_SshTool_DefaultTest
      */
     public function testInit()
     {
-        $this->assertingNull( $this->_object->init() );
-        $this->assertingNull( $this->_object->init() ); // 4CC
+        $actualA = $this->_object->getHostConfigs();
+        $this->_object->init();
+        $actualB = $this->_object->getHostConfigs();
+        $this->_object->init(); //4CC?
+
+        $this->assertingSame( $actualB, $actualA );
     }
 
 

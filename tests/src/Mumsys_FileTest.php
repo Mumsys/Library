@@ -78,10 +78,7 @@ class Mumsys_FileTest
 
     public function __destruct()
     {
-//        exec('ls -al '.$this->_fileOk, $x);
-//        print_r($x);
-//        unlink($this->_fileOk);
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

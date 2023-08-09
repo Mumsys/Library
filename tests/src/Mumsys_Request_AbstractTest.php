@@ -68,7 +68,7 @@ class Mumsys_Request_AbstractTest
     protected function tearDown(): void
     {
         $_COOKIE = array();
-        $this->_object = null;
+        unset( $this->_object );
     }
 
     /**

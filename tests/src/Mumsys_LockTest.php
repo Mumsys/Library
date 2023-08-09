@@ -9,8 +9,9 @@ class Mumsys_LockTest
     /**
      * @var Mumsys_Lock
      */
-    protected $_object;
-    protected $_version;
+    private $_object;
+    private $_version;
+    private $_versions;
 
 
     /**
@@ -37,7 +38,7 @@ class Mumsys_LockTest
         if ( is_object( $this->_object ) ) {
             $this->_object->unlock();
         }
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

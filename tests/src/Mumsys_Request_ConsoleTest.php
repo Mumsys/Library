@@ -10,17 +10,22 @@ class Mumsys_Request_ConsoleTest
     /**
      * @var Mumsys_Request_Console
      */
-    protected $_object;
+    private $_object;
 
     /**
      * @var string
      */
-    protected $_version;
+    private $_version;
 
     /**
      * @var array
      */
-    protected $_versions;
+    private $_versions;
+
+    /**
+     * @var array
+     */
+    private $_options;
 
 
     /**
@@ -50,7 +55,7 @@ class Mumsys_Request_ConsoleTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

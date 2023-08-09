@@ -244,6 +244,7 @@ abstract class Mumsys_Db_Driver_Abstract
     /**
      * Initialization of database and features
      *
+     * @param Mumsys_Context_Item $context Context item
      * @param array $args Possible values:
      * - 'db' optional Database name
      * - 'username' optional Database username
@@ -260,6 +261,8 @@ abstract class Mumsys_Db_Driver_Abstract
     public function __construct( Mumsys_Context_Item $context,
         array $args = array() )
     {
+        unset( $context ); // 4SCA
+
         if ( isset( $args['host'] ) ) {
             $this->_host = (string) $args['host'];
         }
@@ -448,7 +451,7 @@ abstract class Mumsys_Db_Driver_Abstract
      *     'AND' => array('And', 'And'),
      *     'OR' => array('Or', 'Or'),
      *
-     * @return false on errors
+     * @return false|void Returns false on errors
      * @throws Mumsys_Db_Exception On errors if setThrowErrors was set
      */
     public function replaceQueryCompareValues( array $comparison )
@@ -486,7 +489,7 @@ abstract class Mumsys_Db_Driver_Abstract
      *      'public key to map to'=>'public value of key to show')
      *  )
      *
-     * @return false on errors
+     * @return false|void Returns false on errors
      * @throws Mumsys_Db_Exception On errors if setThrowErrors was set
      */
     public function replaceQueryOperators( array $operators )
@@ -519,7 +522,7 @@ abstract class Mumsys_Db_Driver_Abstract
      *     'ASC' => 'Ascending (a-z, 0-9)',
      *     'DESC' => 'Descending (z-a, 9-0)'
      * )
-     * @return false on errors
+     * @return false|void Returns false on errors
      * @throws Mumsys_Db_Exception On errors if setThrowErrors was set
      */
     public function replaceQuerySortations( array $sortations )

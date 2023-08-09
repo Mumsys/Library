@@ -9,7 +9,17 @@ class Mumsys_Config_DefaultTest
     /**
      * @var Mumsys_Config_Default
      */
-    protected $_object;
+    private $_object;
+
+    /**
+     * @var array
+     */
+    private $_configs;
+
+    /**
+     * @var array
+     */
+    private $_paths;
 
     /**
      * Version ID
@@ -41,7 +51,6 @@ class Mumsys_Config_DefaultTest
             __DIR__ . '/', //testconfig.php
             __DIR__ . '/../config/', //credentials.php and sub paths
         );
-        $this->_context = new Mumsys_Context();
         $this->_object = new Mumsys_Config_Default( $this->_configs, $this->_paths );
     }
 
@@ -52,7 +61,7 @@ class Mumsys_Config_DefaultTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 
@@ -171,7 +180,7 @@ class Mumsys_Config_DefaultTest
     public function testLoad()
     {
         $this->expectingExceptionMessageRegex( '/(Not implemented yet)/i' );
-        $this->expectingException( 'Mumsys_Config_Exception', '/(Not implemented yet)/i' );
+        $this->expectingException( 'Mumsys_Config_Exception' );
         $this->_object->load();
     }
 

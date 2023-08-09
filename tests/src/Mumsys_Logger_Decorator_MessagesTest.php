@@ -9,14 +9,31 @@ class Mumsys_Logger_Decorator_MessagesTest
     /**
      * @var Mumsys_Logger_Decorator_Messages
      */
-    protected $_object;
+    private $_object;
 
     /**
      * @var Mumsys_Logger_File
      */
-    protected $_logger;
+    private $_logger;
 
     /**
+     * @var string
+     */
+    private $_testsDir;
+
+    /**
+     * @var string
+     */
+    private $_logfile;
+
+    /**
+     * Logger options
+     * @var array
+     */
+    private $_opts;
+
+    /**
+     * Version string.
      * @var string
      */
     private $_version;
@@ -24,7 +41,7 @@ class Mumsys_Logger_Decorator_MessagesTest
     /**
      * @var array
      */
-    protected $_versions;
+    private $_versions;
 
 
     protected function setUp(): void
@@ -54,7 +71,7 @@ class Mumsys_Logger_Decorator_MessagesTest
     protected function tearDown(): void
     {
         //@unlink($this->_logfile);
-        $this->_logger = $this->_object = null;
+        unset( $this->_logger, $this->_object );
     }
 
 
@@ -132,12 +149,13 @@ class Mumsys_Logger_Decorator_MessagesTest
 
         $object = new Mumsys_Logger_Decorator_Messages( $this->_logger, $this->_opts );
         ob_start();
-        $mesg = new stdClass( array(0 => 1) );
+        $mesg = new stdClass();
+        $mesg->prop = 1;
         $code = Mumsys_Logger_Abstract::ALERT;
         $baseExpected = $object->log( $mesg, $code );
         $actual = ob_get_clean();
 
-        $expected = date( 'H:i', time() ) . ' flobeeunit [ALERT] {} end' . "\n";
+        $expected = date( 'H:i', time() ) . ' flobeeunit [ALERT] {"prop":1} end' . "\n";
 
         $this->assertingEquals( $expected, $actual );
     }

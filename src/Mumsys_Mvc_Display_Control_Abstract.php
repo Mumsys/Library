@@ -41,6 +41,12 @@ abstract class Mumsys_Mvc_Display_Control_Abstract
     private $_buffer = '';
 
     /**
+     * Context item
+     * @var Mumsys_Context_Item
+     */
+    protected $_context;
+
+    /**
      * Name of the current page/output
      * @var string
      */
@@ -67,8 +73,8 @@ abstract class Mumsys_Mvc_Display_Control_Abstract
      *
      * @param string $extension Name of the extension to load/ get
      *
-     * @return false|Mumsys_Display_Helper_{$extension}
-     * @throws Mumsys_Display_Exception on errors init the helper class
+     * @return false|Mumsys_Mvc_Display_Helper_Interface E.g Mumsys_Mvc_Display_Helper_{$extension}
+     * @throws Mumsys_Mvc_Display_Exception on errors init the helper class
      */
     public function getDisplayHelper( $extension )
     {
@@ -78,17 +84,15 @@ abstract class Mumsys_Mvc_Display_Control_Abstract
 
         try {
             $class = 'Mumsys_Display_Helper_' . ucfirst( $extension );
-            if ( !class_exists( $class, false ) ) {
-                $return = $this->_helpers[$extension] = new $class( $this->_context );
-            }
+            $this->_helpers[$extension] = new $class( $this->_context );
         }
         catch ( Exception $e ) {
-            throw new Mumsys_Display_Exception(
+            throw new Mumsys_Mvc_Display_Exception(
                 sprintf( 'Helper class not found/ exists "%1$s"', $extension )
             );
         }
 
-        return $return;
+        return $this->_helpers[$extension];
     }
 
 

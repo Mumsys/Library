@@ -38,13 +38,13 @@ class Mumsys_Multirename
      * @var Mumsys_Logger_Interface
      */
     private $_logger;
-
-    /**
-     * @deprecated since version 1.3.3
-     * Current working settings.
-     * @var array
-     */
-    private $_config;
+//
+//    /**
+//     * @deprecated since version 1.3.3
+//     * Current working settings.
+//     * @var array
+//     */
+//    private $_config;
 
     /**
      * Current list of working settings. Since version 1.3.4++
@@ -69,12 +69,6 @@ class Mumsys_Multirename
      * @var array
      */
     private $_pathSubstitutions = array();
-
-    /**
-     * Collected list of actions to be saved if --history is enabled
-     * @var array
-     */
-    private $_history = array();
 
     /**
      * Number of history entrys to save.
@@ -175,7 +169,6 @@ class Mumsys_Multirename
     {
         $this->_pathSubstitutions = array();
         $this->_substitutions = array();
-        $this->_history = array();
     }
 
 
@@ -828,7 +821,7 @@ class Mumsys_Multirename
 
         if ( file_exists( $file ) ) {
             $data = file_get_contents( $file );
-            $history = json_decode( $data, true );
+            $result = json_decode( $data, true );
 
             /** @todo future
               if (isset($history[$index])) {
@@ -836,7 +829,6 @@ class Mumsys_Multirename
               } else {
               $result = $history;
               } */
-            $result = $history;
         }
 
         return $result;

@@ -105,7 +105,7 @@ interface Mumsys_FileSystem_Interface
      * @throws Mumsys_FileSystem_Exception Throws exception if file, link or
      * directory not exists.
      */
-    public function getFileDetailsExtended( $file, $filename = false );
+    public function getFileDetailsExtended( $fileOrPath, $filename = false );
 
 
     /**
@@ -175,7 +175,7 @@ interface Mumsys_FileSystem_Interface
      * Creates a directory if not exists.
      *
      * @param string $dir Directory to be created
-     * @param octal $perm Permission mode of directory to be chmod eg.: 755
+     * @param int $perm Octal permission mode of directory to be chmod eg.: 0755
      *
      * @return boolean True on success or false if directory exists.
      * @throws Mumsys_FileSystem_Exception Throws exception on any other error
@@ -187,7 +187,7 @@ interface Mumsys_FileSystem_Interface
      * Create a given directory recursivly like "mkdir -p".
      *
      * @param string $dir Directory to be created
-     * @param octal $perm Permission mode of directory to be chmod eg.: 755
+     * @param int $perm Octal permission mode of directory to be chmod eg.: 0755
      *
      * @return boolean true on success or false on failure
      *

@@ -9,23 +9,34 @@ class Mumsys_Logger_FileTest
     /**
      * @var Mumsys_Logger_File
      */
-    protected $_object;
+    private $_object;
 
     /**
      * @var string
      */
-    protected $_testsDir;
+    private $_testsDir;
+
+    /**
+     * @var string
+     */
+    private $_logfile;
+
+    /**
+     * Logger options
+     * @var array
+     */
+    private $_opts;
 
     /**
      * Version string.
      * @var string
      */
-    protected $_version;
+    private $_version;
 
     /**
      * @var array
      */
-    protected $_versions;
+    private $_versions;
 
 
     /**
@@ -61,7 +72,7 @@ class Mumsys_Logger_FileTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 
@@ -100,7 +111,7 @@ class Mumsys_Logger_FileTest
         $_SERVER['REMOTE_USER'] = 'flobee';
         $object = new Mumsys_Logger_File( $opts );
 
-        unset( $opts['username'], $_SERVER['REMOTE_USER'] );
+        unset( $_SERVER['REMOTE_USER'] );
         unset( $_SERVER['PHP_AUTH_USER'], $_SERVER['USER'], $_SERVER['LOGNAME'] );
         $object = new Mumsys_Logger_File( $opts );
 

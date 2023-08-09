@@ -59,7 +59,7 @@ class Mumsys_Mvc_Display_Factory
 
     /**
      * Mumsys_Context object.
-     * @var Mumsys_Context
+     * @var Mumsys_Context_Interface
      */
     private $_context;
 
@@ -110,10 +110,10 @@ class Mumsys_Mvc_Display_Factory
      * @param string $outputComplexity Complexity to load on initialisation
      * default | extended | custom
      *
-     * @return Mumsys_Display_Control_Interface Returns a display object which
+     * @return Mumsys_Mvc_Display_Control_Interface Returns a display object which
      * can be Mumsys_Mvc_Templates_*_* or own implementations.
      *
-     * @throws Mumsys_Display_Exception Throws exception on errors
+     * @throws Mumsys_Mvc_Display_Exception Throws exception on errors
      */
     public function load( array $options = array(), $outputType = 'default',
         $outputComplexity = 'default' )
@@ -141,6 +141,7 @@ class Mumsys_Mvc_Display_Factory
             header( 'HTTP/1.0 403 Forbidden' );
             $message = 'HTTP_X_MOZ prefetch is disabled';
             $code = Mumsys_Mvc_Display_Exception::ERRCODE_DEFAULT;
+
             throw new Mumsys_Mvc_Display_Exception( $message, $code );
         }
 
@@ -151,14 +152,15 @@ class Mumsys_Mvc_Display_Factory
         );
 
         if ( class_exists( $templateDriver, false ) ) {
-            $display = new $templateDriver( $this->_context, $options );
+            $display = new $templateDriver( $this->_context, $this->_options );
         } else {
             $message = sprintf(
-                'Driver for the display "%1$s" $2$s" not found',
+                'Driver for the display "%1$s" %2$s" not found',
                 $outputType,
                 $outputComplexity
             );
             $code = Mumsys_Mvc_Display_Exception::ERRCODE_DEFAULT;
+
             throw new Mumsys_Mvc_Display_Exception( $message, $code );
         }
 

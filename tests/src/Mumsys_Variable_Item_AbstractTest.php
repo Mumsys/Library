@@ -18,6 +18,11 @@ class Mumsys_Variable_Item_AbstractTest
      */
     private $_version;
 
+    /**
+     * @var array
+     */
+    private $_config = array();
+
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -55,7 +60,7 @@ class Mumsys_Variable_Item_AbstractTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
     /**
@@ -105,9 +110,6 @@ class Mumsys_Variable_Item_AbstractTest
     {
         $this->_object->setName( 'somevariable2' );
         $this->assertingEquals( 'somevariable2', $this->_object->getName() );
-
-        $x = $this->_object->setName( 'somevariable2' );
-        $this->assertingNull( $x );
     }
 
 
@@ -119,9 +121,6 @@ class Mumsys_Variable_Item_AbstractTest
     {
         $this->_object->setValue( 'somevariable2' );
         $this->assertingEquals( 'somevariable2', $this->_object->getValue() );
-
-        $x = $this->_object->setValue( 'somevariable2' );
-        $this->assertingNull( $x );
     }
 
 
@@ -144,7 +143,7 @@ class Mumsys_Variable_Item_AbstractTest
 
         $this->assertingEquals( $list, $this->_object->getErrorMessages() );
 
-        $this->assertingTrue( ( $this->_object->clearErrorMessages() === null ) );
+        $this->_object->clearErrorMessages();
         $this->assertingTrue( ( $this->_object->getErrorMessages() === array() ) );
 
     }

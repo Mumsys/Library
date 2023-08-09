@@ -49,7 +49,7 @@ class Mumsys_Service_SshTool_Default
 
     /**
      * Mode to set the file permission in octal, eg: 0600
-     * @var octal
+     * @var int
      */
     private $_sshConfFileMode = 0600;
 
@@ -79,9 +79,9 @@ class Mumsys_Service_SshTool_Default
 
     /**
      * List of commands generated
-     * @var array
+     * @ v ar array
      */
-    private $_cmdList;
+    //private $_cmdList; disabled 4SCA
 
 
     /**
@@ -185,7 +185,7 @@ class Mumsys_Service_SshTool_Default
     /**
      * Sets permission mode of the ssh config file to write to.
      *
-     * @param octal $mode Mode to change the permission in octal
+     * @param int $mode Mode to change the permission in octal
      */
     public function setMode( int $mode = 0600 )
     {
@@ -465,7 +465,7 @@ class Mumsys_Service_SshTool_Default
      * @param array $pubList List of public keys to register/ authorise at the
      * target host
      * @param string $user Username to connect to the target host
-     * @param type $targetHost Host to connect to the target host
+     * @param string $targetHost Host to connect to the target host
      */
     private function _registerExecute( array $pubList, $user, $targetHost ): void
     {
@@ -507,12 +507,12 @@ class Mumsys_Service_SshTool_Default
      * trys to remove from known hosts.
      *
      * //sed -i.bak '/REGEX_MATCHING_KEY/d' ~/.ssh/authorized_keys
-      // sed -i "s#`cat ~/.ssh/my/id_rsa_fb_2018.pub`##" ~/.ssh/authorized_keys
-      // or: ssh u@h "sed -i 's#`cat ~/.ssh/my/id_rsa_fb_2018.pub`##' ~/.ssh/authorized_keys"
-     * @param array $source
+     * // sed -i "s#`cat ~/.ssh/my/id_rsa_fb_2018.pub`##" ~/.ssh/authorized_keys
+     * // or: ssh u@h "sed -i 's#`cat ~/.ssh/my/id_rsa_fb_2018.pub`##' ~/.ssh/authorized_keys"
+     *
      * @param array $target
-     * @param type $user
-     * @param type $targetHost
+     * @param string $user
+     * @param string $targetHost
      */
     private function _revokeExecute( array $target, $user, $targetHost )
     {
@@ -629,14 +629,14 @@ class Mumsys_Service_SshTool_Default
      * Check the path for the ssh config file if it exists and will be
      * writeable.
      *
-     * @param string $path The path to  be checked
+     * @param string $path The path to be checked
      *
      * @return string path Existing location/path
      * @throws Mumsys_Service_Exception If path not exists or not writeable
      */
     private function _checkPath( string $path ): string
     {
-        $targetPath = filter_var( $path, FILTER_SANITIZE_STRING );
+        $targetPath = filter_var( $path, FILTER_SANITIZE_FULL_SPECIAL_CHARS );
 
         if ( !is_dir( $targetPath . DIRECTORY_SEPARATOR ) ) {
             $message = sprintf( 'Path does not exists "%1$s"', $targetPath );

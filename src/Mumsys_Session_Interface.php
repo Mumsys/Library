@@ -39,8 +39,6 @@ interface Mumsys_Session_Interface extends Mumsys_GetterSetter_Interface
      *
      * Note: This is befor it will be available in $_SESSION.
      *
-     * @param string $key value of the key to return to
-     *
      * @return mixed Stored value
      */
     public function getCurrent();
@@ -50,8 +48,6 @@ interface Mumsys_Session_Interface extends Mumsys_GetterSetter_Interface
      *
      * Note: This is befor it will be available in $_SESSION. Existing records
      * in $_SESSION after initialisation of this class are not listed!
-     *
-     * @param string $key value of the key to return to
      *
      * @return mixed Stored value
      */

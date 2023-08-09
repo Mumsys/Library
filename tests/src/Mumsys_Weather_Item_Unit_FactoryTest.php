@@ -25,7 +25,7 @@ class Mumsys_Weather_Item_Unit_FactoryTest
     /**
      * @var Mumsys_Weather_Item_Unit_Factory
      */
-    protected $_object;
+    private $_object;
 
 
     /**
@@ -44,7 +44,7 @@ class Mumsys_Weather_Item_Unit_FactoryTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

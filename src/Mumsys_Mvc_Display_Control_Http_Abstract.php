@@ -9,8 +9,8 @@
  * @license LGPL Version 3 http://www.gnu.org/licenses/lgpl-3.0.txt
  *
  * @category    Mumsys
- * @package     Mumsys_Library
- * @subpackage  Mumsys_Mvc
+ * @package     Library
+ * @subpackage  Mvc
  * Created: 2006-12-01
  */
 
@@ -20,10 +20,6 @@
  * context eg for html output, the frontend controller
  * The templates (Mumsys_Mvc_Templates_Html_*) adding methodes to this
  * controller to have more helper methods to generate html.
- *
- * @category    Mumsys
- * @package     Mumsys_Library
- * @subpackage  Mumsys_Mvc
  */
 abstract class Mumsys_Mvc_Display_Control_Http_Abstract
     extends Mumsys_Mvc_Display_Control_Abstract
@@ -36,15 +32,15 @@ abstract class Mumsys_Mvc_Display_Control_Http_Abstract
 
     /**
      * headers to be set if needed for the output talking http
-     * @var string
+     * @var array
      */
-    private $_headers = array(); // array to set php header()
+    private $_headers = array();
 
 
     /**
      * Adds header string.
      *
-     * @param string $s content of a Html header line
+     * @param string $header content of a Html header line
      */
     public function addHeader( $header = '' )
     {
@@ -68,7 +64,7 @@ abstract class Mumsys_Mvc_Display_Control_Http_Abstract
      */
     public function applyHeaders()
     {
-        while ( list(, $header) = each( $this->_headers ) ) {
+        foreach ( $this->_headers as $header ) {
             header( $header );
         }
     }
@@ -87,7 +83,7 @@ abstract class Mumsys_Mvc_Display_Control_Http_Abstract
     {
         if ( empty( $header ) || !is_string( $header ) ) {
             $message = 'Can not send header.';
-            $code = Mumsys_Mvc_Display_Exception::ERROR_HTTP500;
+            $code = Mumsys_Mvc_Display_Exception::ERRCODE_HTTP500;
             throw new Mumsys_Mvc_Display_Exception( $message, $code );
         } else {
             header( $header );

@@ -42,7 +42,7 @@ class Mumsys_Logger_NoneTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

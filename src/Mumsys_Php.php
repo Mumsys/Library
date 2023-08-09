@@ -33,10 +33,6 @@
  * $value = Mumsys_Php::float('123');
  * ?>
  * </code>
- *
- * @category    Mumsys
- * @package     Library
- * @subpackage  Php
  */
 class Mumsys_Php
     extends Mumsys_Abstract
@@ -50,12 +46,6 @@ class Mumsys_Php
      * @var string
      */
     public static $os;
-
-    /**
-     * Flag for array_keys_search_recursive()
-     * @var mixed
-     */
-    private static $_stopOnMatch;
 
 
     /**
@@ -106,7 +96,7 @@ class Mumsys_Php
             default:
                 $mesg =  '__set: "' . $k . '"="' . $v . '" not allowed.';
                 throw new Mumsys_Php_Exception( $mesg );
-                break;
+                //break;
         }
     }
 
@@ -224,7 +214,7 @@ class Mumsys_Php
         // scheme: http:// https:// ftp:// file:// php:// c:\ d:\ etc..
         $scheme = self::parseUrl( $url, PHP_URL_SCHEME );
 
-        if ( ( PHP_VERSION_ID >= '50000' ) && !empty( $scheme ) ) {
+        if ( ( PHP_VERSION_ID >= 50208 ) && !empty( $scheme ) ) {
             if ( ( $fp = fopen( $url, 'r' ) ) !== false ) {
                 fclose( $fp );
                 return true;
@@ -233,7 +223,7 @@ class Mumsys_Php
             }
         } else {
             // file_exists overwrites the last access (atime) !
-            return @file_exists( $url );
+            return file_exists( $url );
         }
     }
 
@@ -266,7 +256,7 @@ class Mumsys_Php
      *
      * @param string $key Key to get from php.ini
      *
-     * @return string|integer Returns the ini value or translated numeric value
+     * @return string|integer|null Returns the ini value or translated numeric value
      * if a numeric value was detected or null if the key was not found
      * @throws Mumsys_Php_Exception If detection/ calculation of a numeric
      * values fails
@@ -307,25 +297,25 @@ class Mumsys_Php
         $value = trim( $value );
 
         if ( $value < 0 ) {
-            return $value;
+            return (int)$value;
         }
 
         if ( empty( $value ) ) {
             return 0;
         }
 
-        $last = $value[strlen( $value ) - 1];
-        switch ( $last )
+        $lastChar = $value[strlen( $value ) - 1];
+        switch ( $lastChar )
         {
             case 'k':
             case 'K':
                 return (int) $value * 1024;
-                break;
+                //break;
 
             case 'm':
             case 'M':
                 return (int) $value * 1048576;
-                break;
+                //break;
 
             case 'g':
             case 'G':
@@ -344,7 +334,7 @@ class Mumsys_Php
 
             default:
                 if ( !is_numeric( $value ) ) {
-                    $mesg = 'Detection of size failt for "' . $last . '"';
+                    $mesg = 'Detection of size failt for "' . $lastChar . '"';
                     throw new Mumsys_Php_Exception( $mesg );
                 }
                 break;
@@ -678,7 +668,7 @@ class Mumsys_Php
      *
      * @param array $have Array original for the comparison (bigger array)
      * @param array $totest Array to test against $have (smaler array)
-     * @param string $way Type of array to check values or array keys
+     * @param string $way Type of array to check values or array keys: vals|keys
      *
      * @return array Returns the result portion on difference or an empty array
      * for no changes between the arrays

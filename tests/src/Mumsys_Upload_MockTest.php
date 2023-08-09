@@ -25,7 +25,7 @@ class Mumsys_Upload_MockTest
     /**
      * @var Mumsys_Upload_Mock
      */
-    protected $_object;
+    private $_object;
 
     /**
      * Base dir for test files
@@ -65,7 +65,7 @@ class Mumsys_Upload_MockTest
             copy( $this->_dirTestFiles . '/a.file', $this->_dirTestFiles . '/b.file' );
         }
 
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

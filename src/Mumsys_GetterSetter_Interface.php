@@ -39,7 +39,7 @@ interface Mumsys_GetterSetter_Interface
      * @param string $key Key to register
      * @param mixed $value Value to be set
      *
-     * @throws Mumsys_Exception|Mumsys_[domain]_Exception If key exists
+     * @throws Mumsys_Exception If key exists
      */
     public function register( $key, $value = null );
 

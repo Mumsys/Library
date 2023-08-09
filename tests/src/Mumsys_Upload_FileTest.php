@@ -25,19 +25,13 @@ class Mumsys_Upload_FileTest
     /**
      * @var Mumsys_Upload_File
      */
-    protected $_object;
+    private $_object;
 
     /**
      * Base dir for test files
      * @var string
      */
     private $_dirTestFiles;
-
-    /**
-     * Tmp file for testing
-     * @var string
-     */
-    private $_dirTmpFiles;
 
 
     /**
@@ -47,7 +41,7 @@ class Mumsys_Upload_FileTest
     protected function setUp(): void
     {
         $this->_dirTestFiles = MumsysTestHelper::getTestsBaseDir() . '/testfiles/Domain/Upload';
-        $this->_dirTmpFiles = MumsysTestHelper::getTestsBaseDir() . '/tmp';
+        //$this->_dirTmpFiles = MumsysTestHelper::getTestsBaseDir() . '/tmp';
 
         $fileInput = array(
             'name' => 'name.file',
@@ -68,7 +62,7 @@ class Mumsys_Upload_FileTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

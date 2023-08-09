@@ -72,7 +72,7 @@ abstract class Mumsys_Service_Vdr_Abstract
 
     /**
      * Flag about the connection status
-     * @var boolean
+     * @var resource|false
      */
     private $_connection;
 
@@ -81,21 +81,21 @@ abstract class Mumsys_Service_Vdr_Abstract
      * 'vdr_id', 'name', 'bouquet', 'frequency', 'parameter', 'source', 'symbolrate',
      * 'VPID', 'APID', 'TPID', 'CAID', 'SID', 'NID', 'TID', 'RID'
      * @link http://vdr-wiki.de/wiki/index.php/Channels.conf VDR Specs
-     * @var array
+     * @ var array
      */
-    private $_channels = array();
+    //private $_channels = array(); disabled 4SCA
 
     /**
      * List of times
-     * @var array
+     * @ var array
      */
-    private $_timers = array();
+    // private $_timers = array(); disabled 4SCA
 
     /**
      * List of recordings
-     * @var arry
+     * @ var array
      */
-    private $_recordings = array();
+    // private $_recordings = array(); disabled 4SCA
 
 
     /**
@@ -105,7 +105,6 @@ abstract class Mumsys_Service_Vdr_Abstract
      * @param string $host Host or ip to the server. Default: localhost
      * @param integer $port Port to connect to
      * @param integer $timeout
-     * @param boolean $debug Flag to enable debugging.
      */
     public function __construct( Mumsys_Context_Item $context,
         $host = 'localhost', $port = 6419, $timeout = 5 )
@@ -130,7 +129,7 @@ abstract class Mumsys_Service_Vdr_Abstract
           );
          */
 
-        if ( $this->_host && $this->_port && $this->_timeout && $context ) {
+        if ( $this->_host > '' && $this->_port > '' && $this->_timeout > 0 && is_object( $context ) ) {
             $this->connect();
         }
     }
@@ -138,10 +137,12 @@ abstract class Mumsys_Service_Vdr_Abstract
 
     /**
      * Destuction. Disconnect and reset connection status.
+     *
+     * @return bool Status of disconnect()
      */
     public function __destruct()
     {
-        return $this->disconnect();
+        $this->disconnect();
     }
 
 
@@ -207,7 +208,7 @@ abstract class Mumsys_Service_Vdr_Abstract
 
         $this->execute( 'QUIT' );
         $return = fclose( $this->_connection );
-
+        $this->_connection = false;
         $this->_logger->log( 'Connection close: ' . $this->_host, 7 );
 
         return $return;
@@ -263,7 +264,7 @@ abstract class Mumsys_Service_Vdr_Abstract
         }
 
         $cmd = $command;
-        if ( $parameters !== null && $parameters !== 0 ) {
+        if ( $parameters > '' ) {
             $cmd = $cmd . ' ' . stripslashes( $parameters );
         }
 
@@ -329,15 +330,14 @@ abstract class Mumsys_Service_Vdr_Abstract
                     // also for "channel not unique"
                     // trim($data[3]);
                     throw new Mumsys_Service_Exception( $data[3], $data[1] );
-                    break;
+                    //break;
 
                 default:
                     $message = 'None catchable exception. '
                         . 'Invalid result or not implemented (yet): '
                         . $data[3];
                     throw new Mumsys_Service_Exception( $message );
-
-                    break;
+                    //break;
             }
 
             // the last record, break the loop
@@ -395,7 +395,7 @@ abstract class Mumsys_Service_Vdr_Abstract
 
             case 'e':   // end of a record
                 return true;
-                break;
+                //break;
 
             case 'E':   // begin of a record/event
                 if ( $line[0] . $line[1] . $line[2] == 'End' ) {
@@ -460,11 +460,9 @@ abstract class Mumsys_Service_Vdr_Abstract
                 break;
 
             default:
-                throw new Mumsys_Service_Exception(
-                    'Input error. If you see this, something went wrong. '
-                    . 'Input was: "' . $line . '"'
-                );
-                break;
+                $mesg = 'Input error. If you see this, something went wrong. Input was: "' . $line . '"';
+                throw new Mumsys_Service_Exception( $mesg );
+                //break;
         }
 
         return $record;

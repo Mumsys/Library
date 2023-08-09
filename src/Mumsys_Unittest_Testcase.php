@@ -42,12 +42,6 @@ class Mumsys_Unittest_Testcase
      */
     const VERSION = '3.16.2';
 
-    /**
-     * PHPUNIT Version ID.
-     * @var string
-     */
-    private $_phpunitVersionID = '';
-
 
     /**
      * Initialize the object and set some custom requirements to wrap around
@@ -63,7 +57,7 @@ class Mumsys_Unittest_Testcase
 
         $semver = new Mumsys_Semver( PHPUnit\Runner\Version::id() );
 
-        $this->_phpunitVersionID = $semver->getMajorID() . '.' . $semver->getMinorID() . '.' . $semver->getPatchID();
+        //$this->_phpunitVersionID = $semver->getMajorID() . '.' . $semver->getMinorID() . '.' . $semver->getPatchID();
 
         unset( $semver );
     }
@@ -88,7 +82,7 @@ class Mumsys_Unittest_Testcase
     public function assertingEquals( $expected, $actual, $message = '',
         $delta = 0.0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false )
     {
-        parent::assertEquals( $expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase );
+        parent::assertEquals( $expected, $actual, $message );
     }
 
 
@@ -106,7 +100,7 @@ class Mumsys_Unittest_Testcase
     public function assertingNotEquals( $expected, $actual, $message = '',
         $delta = 0.0, $maxDepth = 10, $canonicalize = false, $ignoreCase = false )
     {
-        parent::assertNotEquals( $expected, $actual, $message, $delta, $maxDepth, $canonicalize, $ignoreCase );
+        parent::assertNotEquals( $expected, $actual, $message );
     }
 
 
@@ -262,12 +256,7 @@ class Mumsys_Unittest_Testcase
      */
     public function expectingExceptionMessageRegex( $regex )
     {
-        // A >= B
-        if ( version_compare( $this->_phpunitVersionID, '9.0.0', '>=' ) ) {
-            $this->expectExceptionMessageMatches( $regex );
-        } else {
-            parent::expectExceptionMessageRegExp( $regex );
-        }
+        parent::expectExceptionMessageMatches( $regex );
     }
 
 
@@ -322,12 +311,12 @@ class Mumsys_Unittest_Testcase
     /**
      * Helper to test methods behind the scene (private, protected methods)
      *
-     * Makes accessibility on to be testable.
+     * Makes accessibility 'on' to be testable.
      *
      * @param string $class Name of the class
      * @param string $method Name of the method to access
      *
-     * @return ReflectionMethod
+     * @return ReflectionMethod|string Name of the method
      * @throws ReflectionException
      */
     public function getReflectionMethod( string $class, string $method = 'Unknown' )

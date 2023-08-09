@@ -31,8 +31,13 @@ class Mumsys_Service_Spss_AbstractTest
     /**
      * @var Mumsys_Service_Spss_Abstract
      */
-    protected $_object;
+    private $_object;
 
+    /**
+     * File location to a test file
+     * @var string
+     */
+    private $_spssFile;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -40,8 +45,8 @@ class Mumsys_Service_Spss_AbstractTest
      */
     protected function setUp(): void
     {
-        $spssFile = __DIR__ . '/../testfiles/Service/Spss/pspp.sav';
-        $parser = \SPSS\Sav\Reader::fromString( file_get_contents( $spssFile ) );
+        $this->_spssFile = __DIR__ . '/../testfiles/Domain/Service/Spss/pspp.sav';
+        $parser = \SPSS\Sav\Reader::fromString( file_get_contents( $this->_spssFile ) );
         $this->_object = new Mumsys_Service_Spss_AbstractTestClass( $parser );
     }
 
@@ -52,7 +57,7 @@ class Mumsys_Service_Spss_AbstractTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 
@@ -61,8 +66,7 @@ class Mumsys_Service_Spss_AbstractTest
      */
     public function test__construct()
     {
-        $spssFile = __DIR__ . '/../testfiles/Service/Spss/pspp.sav';
-        $parser = \SPSS\Sav\Reader::fromString( file_get_contents( $spssFile ) );
+        $parser = \SPSS\Sav\Reader::fromString( file_get_contents( $this->_spssFile ) );
         $this->_object = new Mumsys_Service_Spss_AbstractTestClass( $parser );
 
         $this->expectingException( 'Mumsys_Service_Spss_Exception' );

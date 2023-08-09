@@ -79,7 +79,7 @@ class Mumsys_Serializer_Default
      * using hash_hmac() for data validation. Make sure data is not modified by
      * anyone but you.
      *
-     * @param string $serializedValue Value from a php serialize() function: If
+     * @param string|mixed $serializedValue Value from a php serialize() function: If
      * the variable being unserialized is an object, after successfully
      * reconstructing the object PHP will automatically attempt to call the
      * __wakeup() member function (if it exists).

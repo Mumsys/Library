@@ -10,7 +10,7 @@ class Mumsys_Session_AbstractTest
     /**
      * @var Mumsys_Session_Abstract
      */
-    protected $_object;
+    private $_object;
 
 
     /**
@@ -29,7 +29,7 @@ class Mumsys_Session_AbstractTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

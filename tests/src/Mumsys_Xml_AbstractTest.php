@@ -18,7 +18,7 @@ class Mumsys_Xml_AbstractTest
     /**
      * @var Mumsys_Xml_Abstract
      */
-    protected $_object;
+    private $_object;
 
 
     /**
@@ -37,7 +37,7 @@ class Mumsys_Xml_AbstractTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

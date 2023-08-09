@@ -9,19 +9,29 @@ class Mumsys_FileSystem_DefaultTest
     /**
      * @var Mumsys_FileSystem_Default
      */
-    protected $_object;
+    private $_object;
 
     /**
-     * List of test files to be created and removed
-     * @var string
+     * List of test files/dirs to be created and removed
+     * @var array
      */
-    protected $_testdirs;
+    private $_testdirs;
 
     /**
-     * Test directory.
+     * Test base directory.
      * @var string
      */
-    protected $_testsDir;
+    private $_testsBaseDir;
+
+    /**
+     * @var string
+     */
+    private $_version;
+
+    /**
+     * @var array
+     */
+    private $_versions;
 
 
     protected function setUp(): void
@@ -32,17 +42,17 @@ class Mumsys_FileSystem_DefaultTest
             'Mumsys_FileSystem_Common_Abstract' => '3.1.1',
         );
 
-        $this->_testsDir = realpath( dirname( __FILE__ ) . '/../' );
+        $this->_testsBaseDir = realpath( dirname( __FILE__ ) . '/../' );
         $this->_testdirs = array(
-            'rm1' => $this->_testsDir . '/tmp/unittest-mkdir/mkdirs/testfile',
-            'rm2' => $this->_testsDir . '/tmp/unittest-mkdir/testfile',
-            'dir' => $this->_testsDir . '/tmp/unittest-mkdir',
-            'dirs' => $this->_testsDir . '/tmp/unittest-mkdir/mkdirs',
-            'file' => $this->_testsDir . '/tmp/unittest',
-            'file2' => $this->_testsDir . '/tmp/unittest_2',
+            'rm1' => $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs/testfile',
+            'rm2' => $this->_testsBaseDir . '/tmp/unittest-mkdir/testfile',
+            'dir' => $this->_testsBaseDir . '/tmp/unittest-mkdir',
+            'dirs' => $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs',
+            'file' => $this->_testsBaseDir . '/tmp/unittest',
+            'file2' => $this->_testsBaseDir . '/tmp/unittest_2',
             'invalid' => '/root/goes/here',
-            'rm3' => $this->_testsDir . '/tmp/mkdirs',
-            'rm4' => $this->_testsDir . '/tmp/unittest-mkdir.lnk',
+            'rm3' => $this->_testsBaseDir . '/tmp/mkdirs',
+            'rm4' => $this->_testsBaseDir . '/tmp/unittest-mkdir.lnk',
         );
         touch( $this->_testdirs['file'] );
 
@@ -87,8 +97,8 @@ class Mumsys_FileSystem_DefaultTest
         $actual1 = $this->_object->scanDirInfo(
             $this->_testdirs['dir'], true, false, array(), -1, 1001
         );
-        $path11 = $this->_testsDir . '/tmp/unittest-mkdir/mkdirs';
-        $path12 = $this->_testsDir . '/tmp/unittest-mkdir/testfile';
+        $path11 = $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs';
+        $path12 = $this->_testsBaseDir . '/tmp/unittest-mkdir/testfile';
         $actual1[$path11]['size'] =
             ( ( $actual1[$path11]['size'] === 22 ) || ( $actual1[$path11]['size'] === 4096 ) ) ? true : false
         ;
@@ -96,17 +106,17 @@ class Mumsys_FileSystem_DefaultTest
             ( ( $actual1[$path12]['size'] === 22 ) || ( $actual1[$path12]['size'] === 4096 ) ) ? true : false
         ;
         $expected1 = array(
-            $this->_testsDir . '/tmp/unittest-mkdir/mkdirs' => array(
-                'file' => $this->_testsDir . '/tmp/unittest-mkdir/mkdirs',
+            $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs' => array(
+                'file' => $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs',
                 'name' => 'mkdirs',
-                'path' => $this->_testsDir . '/tmp/unittest-mkdir',
+                'path' => $this->_testsBaseDir . '/tmp/unittest-mkdir',
                 'size' => true,
                 'type' => 'dir',
             ),
-            $this->_testsDir . '/tmp/unittest-mkdir/testfile' => array(
-                'file' => $this->_testsDir . '/tmp/unittest-mkdir/testfile',
+            $this->_testsBaseDir . '/tmp/unittest-mkdir/testfile' => array(
+                'file' => $this->_testsBaseDir . '/tmp/unittest-mkdir/testfile',
                 'name' => 'testfile',
-                'path' => $this->_testsDir . '/tmp/unittest-mkdir',
+                'path' => $this->_testsBaseDir . '/tmp/unittest-mkdir',
                 'size' => 0,
                 'type' => 'file',
             )
@@ -116,37 +126,39 @@ class Mumsys_FileSystem_DefaultTest
         $actual2 = $this->_object->scanDirInfo(
             $this->_testdirs['dir'], true, true, $filters
         );
-        $path21 = $this->_testsDir . '/tmp/unittest-mkdir/mkdirs';
-        $path22 = $this->_testsDir . '/tmp/unittest-mkdir/testfile';
-        $path23 = $this->_testsDir . '/tmp/unittest-mkdir/mkdirs/testfile';
-        $actual2[$path21]['size'] =
-            ( ( $actual2[$path21]['size'] === 22 ) || ( $actual2[$path21]['size'] === 4096 ) ) ? true : false
+
+        $path2A = $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs';
+        $path2B = $this->_testsBaseDir . '/tmp/unittest-mkdir/testfile';
+        $path2C = $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs/testfile';
+
+        $actual2[$path2A]['size'] =
+            ( ( $actual2[$path2A]['size'] == 22 ) || ( $actual2[$path2A]['size'] == 4096 ) ) ? true : false
         ;
-        $actual2[$path22]['size'] =
-            ( ( $actual2[$path22]['size'] === 22 ) || ( $actual2[$path22]['size'] === 4096 ) ) ? true : false
+        $actual2[$path2B]['size'] =
+            ( ( $actual2[$path2B]['size'] == 22 ) || ( $actual2[$path2B]['size'] == 4096 ) ) ? true : false
         ;
-        $actual2[$path23]['size'] =
-            ( ( $actual2[$path23]['size'] === 22 ) || ( $actual2[$path23]['size'] === 4096 ) ) ? true : false
+        $actual2[$path2C]['size'] =
+            ( ( $actual2[$path2C]['size'] == 22 ) || ( $actual2[$path2C]['size'] == 4096 ) ) ? true : false
         ;
         $expected2 = array(
-            $this->_testsDir . '/tmp/unittest-mkdir/mkdirs' => array(
-                'file' => $this->_testsDir . '/tmp/unittest-mkdir/mkdirs',
+            $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs' => array(
+                'file' => $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs',
                 'name' => 'mkdirs',
-                'path' => $this->_testsDir . '/tmp/unittest-mkdir',
+                'path' => $this->_testsBaseDir . '/tmp/unittest-mkdir',
                 'size' => true,
                 'type' => 'dir',
             ),
-            $this->_testsDir . '/tmp/unittest-mkdir/testfile' => array(
-                'file' => $this->_testsDir . '/tmp/unittest-mkdir/testfile',
+            $this->_testsBaseDir . '/tmp/unittest-mkdir/testfile' => array(
+                'file' => $this->_testsBaseDir . '/tmp/unittest-mkdir/testfile',
                 'name' => 'testfile',
-                'path' => $this->_testsDir . '/tmp/unittest-mkdir',
+                'path' => $this->_testsBaseDir . '/tmp/unittest-mkdir',
                 'size' => 0,
                 'type' => 'file',
             ),
-            $this->_testsDir . '/tmp/unittest-mkdir/mkdirs/testfile' => array(
-                'file' => $this->_testsDir . '/tmp/unittest-mkdir/mkdirs/testfile',
+            $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs/testfile' => array(
+                'file' => $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs/testfile',
                 'name' => 'testfile',
-                'path' => $this->_testsDir . '/tmp/unittest-mkdir/mkdirs',
+                'path' => $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs',
                 'size' => 0,
                 'type' => 'file',
             ),
@@ -226,14 +238,14 @@ class Mumsys_FileSystem_DefaultTest
             'group_name' => @reset( posix_getgrgid( $stat['gid'] ) ),
         );
         // info for a directory
-        $actual2 = $this->_object->getFileDetailsExtended( $this->_testsDir . '/tmp' );
-        $stat = @lstat( $this->_testsDir . '/tmp' );
+        $actual2 = $this->_object->getFileDetailsExtended( $this->_testsBaseDir . '/tmp' );
+        $stat = @lstat( $this->_testsBaseDir . '/tmp' );
         $expected2 = array(
-            'file' => $this->_testsDir . '/tmp',
+            'file' => $this->_testsBaseDir . '/tmp',
             'name' => 'tmp',
-            'size' => filesize( $this->_testsDir . '/tmp' ),
+            'size' => filesize( $this->_testsBaseDir . '/tmp' ),
             'type' => 'dir',
-            'path' => $this->_testsDir,
+            'path' => $this->_testsBaseDir,
             'is_file' => false,
             'is_dir' => true,
             'is_link' => false,
@@ -246,7 +258,7 @@ class Mumsys_FileSystem_DefaultTest
             'atime' => $stat['atime'],
             'ctime' => $stat['ctime'],
             'filetype' => trim(
-                shell_exec( 'file -b -p "' . $this->_testsDir . '/tmp";' )
+                shell_exec( 'file -b -p "' . $this->_testsBaseDir . '/tmp";' )
             ),
             'is_executable' => true,
             'ext' => false,
@@ -255,17 +267,17 @@ class Mumsys_FileSystem_DefaultTest
         );
         // info for a link
         touch( $this->_testdirs['file'] );
-        symlink( $this->_testdirs['file'], $this->_testsDir . '/tmp/link' );
-        $stat = @lstat( $this->_testsDir . '/tmp/link' );
+        symlink( $this->_testdirs['file'], $this->_testsBaseDir . '/tmp/link' );
+        $stat = @lstat( $this->_testsBaseDir . '/tmp/link' );
         $actual3 = $this->_object->getFileDetailsExtended(
-            $this->_testsDir . '/tmp/link'
+            $this->_testsBaseDir . '/tmp/link'
         );
         $expected3 = array(
-            'file' => $this->_testsDir . '/tmp/link',
+            'file' => $this->_testsBaseDir . '/tmp/link',
             'name' => 'link',
             'size' => $stat['size'],
             'type' => 'link',
-            'path' => $this->_testsDir . '/tmp',
+            'path' => $this->_testsBaseDir . '/tmp',
             'is_file' => true,
             'is_dir' => false,
             'is_link' => true,
@@ -277,15 +289,15 @@ class Mumsys_FileSystem_DefaultTest
             'mtime' => $stat['mtime'],
             'atime' => $stat['atime'],
             'ctime' => $stat['ctime'],
-            'filetype' => $this->_object->getFileType( $this->_testsDir . '/tmp/link' ),
+            'filetype' => $this->_object->getFileType( $this->_testsBaseDir . '/tmp/link' ),
             'is_executable' => true,
             'ext' => '',
-            'mimetype' => finfo_file( finfo_open( FILEINFO_MIME_TYPE ), $this->_testsDir . '/tmp/link' ),
-            'target' => $this->_testsDir . '/tmp/unittest',
+            'mimetype' => finfo_file( finfo_open( FILEINFO_MIME_TYPE ), $this->_testsBaseDir . '/tmp/link' ),
+            'target' => $this->_testsBaseDir . '/tmp/unittest',
             'owner_name' => @reset( posix_getpwuid( $stat['uid'] ) ),
             'group_name' => @reset( posix_getgrgid( $stat['gid'] ) ),
         );
-        @unlink( $this->_testsDir . '/tmp/link' );
+        @unlink( $this->_testsBaseDir . '/tmp/link' );
 
         $this->assertingEquals( $expected1, $actual1 );
         $this->assertingEquals( $expected2, $actual2 );
@@ -334,7 +346,7 @@ class Mumsys_FileSystem_DefaultTest
         @unlink( $expected2 );
         // target is a directory
         $actual3 = $this->_object->copy(
-            $this->_testdirs['file'], $this->_testsDir . '/tmp', true
+            $this->_testdirs['file'], $this->_testsBaseDir . '/tmp', true
         );
         $expected3 = $this->_testdirs['file'] . '.1';
         @unlink( $expected3 );
@@ -348,7 +360,7 @@ class Mumsys_FileSystem_DefaultTest
             . 'implemented)/';
         $this->expectingExceptionMessageRegex( $regex );
         $this->expectingException( 'Mumsys_FileSystem_Exception' );
-        $this->_object->copy( $this->_testsDir . '/tmp/', '/home/' );
+        $this->_object->copy( $this->_testsBaseDir . '/tmp/', '/home/' );
     }
 
 
@@ -399,7 +411,7 @@ class Mumsys_FileSystem_DefaultTest
         $regex = '/(Rename failt for reason: Source "" is no directory and no file)/';
         $this->expectingExceptionMessageRegex( $regex );
         $this->expectingException( 'Mumsys_FileSystem_Exception' );
-        $this->_object->rename( '', $this->_testsDir . '/tmp/something' );
+        $this->_object->rename( '', $this->_testsBaseDir . '/tmp/something' );
     }
 
 
@@ -410,7 +422,7 @@ class Mumsys_FileSystem_DefaultTest
     {
         // rename permission error
         $msg[] = 'Rename failt for reason: Copy error for: "'
-            . $this->_testsDir . '/tmp/unittest" '
+            . $this->_testsBaseDir . '/tmp/unittest" '
             . 'copy(/root//unittest): failed to open stream: Permission denied';
         $msg[] = 'Rename failt for reason: rename(): Permission denied';
 
@@ -425,13 +437,13 @@ class Mumsys_FileSystem_DefaultTest
     public function testLink()
     {
         $actual1 = $this->_object->link(
-            $this->_testsDir . '/tmp', $this->_testdirs['dir'], 'soft', 'abs',
+            $this->_testsBaseDir . '/tmp', $this->_testdirs['dir'], 'soft', 'abs',
             false
         );
         $expected1 = $this->_testdirs['dir'];
         // is_link OK
         $actual2 = $this->_object->link(
-            $this->_testsDir . '/tmp', $this->_testdirs['dir'], 'soft', 'abs',
+            $this->_testsBaseDir . '/tmp', $this->_testdirs['dir'], 'soft', 'abs',
             false
         );
         @unlink( $this->_testdirs['dir'] );
@@ -440,23 +452,23 @@ class Mumsys_FileSystem_DefaultTest
         // with write perms)
         touch( $this->_testdirs['dir'] );
         $actual3 = $this->_object->link(
-            $this->_testdirs['dir'], $this->_testsDir . '/tmp/lnkname', 'hard',
+            $this->_testdirs['dir'], $this->_testsBaseDir . '/tmp/lnkname', 'hard',
             'abs', false
         );
-        $expected3 = $this->_testsDir . '/tmp/lnkname';
-        @unlink( $this->_testsDir . '/tmp/lnkname' );
+        $expected3 = $this->_testsBaseDir . '/tmp/lnkname';
+        @unlink( $this->_testsBaseDir . '/tmp/lnkname' );
         @unlink( $this->_testdirs['dir'] );
 
         // relative links
         $actual4 = $this->_object->link(
-            $this->_testsDir . '/tmp', $this->_testdirs['dir'], 'soft', 'rel',
+            $this->_testsBaseDir . '/tmp', $this->_testdirs['dir'], 'soft', 'rel',
             false
         );
         $expected4 = $this->_testdirs['dir'];
 
         // keep copy
         $actual5 = $this->_object->link(
-            $this->_testsDir . '/tmp', $this->_testdirs['dir'], 'soft', 'abs',
+            $this->_testsBaseDir . '/tmp', $this->_testdirs['dir'], 'soft', 'abs',
             true
         );
         $expected5 = $this->_testdirs['dir'] . '.lnk';
@@ -470,16 +482,16 @@ class Mumsys_FileSystem_DefaultTest
         // test realpath exception + last, catched exception
         unlink( $this->_testdirs['dir'] );
         $regex = '/(Linking failt for source: "'
-            . str_replace( '/', '\/', $this->_testsDir ) . '\/tmp"; target: "'
-            . str_replace( '/', '\/', $this->_testsDir )
+            . str_replace( '/', '\/', $this->_testsBaseDir ) . '\/tmp"; target: "'
+            . str_replace( '/', '\/', $this->_testsBaseDir )
             . '\/tmp\/unittest-mkdir\/mkdirs". '
             . 'Real path not found for "'
-            . str_replace( '/', '\/', $this->_testsDir )
+            . str_replace( '/', '\/', $this->_testsBaseDir )
             . '\/tmp\/unittest-mkdir")/';
         $this->expectingExceptionMessageRegex( $regex );
         $this->expectingException( 'Mumsys_FileSystem_Exception' );
         $this->_object->link(
-            $this->_testsDir . '/tmp', $this->_testdirs['dirs'], 'soft', 'rel',
+            $this->_testsBaseDir . '/tmp', $this->_testdirs['dirs'], 'soft', 'rel',
             false
         );
     }
@@ -493,15 +505,15 @@ class Mumsys_FileSystem_DefaultTest
         // invalid link type
         $regex = '/('
             . 'Linking failt for source: "'
-            . str_replace( '/', '\/', $this->_testsDir )
-            . '\/tmp"; target: "' . str_replace( '/', '\/', $this->_testsDir )
+            . str_replace( '/', '\/', $this->_testsBaseDir )
+            . '\/tmp"; target: "' . str_replace( '/', '\/', $this->_testsBaseDir )
             . '\/tmp\/unittest-mkdir"\. Invalid link type "invalidType" '
             . '\(Use soft\|hard\)'
             . ')/';
         $this->expectingExceptionMessageRegex( $regex );
         $this->expectingException( 'Mumsys_FileSystem_Exception' );
         $this->_object->link(
-            $this->_testsDir . '/tmp', $this->_testdirs['dir'], 'invalidType',
+            $this->_testsBaseDir . '/tmp', $this->_testdirs['dir'], 'invalidType',
             'rel', false
         );
     }
@@ -516,9 +528,13 @@ class Mumsys_FileSystem_DefaultTest
         $dir = $this->_testdirs['dir'];
         $this->_object->mkdir( $dir );
         touch( ( $file = $dir . '/toUnlink.test' ) );
+        $link = $file . '.lnk';
+        symlink( $file, $link );
 
         $this->assertingTrue( $this->_object->unlink( $dir ) ); // not a file
         $this->assertingTrue( $this->_object->unlink( $file ) );
+        $this->assertingTrue( $this->_object->unlink( $link ) );
+        $this->assertingFalse( is_link( $link ) );
 
         $phpbin = MumsysTestHelper::getBinary( 'bash' );
         $fileDifferentOwnership = trim( (string) $phpbin );
@@ -563,11 +579,14 @@ class Mumsys_FileSystem_DefaultTest
         $this->assertingTrue( file_exists( $dir ) );
         $this->assertingFalse( $this->_object->mkdir( $dir ) ); // exists error
 
+        $errBak = error_reporting();
+        error_reporting( 0 );
         $regex = '/(Can not create dir: "\/xyz" mode: "755". Message: '
             . 'mkdir\(\): Permission denied)/';
         $this->expectingExceptionMessageRegex( $regex );
         $this->expectingException( 'Mumsys_FileSystem_Exception' );
         $this->_object->mkdir( '/xyz' );
+        error_reporting( $errBak );
     }
 
 
@@ -660,8 +679,8 @@ class Mumsys_FileSystem_DefaultTest
         $expected3 = '../data/thatdir/';
 
         $actual4 = $this->_object->getRelativeDir(
-            $this->_testsDir . '/tmp/',
-            $this->_testsDir . '/tmp/unittest-mkdir/mkdirs/'
+            $this->_testsBaseDir . '/tmp/',
+            $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs/'
         );
         $expected4 = './unittest-mkdir/mkdirs/';
 

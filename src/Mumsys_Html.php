@@ -207,7 +207,6 @@ class Mumsys_Html
                         $attrib = -1;
                     }
                     break;
-                    break;
 
                 // replace spaces for now
                 case ' ':
@@ -248,7 +247,7 @@ class Mumsys_Html
             $partAttr = str_replace( '|||', ' ', $partAttr );
 
             $attrToCheck = explode( '="', $partAttr );
-            if ( $attrToCheck && count( $attrToCheck ) == 2 ) {
+            if ( count( $attrToCheck ) == 2 ) {
                 if ( in_array( $attrToCheck[0], self::$htmlTagsDefaultAllowed[$tag] )
                     || in_array( $attrToCheck[0], self::$attributesDefaultAllowed )
                 ) {
@@ -289,7 +288,7 @@ class Mumsys_Html
      */
     public static function strip( $htmlcode = '', $againstWhitelist = false )
     {
-        $htmlcode = Mumsys_Php::stripslashes( $htmlcode );
+        $htmlcode = stripslashes( $htmlcode );
 
         if ( $againstWhitelist ) {
             $keys = array_keys( self::$htmlTagsDefaultAllowed );
@@ -320,7 +319,7 @@ class Mumsys_Html
     {
         $htmlTags = self::$htmlTagsDefaultAllowed;
 
-        $str = Mumsys_Php::stripslashes( $htmlcode );
+        $str = stripslashes( $htmlcode );
 
         // Delete all spaces from html tags eg: < h1 >, <h1 > to be <h1>
         // Attibutes which can have also more whitespaces eg: <h1   class=...>
@@ -376,7 +375,7 @@ class Mumsys_Html
      * Re-format the html tag.
      *
      * @param string $tag String of the html tag
-     * @param string $stringAttributes String with attributes fot the tag
+     * @param string|false $stringAttributes String with attributes for the tag
      * @return string formated tag e.g.: <hr /> <img .. /> <li> ...
      */
     protected static function _formatTag( $tag, $stringAttributes = false )

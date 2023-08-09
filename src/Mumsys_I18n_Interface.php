@@ -31,9 +31,9 @@ interface Mumsys_I18n_Interface
     /**
      * Returns the plural index number to be used for the plural translation.
      *
-     * @param  integer $number Custom number to find the plural form
+     * @param  int|float $number Custom number to find the plural form
      *
-     * @return integer Number of the plural index
+     * @return int Number of the plural index
      */
     public function getPluralIndex( $number );
 

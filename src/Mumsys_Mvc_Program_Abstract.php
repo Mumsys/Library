@@ -24,10 +24,6 @@
  * Programs/Users/Index.php ->
  *      Mumsys_Program_User_Index_Controller extends Mumsys_Mvc_Program_Abstract
  * $view = $this->_getDisplay()
- *
- * @category    Mumsys
- * @package     Library
- * @subpackage  Mvc_Program
  */
 abstract class Mumsys_Mvc_Program_Abstract
     extends Mumsys_Abstract
@@ -51,7 +47,7 @@ abstract class Mumsys_Mvc_Program_Abstract
 
     /**
      * Config object.
-     * @var Mumsys_Config
+     * @var Mumsys_Config_Interface
      */
     protected $_config;
 
@@ -59,7 +55,7 @@ abstract class Mumsys_Mvc_Program_Abstract
     /**
      * Initializes the program object.
      *
-     * @param Mumsys_Context_Interface $context Context item
+     * @param Mumsys_Context $context Context item
      * @param Mumsys_Mvc_Program_Config $programConfig Program config object
      * containing all configuration values which may comes from setting.php
      */
@@ -82,10 +78,7 @@ abstract class Mumsys_Mvc_Program_Abstract
      * @param string $outputComplexity Complexity for the output e.g: default|
      * extended (includes more view helper which maybe useful or required)
      *
-     * @return Mumsys_Mvc_Display_Control_Interface|
-     * Mumsys_Mvc_Display_Control_Http_Interface|
-     * Mumsys_Mvc_Display_Control_Http_Default|
-     * Mumsys_Mvc_Display_Control_Stdout_Default
+     * @return Mumsys_Mvc_Display_Control_Interface|Mumsys_Mvc_Display_Control_Http_Interface
      */
     protected function _getDisplay( array $params = array(),
         $outputType = 'default', $outputComplexity = 'default' )

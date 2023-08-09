@@ -43,8 +43,8 @@ abstract class Mumsys_Service_Spss_Abstract
     /**
      * Initialise the object.
      *
-     * @param \SPSS\Sav\Reader|\SPSS\Sav\Writer $iface Reader|Writer interface
-     * to be used
+     * @param \SPSS\Sav\Reader|\SPSS\Sav\Writer|mixed $iface Reader|Writer
+     * interface to be used
      */
     public function __construct( $iface )
     {
@@ -62,7 +62,7 @@ abstract class Mumsys_Service_Spss_Abstract
     /**
      * Returns the Reader or Writer adapter/interface.
      *
-     * @return Reader|Writer interface based on construction
+     * @return \SPSS\Sav\Reader|\SPSS\Sav\Writer interface based on construction
      */
     public function getAdapter()
     {

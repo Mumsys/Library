@@ -7,11 +7,41 @@ class Mumsys_Logger_DefaultTest
     extends Mumsys_Unittest_Testcase
 {
     /**
-     * @var Mumsys_Logger
+     * @var Mumsys_Logger_Default
      */
-    protected $_object;
-    protected $_version;
-    protected $_versions;
+    private $_object;
+    /**
+     *
+     * @var Mumsys_File|Mumsys_Logger_Writer_Interface
+     */
+    private $_writer;
+
+    /**
+     * @var string
+     */
+    private $_testsDir;
+
+    /**
+     * @var string
+     */
+    private $_logfile;
+
+    /**
+     * Logger options
+     * @var array
+     */
+    private $_opts;
+
+    /**
+     * Version string.
+     * @var string
+     */
+    private $_version;
+
+    /**
+     * @var array
+     */
+    private $_versions;
 
 
     /**
@@ -49,7 +79,6 @@ class Mumsys_Logger_DefaultTest
      */
     protected function tearDown(): void
     {
-        $this->_object = $this->_writer = null;
         unset( $this->_object, $this->_writer );
     }
 
@@ -88,8 +117,8 @@ class Mumsys_Logger_DefaultTest
         $object = new Mumsys_Logger_Default( $opts, $this->_writer );
 
         unset(
-            $opts['username'], $_SERVER['REMOTE_USER'],
-            $_SERVER['PHP_AUTH_USER'], $_SERVER['USER'], $_SERVER['LOGNAME']
+            $_SERVER['REMOTE_USER'], $_SERVER['PHP_AUTH_USER'],
+            $_SERVER['USER'], $_SERVER['LOGNAME']
         );
         $object = new Mumsys_Logger_Default( $opts, $this->_writer );
 

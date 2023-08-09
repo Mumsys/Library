@@ -64,7 +64,7 @@ abstract class Mumsys_Mvc_Router_Abstract
      * Default action key name for retrieving the "action" parameter
      * @var string
      */
-    protected $_actionKey = 'action';
+    protected $_actionNameKey = 'action';
 
     /**
      * Request interface
@@ -84,7 +84,7 @@ abstract class Mumsys_Mvc_Router_Abstract
      * Initialise the router object.
      *
      * @param string $route Route to set. @see setRoute()
-     * @param Mumsys_Request_Interface Request interface
+     * @param Mumsys_Request_Interface $request Request interface
      * @param array $options Optional initial options e.g.: 'programKey',
      * 'controllerKey', 'actionKey' mappings to initialize the object
      */
@@ -269,7 +269,7 @@ abstract class Mumsys_Mvc_Router_Abstract
      * Sets/ replaces the controller key name
      *
      * @param string $key Key name of the controller
-     * @return Zend_Controller_Request_Abstract
+     * @return self
      */
     public function setControllerKey( $key = 'controller' )
     {

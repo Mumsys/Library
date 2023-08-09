@@ -10,6 +10,142 @@
 
 # Changes
 
+2023-08
+
+General fixes:
++ Improves CS, SCA which came up with some tests, e.g:
+  Context, Array2Xml, 
+
+Dependencies:
++ Updates/ Set dependency 
+    - `phpstan` to version: ^1.10
+      ./runStaticCodeAnalysis.sh --level=4 ../src/ ./src # => 0 issues
+      ./runStaticCodeAnalysis.sh --level=8 ../src/ ./src # => 1.7k issues
+      ./runStaticCodeAnalysis.sh --level=8 ../src/ # => 698 issues
+    - phpunit/phpunit (9.5.16 => 9.6.10)
+    - phing/phing (2.17.2 => 2.17.4)
+    - phpmailer/phpmailer (v6.6.0 => v6.8.0)
+    - phpunit/php-code-coverage (9.2.14 => 9.2.27)
+    - squizlabs/php_codesniffer (3.6.2 => 3.7.2)
+
++ Mumsys_Service_Spss*
+    - Relocates testfiles/Service => testfiles/Domain/Service
+    - Updates tests
+
++ Mumsys_Service_Ssh*
+    - Relocates testfiles/Service => testfiles/Domain/Service
+    - Updates tests
+
++ Mumsys_GetOpts
+    - Fixes SCA (Static Code Analyis) (phpstan level=8; src/! not for tests!)
+    - Fixes CS
+
++ Mumsys_Parser_*
+    - Fixes parse() methode in error handling.
+        - Adds second parameter `parse($logline, bool $stayStrict = true)` for
+          beeing/ stay more strict (prev. and default behavior now: throw
+          exception on regex error OR if no match found
+    - Moves complete base functions to abstract class
+    - Adds new classes:
+        - `Mumsys_Parser_Abstract` Base implementation now
+        - `Mumsys_Parser_Default`: With default patters as feature/ offer you may like
+          Each variant/ flavour now only contains configs for that flavour.
+          E.g. Logline has common configs dealing with a line of a webserver or
+          simular log files (syslog, nginx...).
+        - `Mumsys_Parser_Logline`: VERSION 2.0.0
+          Fixes also type hints so some usage may not work anymore.
+    - Each variant/adapter: `Logline`, `Default` can be still used for own behavior
+      when adding format and patterns from your side on construction.
+    - Adds and updates tests/ code coverage: 100%
+    - Fixes SCA (Static Code Analyis) (phpstan level=8; src/! not for tests!)
+    - Fixes CS
+
+
+
+2023-07
+
++ Mumsys_GetOpts
+    - VERSION 4.0.0
+    - Re-implementation of the parser and sub handling (currently beta for
+      version: 4.0.0 as introduction)
+    - Fixes all todo tags like:
+        - global and action params now handled
+        - `--no-[arg]` in-validates positiv defaults in shell args
+        - flags are now always bool true for 'is set', false for 'not set'
+          `getResult()` will give answer.
+        - actions do not require options anymore: `run.php action1 action2` works now
+        - options in shell like `run.php --file=/location/to/file` now possible
+        - detection of required values are improved! required: only if given.
+        - Improved handling in options of descriptions for arguments. With
+          but's, but improved. See tests for posibilities. Check `getHelp()` or
+          `getHelpLong()`
+        - Mixed args of the same name are possible now if different to different
+          actions. E.g: `run.php action1 --help action2 --help`. Also with
+          globals args: Fifo. Fist comes, first seves (there where set: that
+          action or the global takes acount).
+          `run.php --help action1 --help` will output global --help (if a global
+          help was set in options)
+    - Fixes issue in construction. argv are forced to be set only if input is
+      `null` (default now)
+    - Wont fix: options having e.g: `'-1'` ... `'-[-](int)'` keys or values.
+      php parser always tries to convert them to `int`.
+      Use aliases if you need things like this. E.g: --one, --two or '+' sign
+      which is not converted to `int`
+    - One config/ options list of key/value pairs per instance can be set.
+        - Make private:
+          `verfiyOptions() => _verfiyOptions()`
+          `setMappingOptions() => _setMappingOptions()`
+          Per instance only!
+    - Updates, renew tests also for documentation for other issues
+    - Fixes SCA (Static Code Analyis) level=6 src/! not for tests!
+    - Fixes CS
+    - Tests status: 100%
+    - Todo: Simplify the code. still some mess.
+
++ Set dependency `phpstan` to fixed version: 0.12.83
+    - Fixed some issues regarding previous version
+
+
+
+2023-01
+
++ Mumsys_FileSystem_Default
+    - Fixes usage in `unlink()` for symlinks
+    - Updates tests
+
+
+
+2022-03-03
+
+PHP 8.1 (and 8.0 update) branch
+
+    Important changes to know about:
+
+    + Mumsys_Fileystem_Default
+      mkdir():
+      May have a different behavior depending on error_reporting() level
+      Test are updated. Maybe an invalid usage on you side? Otherwise file a bug.
+
++ Updates phing config
++ Updates composer config
+    - Enables php8.1
+    - Updates dependencies
++ Fixes SCA (Static Code Analyis) for implementation and tests (level=4)
+  Which told everthing to upgrade :-)
+   - Fixes subparts of implementation/ stucture faults
+   - Fixes type annotations
+   - Fixes tests
+   - Updates sca config
+        - Init local config
+        - disables some classes which are out of date, depricated or still in
+          real development mode
++ Fixes CS
++ Fixes PHPdoc
++ Makes git submudules (misc) branch independent (submodule bindings counting
+  from now on, other branches needs to be updated)
+
+
+
 2021-07
 
     + Fixes validateRegex() e.g when nummeric values end in a TypeError

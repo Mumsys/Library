@@ -35,13 +35,15 @@ class Mumsys_Logger_Decorator_None
     /**
      * Initialize the decorator messages logger object
      *
-     * @param Mumsys_Logger_Interface Logger object to be decorated
+     * @param Mumsys_Logger_Interface $logger Logger object to be decorated
      * @param array $options List of options to be set on construction; Optional
      */
-    public function __construct( Mumsys_Logger_Interface $object,
+    public function __construct( Mumsys_Logger_Interface $logger,
         array $options = array() )
     {
-        parent::__construct( $object );
+        unset( $options ); // currently unused here
+
+        parent::__construct( $logger );
     }
 
 

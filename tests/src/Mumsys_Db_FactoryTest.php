@@ -7,14 +7,19 @@ class Mumsys_Db_FactoryTest
     extends Mumsys_Unittest_Testcase
 {
     /**
-     * @var Mumsys_Db
+     * @var Mumsys_Db_Factory
      */
-    protected $_object;
+    private $_object;
 
     /**
      * @var Mumsys_Context
      */
-    protected $_context;
+    private $_context;
+
+    /**
+     * @var array
+     */
+    private $_configs;
 
 
     /**
@@ -27,7 +32,7 @@ class Mumsys_Db_FactoryTest
         $this->_configs = MumsysTestHelper::getConfigs();
         $this->_configs['database']['type'] = 'mysql:mysqli';
 
-        $this->_object = new Mumsys_Db_Factory( $this->_context, $this->_configs['database'] );
+        $this->_object = new Mumsys_Db_Factory;
     }
 
 
@@ -37,7 +42,7 @@ class Mumsys_Db_FactoryTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

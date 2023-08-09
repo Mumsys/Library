@@ -26,7 +26,7 @@ class Mumsys_Weather_Item_Unit_TemperatureTest
     /**
      * @var Mumsys_Weather_Item_Unit_Temperature
      */
-    protected $_object;
+    private $_object;
 
 
     /**
@@ -46,7 +46,7 @@ class Mumsys_Weather_Item_Unit_TemperatureTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

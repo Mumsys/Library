@@ -645,7 +645,7 @@ class Mumsys_Db_Driver_Mysql_Mysqli
 
         // hangling mysql_query() bug when using
         // "DESCRIBE table NotExistingField" which returns empty array*/
-        if ( $field && $i == 0 && empty( $data ) ) {
+        if ( $field && $i == 0 && $data === array() ) {
             $msg = sprintf(
                 'Error getting columns. Does the columne "%1$s" exists?',
                 $field
@@ -1202,7 +1202,7 @@ class Mumsys_Db_Driver_Mysql_Mysqli
             case '=':
             case '==':
                 $stmt = '`' . $key . '`' . $operator . '';
-                if ( $valIsInt ) {
+                if ( isset( $valIsInt ) && $valIsInt === true ) {
                     $stmt .= $value;
                 } else {
                     $stmt .= '\'' . $value . '\'';

@@ -26,7 +26,6 @@ class Mumsys_Variable_AbstractTest
     protected function setUp(): void
     {
         $this->_version = '1.2.2';
-        $this->_object = null;
     }
 
 
@@ -36,7 +35,7 @@ class Mumsys_Variable_AbstractTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

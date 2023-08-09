@@ -9,8 +9,8 @@
  * @author Florian Blasel <flobee.code@gmail.com>
  *
  * @category    Mumsys
- * @package     Mumsys_Library
- * @subpackage  Mumsys_Mvc
+ * @package     Library
+ * @subpackage  Mvc
  * @version     1.0.0
  * Created: 2016-01-30
  */
@@ -22,10 +22,6 @@
  * Last instance to output data to the frontend.
  * Mumsys_Mvc_Display_Control_Abstract is the base for all views. Basicly it
  * collects, applys, shows or returns given content.
- *
- * @category    Mumsys
- * @package     Mumsys_Library
- * @subpackage  Mumsys_Mvc
  */
 abstract class Mumsys_Mvc_Display_Helper_Url
 {
@@ -36,7 +32,7 @@ abstract class Mumsys_Mvc_Display_Helper_Url
 
     /**
      * Mumsys_Context object.
-     * @var Mumsys_Context
+     * @var Mumsys_Context_Interface
      */
     private $_context;
 
@@ -44,16 +40,17 @@ abstract class Mumsys_Mvc_Display_Helper_Url
      * Misc options
      * @var array
      */
-    private $_options;
+    private $_options; // @phpstan-ignore-line
 
 
     /**
-     * Initialaze the ulr helper.
+     * Initialaze the url helper.
      *
-     * @param Mumsys_Context $context Context item
+     * @param Mumsys_Context_Interface $context Context item
      * @param array $options Optional options
      */
-    public function __construct( Mumsys_Context $context, array $options = array() )
+    public function __construct( Mumsys_Context_Interface $context,
+        array $options = array() )
     {
         $this->_context = $context;
         $this->_options = $options;
@@ -92,7 +89,6 @@ abstract class Mumsys_Mvc_Display_Helper_Url
             default:
                 throw new Mumsys_Mvc_Router_Exception( 'Invalid parameters given to url()' );
         }
-
         $result = $this->_urlFormat( $result, $config );
     }
 

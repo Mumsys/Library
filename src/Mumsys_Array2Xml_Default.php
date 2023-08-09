@@ -533,16 +533,9 @@ class Mumsys_Array2Xml_Default
         $php_errormsg = null;
         $encFrom = $this->_cfg['charset_from'];
         $encTo = $this->_cfg['charset_to'];
-        $value = iconv( $encFrom, $encTo, $value );
 
-        if ( $value === false ) {
-            // see iconv docs for this variable!
-            if ( isset( $php_errormsg ) ) {
-                $errormsg = 'Error: ' . $php_errormsg;
-            } else {
-                $errormsg = 'undefined iconv error, turn on "track_errors" '
-                    . 'in php.ini to get more details';
-            }
+        if ( ( $value = iconv( $encFrom, $encTo, $value ) ) === false ) {
+            $errormsg = 'iconv error, turn on "track_errors" to get more details';
             $this->_error[] = $errormsg;
         }
 
@@ -579,7 +572,7 @@ class Mumsys_Array2Xml_Default
     /**
      * Free/ empty all generated data and errors.
      *
-     * @return string Returns the generated xml string
+     * @return void
      */
     public function free()
     {

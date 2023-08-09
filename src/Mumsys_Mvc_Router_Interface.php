@@ -27,7 +27,7 @@ interface Mumsys_Mvc_Router_Interface
     /**
      * Initialise the router object.
      *
-     * @param Mumsys_Request_Interface Request interface
+     * @param Mumsys_Request_Interface $request Request interface
      * @param array $options Optional initial options e.g.: 'programKey',
      * 'controllerKey', 'actionKey' mappings to initialize the object
      */
@@ -115,7 +115,7 @@ interface Mumsys_Mvc_Router_Interface
      * Sets/ replaces the controller key name
      *
      * @param string $key Key name of the controller
-     * @return Zend_Controller_Request_Abstract
+     * @return self
      */
     public function setControllerKey( $key = 'controller' );
 

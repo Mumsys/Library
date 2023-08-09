@@ -3,6 +3,8 @@
 /**
  * Constants Test
  * Test for required constants in mumsys
+ *
+ * @see also tests/testconstants.php 4 phpstan
  */
 class Mumsys_ConstantsTest
     extends Mumsys_Unittest_Testcase

@@ -57,7 +57,7 @@ class Mumsys_Variable_Item_DefaultTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 
@@ -108,7 +108,6 @@ class Mumsys_Variable_Item_DefaultTest
      */
     public function testGetSetType()
     {
-        $this->assertingNull( $this->_object->setType( $this->_object->getType() ) );
         $this->_object->setType( 'integer' );
         $this->assertingEquals( 'integer', $this->_object->getType() );
 
@@ -213,8 +212,7 @@ class Mumsys_Variable_Item_DefaultTest
         $this->_object->setLabel( 'some label' );
         $this->assertingEquals( 'some label', $this->_object->getLabel() );
         // same again
-        $x = $this->_object->setLabel( 'some label' );
-        $this->assertingNull( $x );
+        $this->_object->setLabel( 'some label' );
         $this->assertingEquals( 'some label', $this->_object->getLabel() );
 
         // initially no name, no lable

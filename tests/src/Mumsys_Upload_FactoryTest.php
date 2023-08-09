@@ -33,7 +33,7 @@ class Mumsys_Upload_FactoryTest
     /**
      * @var Mumsys_Upload_Factory
      */
-    protected $_object;
+    private $_object;
 
 
     /**
@@ -52,7 +52,7 @@ class Mumsys_Upload_FactoryTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

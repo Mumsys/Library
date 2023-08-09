@@ -38,6 +38,16 @@ class Mumsys_DateTime_FormatterTest
      */
     private $_locale;
 
+    /**
+     * @var string
+     */
+    private $_version;
+
+    /**
+     * @var array
+     */
+    private $_versions;
+
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -142,8 +152,10 @@ class Mumsys_DateTime_FormatterTest
 
         foreach ( $this->_versions as $must => $value ) {
             $this->assertingTrue( isset( $possible[$must] ) );
-            $this->assertingTrue( ( $possible[$must] == $value ) );
+            $this->assertingTrue( ( $possible[$must] === $value ) );
         }
+
+        $this->assertingTrue( $this->_version === $this->_object->getVersionID() );
     }
 
 }

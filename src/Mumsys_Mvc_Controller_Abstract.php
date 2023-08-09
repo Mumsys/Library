@@ -89,7 +89,7 @@ abstract class Mumsys_Mvc_Controller_Abstract
         $this->_programName = preg_replace( '/ +/i', '_', ucwords( $program ) );
         $this->_controllerName = $controller;
 
-        if ( !$this->checkControllerLocation( $newProgram, $newCntrl ) ) {
+        if ( !$this->checkControllerLocation( $program, $controller ) ) {
             $this->_programName = $this->_configs['defaultProgram'];
             $this->_controllerName = $this->_configs['defaultController'];
         }

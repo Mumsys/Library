@@ -7,9 +7,24 @@ class Mumsys_Context_ItemTest
     extends Mumsys_Unittest_Testcase
 {
     /**
-     * @var Mumsys_Context
+     * @var Mumsys_Context_Item
      */
-    protected $_object;
+    private $_object;
+
+    /**
+     * @var string
+     */
+    private $_version;
+
+    /**
+     * @var array
+     */
+    private $_versions;
+
+    /**
+     * @var string
+     */
+    private $_logfile;
 
 
     /**
@@ -114,33 +129,33 @@ class Mumsys_Context_ItemTest
     }
 
 
-    /**
+    /** registerControllerFrontend???
+     *
      * @covers Mumsys_Context_Item::getDisplay
-     * @covers Mumsys_Context_Item::registerDisplay
+     * @ co vers Mumsys_Context_Item::registerDisplay
      * @covers Mumsys_Context_Item::replaceDisplay
      * @covers Mumsys_Context_Item::_replace
      */
-//    public function testGetSetDisplay()
-//    {
-//        $display1 = new Mumsys_Mvc_Templates_Text_Default($this->_object);
-//        $this->_object->registerDisplay($display1);
-//        $actual1 = $this->_object->getDisplay();
+    public function testGetSetDisplay()
+    {
+        $displayA = new Mumsys_Mvc_Templates_Text_Default( $this->_object );
+        $this->_object->replaceDisplay( $displayA );
+        $actualA = $this->_object->getDisplay();
+
+        $factory = new Mumsys_Mvc_Display_Factory( $this->_object );
+        $displayB = $factory->load( array(), 'Text', 'Default' );
+        $this->_object->replaceDisplay( $displayB );
+        $actualB = $this->_object->getDisplay();
+
+        $this->assertingInstanceOf( 'Mumsys_Mvc_Templates_Text_Default', $actualA );
+        $this->assertingInstanceOf( 'Mumsys_Mvc_Display_Control_Abstract', $actualA );
+        $this->assertingInstanceOf( 'Mumsys_Mvc_Templates_Text_Default', $actualB );
+        $this->assertingInstanceOf( 'Mumsys_Mvc_Display_Control_Abstract', $actualB );
 //
-//        $factory = new Mumsys_Mvc_Display_Factory($this->_object);
-//        $display2 = $factory->load(array(), 'Text', 'Default');
-//        $this->_object->replaceDisplay($display2);
-//        $actual2 = $this->_object->getDisplay();
-//
-//        $this->assertingInstanceOf('Mumsys_Mvc_Templates_Text_Default', $actual1);
-//        $this->assertingInstanceOf('Mumsys_Mvc_Display_Control_Abstract', $actual1);
-//        $this->assertingInstanceOf('Mumsys_Mvc_Templates_Text_Default', $actual2);
-//        $this->assertingInstanceOf('Mumsys_Mvc_Display_Control_Abstract', $actual2);
-//
-//
-//        $this->expectingExceptionMessageRegex('/("Mumsys_Mvc_Display_Control_Interface" already set)/i');
-//        $this->expectingException('/("Mumsys_Mvc_Display_Control_Interface" already set)/i');
-//        $this->_object->registerDisplay($display2);
-//    }
+//        $this->expectingException( 'Mumsys_Context_Exception' );
+//        $this->expectingExceptionMessageRegex( '/("Mumsys_Mvc_Display_Control_Interface" already set)/i' );
+//        $this->_object->registerDisplay( $displayB );
+    }
 
 
     /**
@@ -250,29 +265,56 @@ class Mumsys_Context_ItemTest
 
 
     /**
-     * Test abstract class
-     *
-     * @covers Mumsys_Context_Item::getVersion
-     * @covers Mumsys_Context_Item::getVersionID
-     * @covers Mumsys_Context_Item::getVersions
+     * @covers Mumsys_Context_Item::__clone
+     * @covers Mumsys_Context_Item::__destruct
      */
-    public function testGetVersion()
+    public function test__clone()
     {
-        $message = 'A new version exists. You should have a look at '
-            . 'the code coverage to verify all code was tested and not only '
-            . 'all existing tests where checked!';
-        $this->assertingEquals( $this->_version, Mumsys_Config_File::VERSION, $message );
+        $object = new Mumsys_Request_Console();
+        $this->_object->registerRequest( $object ); //4CC
+        $this->_object->replaceRequest( $object ); //4CC
 
-        $this->assertingEquals( 'Mumsys_Context_Item ' . $this->_version, $this->_object->getVersion() );
-        $this->assertingEquals( $this->_version, $this->_object->getVersionID() );
+        $cloneA = clone $this->_object;
 
-        $possible = $this->_object->getVersions();
-
-        foreach ( $this->_versions as $must => $value ) {
-            $message = 'Invalid: ' . $must . '::' . $value;
-            $this->assertingTrue( isset( $possible[$must] ), $message );
-            $this->assertingTrue( ( $possible[$must] == $value ), $message );
-        }
+        $this->assertingInstanceOf( 'Mumsys_Request_Interface', $this->_object->getRequest() );
+        $this->assertingFalse( $this->_object === $cloneA );
     }
+
+
+    /**
+     * Version checks
+     */
+    public function testVersions()
+    {
+        $this->assertingEquals( $this->_version, $this->_object::VERSION );
+        $this->checkVersionList( $this->_object->getVersions(), $this->_versions );
+    }
+
+//
+//    /** Old?
+//     * Test Versions
+//     *
+//     * @covers Mumsys_Context_Item::getVersion
+//     * @covers Mumsys_Context_Item::getVersionID
+//     * @covers Mumsys_Context_Item::getVersions
+//     */
+//    public function testGetVersion()
+//    {
+//        $message = 'A new version exists. You should have a look at '
+//            . 'the code coverage to verify all code was tested and not only '
+//            . 'all existing tests where checked!';
+//        $this->assertingEquals( $this->_version, Mumsys_Config_File::VERSION, $message );
+//
+//        $this->assertingEquals( 'Mumsys_Context_Item ' . $this->_version, $this->_object->getVersion() );
+//        $this->assertingEquals( $this->_version, $this->_object->getVersionID() );
+//
+//        $possible = $this->_object->getVersions();
+//
+//        foreach ( $this->_versions as $must => $value ) {
+//            $message = 'Invalid: ' . $must . '::' . $value;
+//            $this->assertingTrue( isset( $possible[$must] ), $message );
+//            $this->assertingTrue( ( $possible[$must] == $value ), $message );
+//        }
+//    }
 
 }

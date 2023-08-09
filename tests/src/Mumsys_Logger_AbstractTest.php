@@ -9,12 +9,23 @@ class Mumsys_Logger_AbstractTest
     /**
      * @var Mumsys_Logger_File
      */
-    protected $_object;
+    private $_object;
 
     /**
      * @var string
      */
-    protected $_testsDir;
+    private $_testsDir;
+
+    /**
+     * @var string
+     */
+    private $_logfile;
+
+    /**
+     * Logger options
+     * @var array
+     */
+    private $_opts;
 
     /**
      * Version string.
@@ -52,7 +63,7 @@ class Mumsys_Logger_AbstractTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 
@@ -96,8 +107,8 @@ class Mumsys_Logger_AbstractTest
         $object = new Mumsys_Logger_File( $opts );
 
         unset(
-            $opts['username'], $_SERVER['REMOTE_USER'],
-            $_SERVER['PHP_AUTH_USER'], $_SERVER['USER'], $_SERVER['LOGNAME']
+            $_SERVER['REMOTE_USER'], $_SERVER['PHP_AUTH_USER'],
+            $_SERVER['USER'], $_SERVER['LOGNAME']
         );
         $object = new Mumsys_Logger_File( $opts );
 

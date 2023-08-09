@@ -28,27 +28,27 @@ class Mumsys_Mvc_Display_Exception
     extends Mumsys_Mvc_Exception
 {
     /**
-     * @var constant Technical error. General error code if no other code is possible.
+     * Technical error. General error code if no other code is possible.
      */
     const ERRCODE_DEFAULT = 1;
 
     /**
-     * @var constant HTTP 401 error code
+     * HTTP 401 error code
      */
     const ERRCODE_HTTP401 = 401;
 
     /**
-     * @var constant HTTP 403 error code
+     * HTTP 403 error code
      */
     const ERRCODE_HTTP403 = 403;
 
     /**
-     * @var constant HTTP 500 error code, server error
+     * HTTP 500 error code, server error
      */
     const ERRCODE_HTTP500 = 500;
 
     /**
-     * @var constant HTTP 503 error code
+     * HTTP 503 error code
      */
     const ERRCODE_HTTP503 = 503;
 

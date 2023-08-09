@@ -44,10 +44,11 @@ class Mumsys_FileSystem_Default
     /**
      * Initialise the object.
      *
-     * @param array $args Not implemented yet.
+     * @param array $options Not implemented yet.
      */
-    public function __construct( array $args = array() )
+    public function __construct( array $options = array() )
     {
+        unset( $options ); // currently unused here
         $this->_dirInfo = array();
     }
 
@@ -144,7 +145,7 @@ class Mumsys_FileSystem_Default
      * @param string $fileOrPath Location of the file including the filename or
      * the path (if it is a directory) or the path of a file but then the
      * filename will be required as second parameter.
-     * @param string $filename Name of the file without the path
+     * @param string|false $filename Name of the file without the path
      *
      * @return array Returns an array containing the "filename", "path" and
      * "file" as the hole location of the file or directory.
@@ -243,24 +244,24 @@ class Mumsys_FileSystem_Default
      *
      * @throws Exception Throws exception if file, link or directory not exists.
      */
-    public function getFileDetailsExtended( $file, $filename = false )
+    public function getFileDetailsExtended( $fileOrPath, $filename = false )
     {
-        $prepared = $this->_getFileDetailsPrepare( $file, $filename );
+        $prepared = $this->_getFileDetailsPrepare( $fileOrPath, $filename );
         $path = $prepared['path'];
         $filename = $prepared['filename'];
-        $file = $prepared['file'];
+        $fileOrPath = $prepared['file'];
         $info = array();
         if ( $stat = @lstat( $path . '/' . $filename ) ) {
             $info = array(
                 'file' => $prepared['file'],
-                'type' => filetype( $file ),
+                'type' => filetype( $fileOrPath ),
                 'name' => $filename,
                 'size' => $stat['size'],
-                'is_file' => @is_file( $file ),
-                'is_dir' => @is_dir( $file ),
-                'is_link' => @is_link( $file ),
-                'is_readable' => @is_readable( $file ),
-                'is_writable' => @is_writable( $file ),
+                'is_file' => @is_file( $fileOrPath ),
+                'is_dir' => @is_dir( $fileOrPath ),
+                'is_link' => @is_link( $fileOrPath ),
+                'is_readable' => @is_readable( $fileOrPath ),
+                'is_writable' => @is_writable( $fileOrPath ),
                 'path' => $path,
                 'permission' => $stat['mode'],
                 'owner' => $stat['uid'],
@@ -268,7 +269,7 @@ class Mumsys_FileSystem_Default
                 'mtime' => $stat['mtime'],
                 'atime' => $stat['atime'],
                 'ctime' => $stat['ctime'],
-                'filetype' => $this->getFileType( $file ), // unix 'file ./file.ext'/mimetype?
+                'filetype' => $this->getFileType( $fileOrPath ), // unix 'file ./file.ext'/mimetype?
             );
             if ( $info['type'] == 'dir' ) {
                 $info['is_executable'] = true;
@@ -281,7 +282,7 @@ class Mumsys_FileSystem_Default
                 }
             }
             if ( $info['is_link'] ) {
-                $info['target'] = @readlink( $file );
+                $info['target'] = @readlink( $fileOrPath );
             }
 
             if ( function_exists( 'posix_getpwuid' ) ) {
@@ -522,22 +523,19 @@ class Mumsys_FileSystem_Default
     /**
      * Removes/ unlinks a file.
      *
-     * @todo What about symlinks ?
-     *
      * @param string $file Location to the file to be deleted
-     * @param $context Stream context
      *
-     * @return boolean TRUE on success.
+     * @return bool TRUE on success.
      *
      * @throws Mumsys_FileSystem_Exception
      */
-    public function unlink( $file, $context = null )
+    public function unlink( $file )
     {
-        if ( !is_file( $file ) ) {
+        if ( !is_file( $file ) && !is_link( $file ) ) {
             return true;
         }
 
-        if ( @unlink( $file ) === false ) {
+        if ( unlink( $file ) === false ) {
             $message = sprintf( 'Can not delete file "%1$s"', $file );
             throw new Mumsys_FileSystem_Exception( $message );
         }
@@ -550,15 +548,14 @@ class Mumsys_FileSystem_Default
      * Alias methode for unlink().
      *
      * @param string $file Location to the file to be deleted
-     * @param $context Stream context
      *
      * @return boolean TRUE on success.
      *
      * @throws Mumsys_FileSystem_Exception
      */
-    public function rmFile( $file, $context = null )
+    public function rmFile( $file )
     {
-        return $this->unlink( $file, $context );
+        return $this->unlink( $file );
     }
 
 
@@ -566,24 +563,24 @@ class Mumsys_FileSystem_Default
      * Creates a directory if not exists.
      *
      * @param string $dir Directory to be created
-     * @param octal $perm Permission mode of directory to be chmod eg.: 755
+     * @param int $perm Octal permission mode of directory to be chmod eg.: 755
      *
      * @return boolean True on success or false if directory exists.
      * @throws Mumsys_FileSystem_Exception Throws exception on any other error
      */
     public function mkdir( $dir, $perm = 0755 )
     {
-        try {
-            $result = mkdir( $dir, $perm );
+        if ( is_dir( $dir . DIRECTORY_SEPARATOR ) ) {
+            return false;
         }
-        catch ( Exception $e )
-        {
-            if ( is_dir( $dir . DIRECTORY_SEPARATOR ) ) {
-                return false;
-            }
 
+        if ( ( $result = mkdir( $dir, $perm ) ) === false ) {
+            $mesg = 'Unknown';
+            if ( ( $err = error_get_last() ) ) {
+                $mesg = $err['message'];
+            }
             $message = 'Can not create dir: "' . $dir . '" mode: "'
-                . decoct( $perm ) . '". Message: ' . $e->getMessage();
+                . decoct( $perm ) . '". Message: ' . $mesg;
             throw new Mumsys_FileSystem_Exception( $message );
         }
 
@@ -648,13 +645,12 @@ class Mumsys_FileSystem_Default
      *
      * @todo What about symlinks ?
      *
-     * @param string $basePath Path to be deleted
+     * @param string $path Path to be deleted
      *
      * @return boolean TRUE on success.
-     *
      * @throws Mumsys_FileSystem_Exception
      */
-    public function rmdir( $path, $context = null )
+    public function rmdir( $path )
     {
         if ( !is_dir( $path ) ) {
             return true;
@@ -721,8 +717,6 @@ class Mumsys_FileSystem_Default
      * @param string $to Path location to
      *
      * @return string Returns the relative path
-     *
-     * @throws Throws exception on error.
      */
     public function getRelativeDir( $from, $to )
     {

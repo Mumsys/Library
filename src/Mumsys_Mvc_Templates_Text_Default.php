@@ -89,7 +89,7 @@ class Mumsys_Mvc_Templates_Text_Default
     /**
      * html header and footer in return to display. called in display controller.
      *
-     * @param $extras arrray
+     * @param string $extras
      */
     public function getSiteHeader( $extras = '' )
     {
@@ -117,18 +117,18 @@ class Mumsys_Mvc_Templates_Text_Default
     /**
      * Send no access/ no permission information to output.
      *
-     * @throws Mumsys_Display_Exception Throws exception for controlled script
+     * @throws Mumsys_Mvc_Display_Exception Throws exception for controlled script
      * end or to have detailed informations (eg: debug mode)
      */
     public function noAccess()
     {
-        $l = $this->_context->getTranslation();
-        $noAccess = $l->t( '_CMS_NOACCESS' );
-        $this->title( $noAccess, $l->_t( _CMS_NOPERMISSION_INFO ) );
+        $i18n = $this->_context->getTranslation();
+        $headline = $i18n->_t( 'No access' );
+        $this->title( $headline, $i18n->_t( '_CMS_NOPERMISSION_INFO' ) ); // @phpstan-ignore-line
         $this->show();
 
-        $code = Mumsys_Mvc_Display_Exception::ERROR_HTTP401;
-        throw new Mumsys_Mvc_Display_Exception( $noAccess, $code );
+        $code = Mumsys_Mvc_Display_Exception::ERRCODE_HTTP401;
+        throw new Mumsys_Mvc_Display_Exception( $headline, $code );
     }
 
 
@@ -138,8 +138,8 @@ class Mumsys_Mvc_Templates_Text_Default
      * @param string|array $msg Message/s to output
      * @param string $line Line of the error
      * @param string $file File of the error
-     * @param string $func Name of the function of the error
-     * @param string $class Name of the class of the error
+     * @param string|false $func Name of the function of the error
+     * @param string|false $class Name of the class of the error
      */
     public function mkError( $msg, $line = null, $file = null, $func = false,
         $class = false )
@@ -179,7 +179,7 @@ class Mumsys_Mvc_Templates_Text_Default
 
         $retour .= _NL;
 
-        $this->setTitleBlock( $l->_t( '_CMS_ERROR' ), $retour );
+        $this->setTitleBlock( $l->_t( '_CMS_ERROR' ), $retour ); // @phpstan-ignore-line
     }
 
 }

@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types = 1);
 
 /**
  * Mumsys_Multirename
@@ -23,12 +23,12 @@ class Mumsys_MultirenameTest
     /**
      * @var Mumsys_Multirename
      */
-    protected $_object;
+    private $_object;
 
     /**
      * @var Mumsys_Logger_Decorator_Interface
      */
-    protected $_logger;
+    private $_logger;
 
     /**
      * Logfile location
@@ -39,24 +39,28 @@ class Mumsys_MultirenameTest
     /**
      * @var Mumsys_FileSystem
      */
-    protected $_oFiles;
-    protected $_version;
-    protected $_versions;
-    protected $_testFiles = array();
+    private $_oFiles;
+    private $_version;
+    private $_versions;
+    private $_testFiles = array();
 
     /**
      * root path for tests
      * @var string
      */
-    protected $_testsDir;
+    private $_testsDir;
 
     /**
      * list of tmp dir created by tests an to delete right after
      * @var array
      */
-    protected $_testDirs = array();
-    protected $_config;
-    protected $_oldHome;
+    private $_testDirs = array();
+
+    /**
+     * @var array<mixed,mixed>
+     */
+    private $_config;
+    private $_oldHome;
 
 
     /**
@@ -778,11 +782,14 @@ class Mumsys_MultirenameTest
         $this->assertingTrue( file_exists( $this->_config['path'] ) );
 
         $_SERVER['HOME'] = '/root/';
+        $errBak = error_reporting();
+        error_reporting( 0 );
         $this->_object = new Mumsys_Multirename( $this->_config, $this->_oFiles, $this->_logger );
         $regex = '/(Can not create dir: "\/root\/.multirename" mode: "755". Message: mkdir\(\): Permission denied)/';
         $this->expectingExceptionMessageRegex( $regex );
         $this->expectingException( 'Mumsys_FileSystem_Exception' );
         $this->_object->install();
+        error_reporting( $errBak );
     }
 
 

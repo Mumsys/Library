@@ -33,11 +33,6 @@
  *                  // credentials for a new db connection in here like in
  *                  // main config
  *              ),
- *
- *
- * @category    Mumsys
- * @package     Library
- * @subpackage  Mvc_Program
  */
 class Mumsys_Mvc_Program_Config
     extends Mumsys_Config_File
@@ -47,31 +42,34 @@ class Mumsys_Mvc_Program_Config
      */
     const VERSION = '1.0.0';
 
-    /**
-     * Program configuration vars in an array container.
-     * @var array
-     */
-    private $_config;
-
-    /**
-     * Context item which must be available for all mumsys objects
-     * @var Mumsys_Context
-     */
-    private $_context;
+//    /**
+//     * Program configuration vars in an array container.
+//     * @var array
+//     *
+//     * private $_config;
+//     */
+//
+//    /**
+//     * Context item which must be available for all mumsys objects
+//     * @var Mumsys_Context
+//     *
+//     * private $_context;
+//     */
 
 
     /**
      * Initialize the program config object.
      *
-     * @param Mumsys_Context_Interface $context Context ojects for depenencies.
+     * @param Mumsys_Context $context Context ojects for depenencies.
      * Note: This may be including a different DB driver, so take care and clone
      * or create a new Context if needed
      * @param array $config Config parameter to be set.
      * @param array $paths List of locations for config files
      */
-    public function __construct( Mumsys_Context_Interface $context,
+    public function __construct( Mumsys_Context $context,
         array $config = array(), array $paths = array() )
     {
+        unset( $context ); // currently unused here
         parent::__construct( $config, $paths );
     }
 

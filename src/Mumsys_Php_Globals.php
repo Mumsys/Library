@@ -295,7 +295,7 @@ class Mumsys_Php_Globals
     public static function getGlobalVar( $key = null, $default = null )
     {
         /** @var array|null $globals 4SCA */
-        $globals = & $GLOBALS;
+        $globals = $GLOBALS;
         if ( isset( $globals ) && $key === null ) {
             return $globals;
         }

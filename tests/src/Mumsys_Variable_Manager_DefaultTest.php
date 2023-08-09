@@ -121,7 +121,7 @@ class Mumsys_Variable_Manager_DefaultTest
 
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 
@@ -555,7 +555,8 @@ class Mumsys_Variable_Manager_DefaultTest
         );
 
         $actual1 = $this->_object->getMessageTemplates();
-        $actual2 = $actual1 = $this->_object->getMessageTemplates( $this->_object->setMessageTemplates( $expected ) );
+        $this->_object->setMessageTemplates( $expected );
+        $actual2 = $actual1 = $this->_object->getMessageTemplates();
 
         $this->assertingEquals( $expected, $actual1 );
         $this->assertingEquals( $expected, $actual2 );
@@ -584,10 +585,8 @@ class Mumsys_Variable_Manager_DefaultTest
         $attributesA = array('values' => array('username' => 'unittest value'));
         $this->_object->setAttributes( $attributesA );
 
-        $itemsA = $this->_object->getItem( 'username' );
-        foreach ( $itemsA as $item ) {
-            $this->assertingEquals( 'unittest value', $item->getValue() );
-        }
+        $itemA = $this->_object->getItem( 'username' );
+        $this->assertingEquals( 'unittest value', $itemA->getValue() );
 
         // value for all items
         $attributesB = array('value' => '2nd. unittest value');

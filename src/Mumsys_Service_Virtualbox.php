@@ -35,12 +35,6 @@ class Mumsys_Service_Virtualbox
     private $_vmName = 'your-vm-name';
 
     /**
-     * Name of the manager binary to be checked for availability.
-     * @var string
-     */
-    private $_vmManager = 'VBoxManage';
-
-    /**
      * VM start command
      * @var string
      */
@@ -72,12 +66,6 @@ class Mumsys_Service_Virtualbox
     private $_statusBefore = false;
 
     /**
-     * Default error/debug level (0-7)
-     * @var integer
-     */
-    private $_debugLevel = 3;
-
-    /**
      * @var Mumsys_Logger_Interface
      */
     private $_logger;
@@ -92,7 +80,7 @@ class Mumsys_Service_Virtualbox
      *  'stop' => '_vmStop',
      *  'listall' => '_vmListAll',
      *  'listactiv' => '_vmListActiv',
-     *  'manager' => '_vmManager'
+     *
      * @param Mumsys_Logger_Interface $logger Logger
      */
     public function __construct( array $options, Mumsys_Logger_Interface $logger )
@@ -104,7 +92,6 @@ class Mumsys_Service_Virtualbox
             'stop' => '_vmStop',
             'listall' => '_vmListAll',
             'listactiv' => '_vmListActiv',
-            'manager' => '_vmManager',
         );
 
         foreach ( $options as $key => $value ) {
@@ -225,7 +212,6 @@ class Mumsys_Service_Virtualbox
         $lastLine = exec( $_cmd, $data, $code );
 
         if ( $code > 0 ) {
-            $this->_debugLevel = 7;
             $this->_logger->log( 'Warning! Error from shell execution detected, Set a high log level', 0 );
         }
 

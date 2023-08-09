@@ -9,8 +9,8 @@ class Mumsys_PriorityQueue_SimpleTest
     /**
      * @var Mumsys_PriorityQueue_Simple
      */
-    protected $_object;
-    protected $_defaults;
+    private $_object;
+    private $_defaults;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -28,7 +28,7 @@ class Mumsys_PriorityQueue_SimpleTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
     /**

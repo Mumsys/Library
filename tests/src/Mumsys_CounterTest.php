@@ -7,9 +7,20 @@ class Mumsys_CounterTest
     extends Mumsys_Unittest_Testcase
 {
     /**
-     * @var Mumsys_CounterTest
+     * @var Mumsys_Counter
      */
-    protected $object;
+    private $_object;
+
+    /**
+     *
+     * @var string
+     */
+    private $_version;
+
+    /**
+     * @var array
+     */
+    private $_versions;
 
 
     /**
@@ -33,7 +44,7 @@ class Mumsys_CounterTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

@@ -35,7 +35,7 @@ class Mumsys_Upload_Mock
      * Initialize the upload object and checks for validity with an existing
      * upload process. (default/ File implementation)
      *
-     * @param array $fileInput PHP's $_FILES array containing only one item with
+     * @ param array $fileInput PHP's $_FILES array containing only one item with
      * the following properties:
      *  - 'name'
      *  - 'tmp_name'

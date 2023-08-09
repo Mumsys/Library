@@ -75,7 +75,7 @@ class Mumsys_Config_File
      * @param mixed|null $default Expected value or the default value to return
      * if key does not exists
      *
-     * @return array Value/s of the requested key or the default will return.
+     * @return array|mixed|null Value/s of the requested key or the default will return.
      */
     public function get( $key, $default = null )
     {
@@ -115,16 +115,16 @@ class Mumsys_Config_File
     /**
      * Register a configuration parameter if not exists.
      *
-     * @param string $key Path including the key to be registered. E.g.: frontend/pageTitle
+     * @param string|null $key Path including the key to be registered. E.g.: frontend/pageTitle
      * @param mixed $value Mixed value to be set.
      *
      * @throws Mumsys_Config_Exception If key exists
      */
     public function register( $key, $value = null )
     {
-        if ( ( $test = $this->get( $key ) ) !== null ) {
-            $message = sprintf( 'Config key "%1$s" already exists', $key );
-            throw new Mumsys_Config_Exception( $message );
+        if ( $this->get( $key ) !== null ) {
+            $mesg = sprintf( 'Config key "%1$s" already exists', $key );
+            throw new Mumsys_Config_Exception( $mesg );
         }
 
         $this->replace( $key, $value );
@@ -293,7 +293,7 @@ class Mumsys_Config_File
      *
      * @uses Mumsys_Db_Interface Database interface will be used
      *
-     * @param string $key config-application key to load
+     * @param string $appKey config-application key to load
      * @return array Returns all configuration parameters
      *
      * @throws Mumsys_Config_Exception If key already registered

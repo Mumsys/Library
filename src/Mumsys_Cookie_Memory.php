@@ -61,7 +61,7 @@ class Mumsys_Cookie_Memory
      */
     public function getCookie( string $key = null, $default = null )
     {
-        if ( isset( $this->_cookie ) && $key === null ) {
+        if ( $key === null ) {
             return $this->_cookie;
         }
 

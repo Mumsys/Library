@@ -61,8 +61,8 @@ class Mumsys_Mvc_Controller_Backend
             $programSettings = require_once $config['pathPrograms'] . $program . '/settings.php';
 
             if ( !is_array( $programSettings ) ) {
-                $this->_context->getPermissions()->trackRequest();
-                $msg = 'Warning. inclusion of settings failed or invalid type';
+                $this->_context->getPermissions()->trackRequest(); // @phpstan-ignore-line
+                $mesg = 'Warning. inclusion of settings failed or invalid type';
                 $code = Mumsys_Exception::ERRCODE_DEFAULT;
                 throw new Mumsys_Mvc_Controller_Exception( $mesg, $code );
             }

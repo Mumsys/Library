@@ -39,12 +39,6 @@ class Mumsys_Context_Item
      */
     const VERSION = '3.0.0';
 
-    /**
-     * Configuration vars in an array container.
-     * @var array
-     */
-    private $_config = array();
-
 
     /**
      * Returns the config object.
@@ -136,7 +130,7 @@ class Mumsys_Context_Item
     /**
      * Returns the translation object.
      *
-     * @return Mumsys_I18n_Interface Returns display object
+     * @return Mumsys_I18n_Interface Returns translation object
      *
      * @throws Mumsys_Context_Exception If object was not set
      */
@@ -175,13 +169,52 @@ class Mumsys_Context_Item
     /**
      * Sets the logger object.
      *
-     * @param $logger $logger Logger object
+     * @param Mumsys_Logger_Interface $logger Logger object
      * @throws Mumsys_Context_Exception Throws exception if the object was already set
      */
     public function registerLogger( Mumsys_Logger_Interface $logger )
     {
         $this->_register( 'Mumsys_Logger_Interface', $logger );
     }
+
+
+    /**
+     * Returns the display/ frontend controller object.
+     *
+     * @return Mumsys_Mvc_Display_Control_Interface
+     * @throws Mumsys_Mvc_Exception Throws exception if the object was not set
+     */
+    public function getDisplay()
+    {
+        return $this->_get( 'Mumsys_Mvc_Display_Control_Interface' );
+    }
+
+
+//    /** registerControllerFrontend
+//
+//     * Sets display/ frontend controller object.
+//     *
+//     * @param Mumsys_Mvc_Display_Control_Interface $display Display controller
+//     *
+//     * @throws Mumsys_Context_Exception Throws exception if object was already set
+//     */
+//    public function registerDisplay( Mumsys_Mvc_Display_Control_Interface $display )
+//    {
+//        $this->_register( 'Mumsys_Mvc_Display_Control_Interface', $display );
+//    }
+
+
+    /**
+     * replaceControllerFrontend
+     * Replaces the display/ frontend controller object.
+     *
+     * @param Mumsys_Mvc_Display_Control_Interface $display Display controller to set
+     */
+    public function replaceDisplay( Mumsys_Mvc_Display_Control_Interface $display )
+    {
+        $this->_replace( 'Mumsys_Mvc_Display_Control_Interface', $display );
+    }
+
 
 
     /**

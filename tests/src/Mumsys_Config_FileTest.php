@@ -10,18 +10,28 @@ class Mumsys_Config_FileTest
     /**
      * @var Mumsys_Config_File
      */
-    protected $_object;
+    private $_object;
 
     /**
      * Version ID
      * @var string
      */
-    protected $_version = '3.0.0';
+    private $_version = '3.0.0';
 
     /**
      * @var array
      */
-    protected $_versions;
+    private $_versions;
+
+    /**
+     * @var array
+     */
+    private $_configs;
+
+    /**
+     * @var array
+     */
+    private $_paths;
 
 
     /**
@@ -39,7 +49,6 @@ class Mumsys_Config_FileTest
             __DIR__ . '/', //testconfig.php
             __DIR__ . '/../config/', //credentials.php and sub paths
         );
-        $this->_context = new Mumsys_Context();
         $this->_object = new Mumsys_Config_File( $this->_configs, $this->_paths );
     }
 
@@ -50,7 +59,7 @@ class Mumsys_Config_FileTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

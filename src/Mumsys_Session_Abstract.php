@@ -86,7 +86,6 @@ abstract class Mumsys_Session_Abstract
      *
      * Note: This is befor it will be available in $_SESSION.
      *
-     * @param string $key value of the key to return to
      * @return mixed Stored value or empty array
      */
     public function getCurrent()
@@ -105,7 +104,6 @@ abstract class Mumsys_Session_Abstract
      * Note: This is befor it will be available in $_SESSION. Existing records
      * in $_SESSION after initialisation of this class are not listed!
      *
-     * @param string $key value of the key to return to
      * @return array Stored value
      */
     public function getAll()

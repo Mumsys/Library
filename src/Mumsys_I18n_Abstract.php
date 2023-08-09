@@ -50,6 +50,8 @@ abstract class Mumsys_I18n_Abstract
      */
     public function __construct( $locale = null, array $options = array() )
     {
+        unset( $options ); // currently unused here
+
         if ( !isset( $locale ) ) {
             throw new Mumsys_I18n_Exception( 'Locale not set' );
         }
@@ -95,13 +97,13 @@ abstract class Mumsys_I18n_Abstract
      * @copyright Copyright (c) 2005-2011 Zend Technologies USA Inc. (http://www.zend.com)
      * @license http://framework.zend.com/license/new-bsd New BSD License
      *
-     * @param  integer $number Number to find the plural form
+     * @param int|float $number Number to find the plural form
      *
-     * @return integer Number of the plural index
+     * @return int|float Number of the plural index
      */
     public function getPluralIndex( $number )
     {
-        $number = abs( (int) $number );
+        $number = abs( $number );
 
         if ( $this->_locale == 'pt_BR' ) {
             $this->_locale = 'xbr'; // temporary set a locale for brasilian

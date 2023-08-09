@@ -33,7 +33,7 @@ abstract class Mumsys_Mvc_Program_Model_Abstract
 
     /**
      * Context item which must be available for all mumsys objects
-     * @var Mumsys_Context
+     * @var Mumsys_Context_Interface
      */
     protected $_context;
 

@@ -33,7 +33,7 @@ class Mumsys_File
 
     /**
      * File handle
-     * @var ressource
+     * @var resource|false
      */
     private $_fh = false;
 
@@ -45,14 +45,14 @@ class Mumsys_File
 
     /**
      * Flag to set if writeabiliy is possible or not
-     * @var boolean
+     * @var bool|null
      */
     private $_isWriteable = null;
 
     /**
      * Flag to set if readabiliy is possible or not
      * This flag will be set when open() methode will be called
-     * @var boolean
+     * @var bool|null
      */
     private $_isReadable = null;
 
@@ -106,7 +106,7 @@ class Mumsys_File
         }
 
         if ( $this->_file && $this->_way ) {
-            $this->open( $this->_file, $this->_way );
+            $this->open();
         }
     }
 
@@ -126,7 +126,7 @@ class Mumsys_File
      * Open connection to read or write to a file.
      *
      * @return boolean Returns true on succsess
-     * @throws File_Exception If file can not be opened
+     * @throws Mumsys_File_Exception If file can not be opened
      */
     public function open()
     {
@@ -177,9 +177,9 @@ class Mumsys_File
     /**
      * Write given content to the file.
      *
-     * @param string|binary $content Content to write to the file
+     * @param string|mixed $content Content to write to the file
      *
-     * @return boolean Returns true on success.
+     * @return true Returns true on success.
      *
      * @throws Mumsys_File_Exception If writing to file is impossible
      */

@@ -24,18 +24,12 @@ class Mumsys_Weather_FactoryTest
     extends Mumsys_Unittest_Testcase
 {
     /**
-     * @var Mumsys_Weather_Factory
-     */
-    protected $_object;
-
-
-    /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
     protected function setUp(): void
     {
-        $this->_object = new Mumsys_Weather_Factory;
+        //$this->_object = new Mumsys_Weather_Factory;
     }
 
 
@@ -45,7 +39,7 @@ class Mumsys_Weather_FactoryTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

@@ -38,7 +38,7 @@ abstract class Mumsys_Mvc_Program_Controller_Abstract
 
     /**
      * Context item which must be available for all mumsys objects
-     * @var Mumsys_Context
+     * @var Mumsys_Context_Interface
      */
     protected $_context;
 
@@ -81,6 +81,7 @@ abstract class Mumsys_Mvc_Program_Controller_Abstract
         $outputType = 'default', $outputComplexity = 'default' )
     {
         $display = new Mumsys_Mvc_Display_Factory( $this->_context );
+
         return $display->load( $outputType, $outputComplexity, $params );
     }
 
@@ -91,7 +92,7 @@ abstract class Mumsys_Mvc_Program_Controller_Abstract
      * @param string $program Name of the program to load
      * @param string $model Name of the model to load
      *
-     * @return Mumsys_Program_Model_Interface
+     * @return Mumsys_Mvc_Program_Model_Interface
      */
     protected function loadModel( $program, $model )
     {

@@ -27,10 +27,6 @@
  * B => prio88 <- lower prio
  * C => befor prio99
  * Result: C, A, B
- *
- * @category    Mumsys
- * @package     Library
- * @subpackage  PriorityQueue
  */
 class Mumsys_PriorityQueue_Simple
     extends Mumsys_Abstract
@@ -39,12 +35,6 @@ class Mumsys_PriorityQueue_Simple
      * Version ID information.
      */
     const VERSION = '1.0.0';
-
-    /**
-     * Internal counter
-     * @var integer
-     */
-    private $_cnt = PHP_INT_MAX;
 
     /**
      * Stack of the priority

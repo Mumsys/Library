@@ -135,7 +135,7 @@ class Mumsys_Db_Driver_Mysql_Query
      *     'AND' => array('And', 'And'),
      *     'OR' => array('Or', 'Or'),
      *
-     * @return false on errors
+     * @return false|void Returns false on errors
      * @throws Mumsys_Db_Exception On errors if setThrowErrors was set
      */
     public function replaceQueryCompareValues( array $comparison )
@@ -170,7 +170,7 @@ class Mumsys_Db_Driver_Mysql_Query
      * array('internal key'=> array(
      *      'public key to map to'=>'public value of key to show')
      * )
-     * @return false on errors
+     * @return false|void Returns false on errors
      * @throws Mumsys_Db_Exception On errors if setThrowErrors was set
      */
     public function replaceQueryOperators( array $operators )
@@ -203,7 +203,7 @@ class Mumsys_Db_Driver_Mysql_Query
      *     'ASC' => 'Ascending (a-z, 0-9)',
      *     'DESC' => 'Descending (z-a, 9-0)'
      * )
-     * @return false on errors
+     * @return false|void Returns false on errors
      * @throws Mumsys_Db_Exception On errors if setThrowErrors was set
      */
     public function replaceQuerySortations( array $sortations )

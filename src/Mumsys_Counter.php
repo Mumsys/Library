@@ -101,7 +101,7 @@ class Mumsys_Counter extends Mumsys_Abstract
     /**
      * Returns the number of counts/result of operation.
      *
-     * @return integer Returns the number of counts.
+     * @return int|float Returns the number of counts.
      */
     public function result()
     {
@@ -110,13 +110,13 @@ class Mumsys_Counter extends Mumsys_Abstract
 
 
     /**
-     * Returns the number of counts for the output
+     * Returns the number of counts for the output in string representation
      *
-     * @return integer Number of counts
+     * @return string Number of counts
      */
     public function __toString()
     {
-        return $this->result();
+        return (string) $this->result();
     }
 
 }

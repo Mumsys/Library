@@ -404,7 +404,7 @@ class Mumsys_Semver
      * Incoming version string to work with.
      * @var string
      */
-    private $_version;
+    //private $_version;
 
     /**
      * Semver Version.
@@ -447,7 +447,7 @@ class Mumsys_Semver
         );
 
         $matches = null;
-        if ( !isset( $regex[$this->_semver] )
+        if ( ! isset( $regex[$this->_semver] )
             || preg_match( $regex[$this->_semver], $version, $matches ) === false
         ) {
             $mesg = sprintf( 'Regex error for "%1$s" or semver not available', $version );
@@ -458,7 +458,7 @@ class Mumsys_Semver
             return false;
         }
 
-        $this->_version = $version;
+        //$this->_version = $version;
         $this->_props = $matches;
 
         return true;

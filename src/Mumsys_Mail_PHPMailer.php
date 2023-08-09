@@ -33,12 +33,6 @@ class Mumsys_Mail_PHPMailer
     const VERSION = '3.0.1';
 
     /**
-     * Configuration values for setup
-     * @var array
-     */
-    private $_config;
-
-    /**
      * Mail driver to be used.
      * @var \PHPMailer\PHPMailer\PHPMailer
      */
@@ -83,8 +77,6 @@ class Mumsys_Mail_PHPMailer
         require_once __DIR__ . '/../vendor/phpmailer/phpmailer/src/Exception.php';
         require_once __DIR__ . '/../vendor/phpmailer/phpmailer/src/PHPMailer.php';
         $this->_mailer = new \PHPMailer\PHPMailer\PHPMailer( true );
-
-        $this->_config = $config;
 
         if ( isset( $config['adapter'] ) ) {
             switch ( $config['adapter'] ) {

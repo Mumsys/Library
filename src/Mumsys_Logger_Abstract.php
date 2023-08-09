@@ -149,7 +149,7 @@ abstract class Mumsys_Logger_Abstract
      * @uses Mumsys_Php_Globals Class of the mumsys library to get the remote
      * user if not set
      *
-     * @param array $args Associativ array with additional params
+     * @param array $options Associativ array with additional params
      * - [username] optional otherwise PHP_AUTH_USER will be taken
      * - [lineFormat] optional format of log line;see $_logformat.
      * - [timeFormat] optional format of a timestamp format
@@ -209,7 +209,7 @@ abstract class Mumsys_Logger_Abstract
      *
      * Implements calls: emerge(), emergency(), alert(), crit(), critical(),
      * err() error(), warn(), warning(), notice(), info(), debug().
-
+     *
      * Dont use it if you can (performace). Just compatibilty to psr.
      *
      * @param string $key Methode string to wrap to

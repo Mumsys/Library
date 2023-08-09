@@ -37,7 +37,7 @@ class Mumsys_Session_DefaultTest
     protected function tearDown(): void
     {
         $this->_object->clear();
-        $this->_object = null;
+        unset( $this->_object );
         session_write_close();
     }
 

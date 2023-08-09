@@ -50,7 +50,7 @@ class Mumsys_Service_Spss_WriterTest
     protected function setUp(): void
     {
         $this->_version = '2.1.0';
-        $this->_spssFile = __DIR__ . '/../testfiles/Service/Spss/writerTests.sav';
+        $this->_spssFile = __DIR__ . '/../testfiles/Domain/Service/Spss/writerTests.sav';
 
         $this->_options = array(
             'header' => array(
@@ -126,7 +126,7 @@ class Mumsys_Service_Spss_WriterTest
         if ( file_exists( $this->_spssFile ) ) {
             unlink( $this->_spssFile );
         }
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 
@@ -141,6 +141,7 @@ class Mumsys_Service_Spss_WriterTest
      */
     public function test__construct()
     {
+        /** @var \SPSS\Sav\Writer $writer 4SCA */
         $writer = $this->_object->getAdapter();
         $writer->save( $this->_spssFile );
         $writer->close();

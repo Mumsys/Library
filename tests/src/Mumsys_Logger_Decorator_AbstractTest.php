@@ -22,10 +22,30 @@ class Mumsys_Logger_Decorator_AbstractTest
     extends Mumsys_Unittest_Testcase
 {
     /**
-     * @var Mumsys_Logger_Decorator_Abstract
+     * @var Mumsys_Logger_Decorator_Abstract_TestClass
      */
-    protected $_object;
+    private $_object;
+
+    /**
+     * @var Mumsys_Logger_File
+     */
+    private $_logger;
+
+    /**
+     * @var string
+     */
     private $_testsDir;
+
+    /**
+     * @var string
+     */
+    private $_logfile;
+
+    /**
+     * Logger options
+     * @var array
+     */
+    private $_opts;
 
     /**
      * @var string
@@ -63,7 +83,7 @@ class Mumsys_Logger_Decorator_AbstractTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

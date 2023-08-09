@@ -25,7 +25,17 @@ class Mumsys_Weather_Item_Unit_AbstractTest
     /**
      * @var Mumsys_Weather_Item_Unit_Default
      */
-    protected $_object;
+    private $_object;
+
+    /**
+     * @var string
+     */
+    private $_version;
+
+    /**
+     * @var array
+     */
+    private $_versions;
 
 
     /**
@@ -51,7 +61,7 @@ class Mumsys_Weather_Item_Unit_AbstractTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 
@@ -141,7 +151,7 @@ class Mumsys_Weather_Item_Unit_AbstractTest
         $expected1 = false;
 
         $expected2 = true;
-        $this->_object->setModified( $expected2 );
+        $this->_object->setModified();
         $actual2 = $this->_object->isModified();
 
         $this->assertingEquals( $expected1, $actual1 );

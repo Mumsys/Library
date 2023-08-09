@@ -53,7 +53,7 @@ class Mumsys_Mvc_Router_Default
      *
      * @todo use the request opject not the options, also in abtract class
      *
-     * @param Mumsys_Request_Interface Request interface
+     * @param Mumsys_Request_Interface $request Request interface
      * @param array $options Optional initial options
      */
     public function __construct( Mumsys_Request_Interface $request,

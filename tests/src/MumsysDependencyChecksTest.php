@@ -91,6 +91,8 @@ class MumsysDependencyChecksTest
 
     public function test_CheckPhpIniSettings()
     {
+        $actual = $expected = null;
+
         foreach ( $this->_requiredPhpiniSetup as $iniValue => $possible ) {
             if ( !is_array( $possible ) ) {
                 $possible = array($possible);

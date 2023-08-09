@@ -1,3 +1,4 @@
+# dist: https://docs.travis-ci.com/user/reference/linux#sts=Using%20Ubuntu%20Linux%20distributions%20#
 dist: focal
 #dist: bionic
 
@@ -5,15 +6,17 @@ env:
   global:
     - XDEBUG_MODE=coverage
     
-    
+# php versions and dists: https://docs.travis-ci.com/user/languages/php
 language: php
 
 php:
   - '8.0'
+  - '8.1'
   - nightly
 
 matrix:
   allow_failures:
+    - php: '8.1'
     - php: nightly
 
 addons:

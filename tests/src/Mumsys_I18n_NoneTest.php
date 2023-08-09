@@ -9,7 +9,17 @@ class Mumsys_I18n_NoneTest
     /**
      * @var Mumsys_I18n_None
      */
-    protected $_object;
+    private $_object;
+
+    /**
+     * @var string
+     */
+    private $_version;
+
+    /**
+     * @var array
+     */
+    private $_versions;
 
 
     /**
@@ -35,7 +45,7 @@ class Mumsys_I18n_NoneTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

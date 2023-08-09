@@ -45,8 +45,8 @@ interface Mumsys_File_Interface
     /**
      * Open connection to read or write to a file.
      *
-     * @return boolean Returns true on succsess or fals on failure
-     * @throws File_Exception If file can not be opened
+     * @return bool Returns true on succsess or fals on failure
+     * @throws Mumsys_File_Exception If file can not be opened
      */
     public function open();
 
@@ -63,9 +63,9 @@ interface Mumsys_File_Interface
     /**
      * Write given content to the file.
      *
-     * @param string|binary $content Content to write to the file
+     * @param mixed $content Content to write to the file
      *
-     * @return boolean Returns true on success.
+     * @return bool Returns true on success.
      * @throws Mumsys_File_Exception Throws exception if writing to file is
      * impossible
      */

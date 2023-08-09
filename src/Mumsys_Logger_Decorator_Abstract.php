@@ -39,11 +39,11 @@ abstract class Mumsys_Logger_Decorator_Abstract
     /**
      * Initialize the decorated logger object
      *
-     * @param Mumsys_Logger_Interface Logger object to be decorated
+     * @param Mumsys_Logger_Interface $logger Logger object to be decorated
      */
-    public function __construct( Mumsys_Logger_Interface $object )
+    public function __construct( Mumsys_Logger_Interface $logger )
     {
-        $this->_object = $object;
+        $this->_object = $logger;
     }
 
 
@@ -65,6 +65,7 @@ abstract class Mumsys_Logger_Decorator_Abstract
      */
     public function getLevelName( $level )
     {
+        // @phpstan-ignore-next-line
         return $this->_object->getLevelName( $level );
     }
 
@@ -102,6 +103,7 @@ abstract class Mumsys_Logger_Decorator_Abstract
      */
     public function checkLevel( $level = 0 )
     {
+        // @phpstan-ignore-next-line
         return $this->_object->checkLevel( $level );
     }
 

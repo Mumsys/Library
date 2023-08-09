@@ -115,7 +115,7 @@ class Mumsys_Logger_Decorator_Messages
     /**
      * Initialize the decorator messages logger object
      *
-     * @param Mumsys_Logger_Interface Logger object to be decorated
+     * @param Mumsys_Logger_Interface $logger Logger object to be decorated
      * @param array $options List of options to be set on construction:
      *  - [username] optional otherwise PHP_AUTH_USER will be taken
      *  - [msgDatetimeFormat] optional format of a timestamp format
@@ -128,10 +128,10 @@ class Mumsys_Logger_Decorator_Messages
      *  - [debug] boolean Default: false
      *  - [lf] string Optional Linefeed Default: \n
      */
-    public function __construct( Mumsys_Logger_Interface $object,
+    public function __construct( Mumsys_Logger_Interface $logger,
         array $options = array() )
     {
-        parent::__construct( $object );
+        parent::__construct( $logger );
 
         if ( empty( $options['username'] ) ) {
             $this->_username = Mumsys_Php_Globals::getRemoteUser();
@@ -314,6 +314,7 @@ class Mumsys_Logger_Decorator_Messages
      */
     public function setMessageLoglevel( $level )
     {
+        // @phpstan-ignore-next-line
         if ( $this->_getObject()->checkLevel( $level ) === false ) {
             $message = 'Level "' . $level . '" unknown to set the message log level';
             throw new Mumsys_Logger_Exception( $message );

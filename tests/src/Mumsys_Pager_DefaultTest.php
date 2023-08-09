@@ -10,7 +10,7 @@ class Mumsys_Pager_DefaultTest
     /**
      * @var Mumsys_Pager_Default
      */
-    protected $_object;
+    private $_object;
     /**
      * Version ID.
      * @var string
@@ -47,7 +47,7 @@ class Mumsys_Pager_DefaultTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

@@ -17,7 +17,12 @@ class Mumsys_Service_VdrTest
      * @var Mumsys_Context_Item
      */
     private $_context;
-    private $_options;
+//
+//    /**
+//     * @var array
+//     */
+//    private $_options;
+
     private $_logfile;
     private static $_isAvailable = true;
 
@@ -47,7 +52,7 @@ class Mumsys_Service_VdrTest
             $this->_context->registerLogger( $logger );
         }
 
-        $this->_options = array();
+//        $this->_options = array();
 
         try {
             $this->_object = new Mumsys_Service_Vdr( $this->_context, 'localhost' );
@@ -72,7 +77,7 @@ class Mumsys_Service_VdrTest
             unlink( $this->_logfile );
         }
 
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 
@@ -87,11 +92,10 @@ class Mumsys_Service_VdrTest
      */
     public function test__destruct()
     {
-        $actual2 = $this->_object->__destruct();
-        $actual3 = $this->_object->isOpen();
+        $this->_object->__destruct();
+        $actualA = $this->_object->isOpen();
 
-        $this->assertingTrue( $actual2 );
-        $this->assertingFalse( $actual3 );
+        $this->assertingFalse( $actualA );
     }
 
     /**

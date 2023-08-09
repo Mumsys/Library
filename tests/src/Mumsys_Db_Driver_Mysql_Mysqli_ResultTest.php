@@ -7,18 +7,23 @@ class Mumsys_Db_Driver_Mysql_Mysqli_ResultTest
     extends Mumsys_Unittest_Testcase
 {
     /**
-     * @var Mumsys_Db_Driver_Mysql_Mysqli_Result
+     * @var Mumsys_Db_Driver_Mysql_Mysqli_Result|Mumsys_Db_Driver_Result_Interface
      */
-    protected $_object;
-    protected $_dbConfig;
+    private $_object;
+    private $_dbConfig;
 
     /** @var Mumsys_Db_Driver_Mysql_Mysqli */
-    protected $_dbDriver;
+    private $_dbDriver;
 
     /**
      * @var Mumsys_Context
      */
-    protected $_context;
+    private $_context;
+
+    /**
+     * @var array
+     */
+    private $_configs;
 
 
     /**
@@ -29,7 +34,7 @@ class Mumsys_Db_Driver_Mysql_Mysqli_ResultTest
     {
         $this->_context = new Mumsys_Context();
 
-        $this->_configs = $this->_config = MumsysTestHelper::getConfigs();
+        $this->_configs = MumsysTestHelper::getConfigs();
         $this->_configs['database']['type'] = 'mysql:mysqli';
 
         $this->_dbConfig = $this->_configs['database'];
@@ -56,7 +61,7 @@ class Mumsys_Db_Driver_Mysql_Mysqli_ResultTest
     protected function tearDown(): void
     {
         $this->_dbDriver->close();
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 
@@ -191,7 +196,7 @@ class Mumsys_Db_Driver_Mysql_Mysqli_ResultTest
             VALUES (99, 3, 3, \'texta3\', \'textb3\' )';
         $result = $this->_dbDriver->query( $sql );
 
-        $n = $result->insertID();
+        $n = $result->lastInsertId();
         $this->assertingEquals( 99, $n );
 
         $link = $this->_dbDriver->connect();
@@ -231,7 +236,7 @@ class Mumsys_Db_Driver_Mysql_Mysqli_ResultTest
         $this->expectingExceptionMessageRegex( '/(Seeking to row 10 failed)/i' );
         $this->expectingException( 'Mumsys_Db_Exception' );
         $result = $this->_dbDriver->query( 'SELECT * FROM ' . $table );
-        $result->sqlResult( 10 );
+        $result->getFirst( 10 ); // old: $result->sqlResult( 10 );
 
         // cleanup
         $this->_dropTempTable( $table );

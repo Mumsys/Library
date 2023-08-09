@@ -14,7 +14,6 @@
  */
 
 
-
 /**
  * Test class for Mumsys_Timer.
  */
@@ -50,7 +49,7 @@ class Mumsys_TimerTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

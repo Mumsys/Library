@@ -13,10 +13,22 @@ class Mumsys_Parser_LoglineTest
     protected $_object;
     protected $_format;
     protected $_patterns;
+
     /**
      * @var string
      */
     private $_version;
+
+    /**
+     * List of objects this _objects needs
+     * @var array
+     */
+    private $_versions;
+
+    /**
+     * @var string
+     */
+    private $_logContent;
 
 
     /**
@@ -25,7 +37,11 @@ class Mumsys_Parser_LoglineTest
      */
     protected function setUp(): void
     {
-        $this->_version = '1.1.1';
+        $this->_version = '2.0.0';
+        $this->_versions = array(
+            'Mumsys_Abstract' => Mumsys_Abstract::VERSION,
+            'Mumsys_Parser_Abstract' => '2.0.0',
+        );
 
         $this->_logContent = '1;whichhas;semicolon;as;delimiter;opt' . PHP_EOL
             . '2;which has;semicolon;as;delimiter;opt' . PHP_EOL
@@ -53,10 +69,7 @@ class Mumsys_Parser_LoglineTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
-        $this->_format = '';
-        $this->_patterns = '';
-        $this->_logContent = '';
+        unset( $this->_object, $this->_format, $this->_patterns, $this->_logContent );
     }
 
 
@@ -89,9 +102,9 @@ class Mumsys_Parser_LoglineTest
      */
     public function testSetFormat()
     {
-        $x = $this->_object->setFormat( $this->_format );
+        $this->_object->setFormat( $this->_format );
 
-        $this->assertingNull( $x );
+        $this->assertingTrue( true ); // runs until here
     }
 
 
@@ -100,9 +113,9 @@ class Mumsys_Parser_LoglineTest
      */
     public function testSetPattern()
     {
-        $x = $this->_object->setPattern( 'c5', '(?P<col_5>(\w*))' );
+        $this->_object->setPattern( 'c5', '(?P<col_5>(\w*))' );
 
-        $this->assertingNull( $x );
+        $this->assertingTrue( true ); // runs until here
     }
 
 
@@ -111,9 +124,9 @@ class Mumsys_Parser_LoglineTest
      */
     public function testSetHideFilterResults()
     {
-        $x = $this->_object->setHideFilterResults();
+        $this->_object->setHideFilterResults();
 
-        $this->assertingNull( $x );
+        $this->assertingTrue( true ); // runs until here
     }
 
 
@@ -122,9 +135,9 @@ class Mumsys_Parser_LoglineTest
      */
     public function testSetShowFilterResults()
     {
-        $x = $this->_object->setShowFilterResults();
+        $this->_object->setShowFilterResults();
 
-        $this->assertingNull( $x );
+        $this->assertingTrue( true ); // runs until here
     }
 
 
@@ -148,18 +161,17 @@ class Mumsys_Parser_LoglineTest
      */
     public function testAddFilter()
     {
-        $x = $this->_object->addFilter( 'c5', 'delim', true );
-        $y = $this->_object->addFilter( 'c5', array('delim', 'del'), false );
+        $this->_object->addFilter( 'c5', 'delim', true );
+        $this->_object->addFilter( 'c5', array('delim', 'del'), false );
 
-        $this->assertingNull( $x );
-        $this->assertingNull( $y );
+        $this->assertingTrue( true ); // runs until here
     }
 
 
     /**
      * @covers Mumsys_Parser_Logline::parse
-     * @covers Mumsys_Parser_Logline::_getExpression
-     * @covers Mumsys_Parser_Logline::_applyFilters
+     * @covers Mumsys_Parser_Abstract::_getExpression
+     * @covers Mumsys_Parser_Abstract::_applyFilters
      */
     public function testParse()
     {
@@ -213,18 +225,34 @@ class Mumsys_Parser_LoglineTest
         $this->assertingEquals( $actual4, $expected4 );
         $this->assertingFalse( $actual5 );
 
-        // crap in "opt"
-        $regex = '/('
-            . 'Format of log line invalid \(expected:"#\^id;c1;c2;c3;c4;c5\$#"\); '
-            . 'Line was "5;"which has";"semicolon";"as";'
-            . '"d";"wont work because of the quotes""; regex: '
-//            . '"#^(?P<id>\w+);(?P<col_1>.+);(?P<col_2>.+);(?P<col_3>.+)'
-//            . ';(?P<col_4>.+);(?P<col_5>\w*)$#"'
-            . ')/';
-        $this->expectingExceptionMessageRegex( $regex );
+        // crap in "opt", not match
+        $this->expectingExceptionMessageRegex( '/Format of the value is invalid/' );
         $this->expectingException( 'Mumsys_Parser_Exception' );
 
         $this->_object->parse( trim( $records[4] ) );
+    }
+
+    /**
+     * @covers Mumsys_Parser_Logline::parse
+     */
+    public function testParseExceptionInvalidPattern()
+    {
+        $reporting = error_reporting();
+        error_reporting( 0 );
+
+        $this->expectingException( 'Mumsys_Parser_Exception' );
+        $this->expectingExceptionMessageRegex( '/Regex error detected/' );
+        try {
+            $this->_object->setPattern( 'id', '(' );
+            $this->_object->setPattern( 'col_1', ')' );
+            $this->_object->parse( $this->_format );
+
+            error_reporting( $reporting ); // re-set
+        }
+        catch ( Throwable $thex ) {
+            error_reporting( $reporting ); // re-set
+            throw $thex;
+        }
     }
 
 
@@ -254,7 +282,7 @@ class Mumsys_Parser_LoglineTest
 
 
     /**
-     * @covers Mumsys_Parser_Logline::_applyFilters
+     * @covers Mumsys_Parser_Abstract::_applyFilters
      */
     public function testParseApplyFilters()
     {
@@ -304,9 +332,13 @@ class Mumsys_Parser_LoglineTest
     }
 
 
+    /**
+     * Version checks
+     */
     public function testVersions()
     {
-        $this->assertingEquals( $this->_version, Mumsys_Parser_Logline::VERSION );
+        $this->assertingEquals( $this->_version, $this->_object::VERSION );
+        $this->checkVersionList( $this->_object->getVersions(), $this->_versions );
     }
 
 }

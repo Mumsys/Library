@@ -9,18 +9,18 @@ class Mumsys_Php_ConsoleTest
     /**
      * @var Mumsys_Php_Console
      */
-    protected $_object;
+    private $_object;
 
     /**
      * @var string
      */
-    protected $_testsDir;
+    private $_testsDir;
 
     /**
      * Test are made vor version: ...
      * @var string
      */
-    protected $_version;
+    private $_version;
 
 
     /**
@@ -42,7 +42,7 @@ class Mumsys_Php_ConsoleTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

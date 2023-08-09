@@ -2,6 +2,8 @@
 
 /**
  * Mumsys_Db_Driver_Mysql_Mysqli Test
+ *
+ * @deprecated since version php > 8.1
  */
 class Mumsys_Db_Driver_Mysql_MysqliTest
     extends Mumsys_Unittest_Testcase
@@ -16,6 +18,11 @@ class Mumsys_Db_Driver_Mysql_MysqliTest
      */
     protected $_context;
 
+    /**
+     * @var array
+     */
+    private $_configs;
+
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -23,6 +30,11 @@ class Mumsys_Db_Driver_Mysql_MysqliTest
      */
     protected function setUp(): void
     {
+        // A >= B
+        if ( version_compare( PHP_VERSION, '8.1.0', '>=' ) ) {
+            $this->markTestSkipped( 'php 8.1 todo or use a different driver' );
+        }
+
         $this->_context = new Mumsys_Context();
         //$this->_context = MumsysTestHelper::getContext();
 

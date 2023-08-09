@@ -28,19 +28,18 @@ interface Mumsys_Permissions_Interface
     /**
      * Initialisation of the permissions object
      *
-     * @param Mumsys_Context $context Context item
-     * @param array $options Optional options
+     * @ param Mumsys_Context $context Context item
+     * @ param array $options Optional options
      */
-    public function __construct( Mumsys_Context $context,
-        array $options = array() );
+    public function __construct( /* Mumsys_Context $context, array $options = array() */ );
 
 
     /**
      * Set user configuration infomation for a current program/sub-programm
      * Todo:Work it out! was?
-     * @param $values array mixd config values
-     * @param $program string modul/program name
-     * @param $controller Controller/ Sub- programm name
+     * @param array $values array mixd config values
+     * @param string $program string modul/program name
+     * @param string $controller Controller/ Sub- programm name
      */
     public function progCfgSet( $values, $program, $controller );
 
@@ -48,8 +47,8 @@ interface Mumsys_Permissions_Interface
     /**
      * Get user configuration infomation for a current program/sub-programm
      *
-     * @param $program string modul/program name
-     * @param $controller Controller/ Sub- programm name
+     * @param string $program string modul/program name
+     * @param string $controller Controller/ Sub- programm name
      * @param string $param Parameter to return in the user-program-config
      *
      * @return mixed the values which was set in progCfgSet()
@@ -61,8 +60,8 @@ interface Mumsys_Permissions_Interface
      * Delete a user configuration infomation of a current program/sub-programm
      *
      * @param string $key Key to remove from user-program-config
-     * @param $program string modul/program name
-     * @param $controller Controller/ Sub- programm name
+     * @param string $program string modul/program name
+     * @param string $controller Controller/ Sub- programm name
      *
      * @return boolean True on success or false on error
      */
@@ -73,8 +72,8 @@ interface Mumsys_Permissions_Interface
      * Get name of given module and or Submodule name if $m is false the current
      * module name will be returned
      *
-     * @param $program string modul/program name
-     * @param $controller Controller/ Sub- programm name
+     * @param string|false $program string modul/program name
+     * @param string|false $controller Controller/ Sub- programm name
      *
      * @return string the name of the program
      */
@@ -148,9 +147,9 @@ interface Mumsys_Permissions_Interface
      *
      * @todo _isUser() check is min access is userr ? or session good ennugh?
      *
-     * @param $program string modul/program name
-     * @param $controller Controller/ Sub- programm name
-     * @param $action Action to check access for
+     * @param string|false $program string modul/program name
+     * @param string|false $controller Controller/ Sub- programm name
+     * @param string|false $action Action to check access for
      *
      * @return boolean Returns true on access or false for no access
      */

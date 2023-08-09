@@ -112,7 +112,7 @@ class Mumsys_Html_Table
     /**
      * ID of the column to detect row color changes, if given this activates
      * the feature.
-     * @var interger|string
+     * @var int|string
      */
     private $_altRowColorKeyChange;
 
@@ -175,7 +175,7 @@ class Mumsys_Html_Table
     /**
      * Set headline values for the table
      *
-     * @param array $attr List of values or if set true to use the key of the
+     * @param array|true $values List of values or if set true to use the key of the
      * input data which will expect key/value pairs and the keys will be used
      */
     public function setHeadlines( $values = true )
@@ -256,6 +256,9 @@ class Mumsys_Html_Table
      */
     public function addHeadline( $value )
     {
+        if ( $this->_headlines['values'] === false ) {
+            $this->_headlines['values'] = array();
+        }
         $this->_headlines['values'][] = $value;
     }
 
@@ -330,7 +333,7 @@ class Mumsys_Html_Table
      * if the value of the given key is changed.
      *
      * @param array $list List of colors to set e.g.: array('#FFFFF','#333333'..
-     * @param integer $colKey The column when a color-change should take effect
+     * @param int|false $colKey The column when a color-change should take effect
      */
     public function setAltRowColor( array $list, $colKey = false )
     {
@@ -355,7 +358,7 @@ class Mumsys_Html_Table
     {
         $color = false;
         if ( $this->_altRowColor ) {
-            $_isAltrowKeyChg = isset( $this->_altRowColorKeyChange );
+            $_isAltrowKeyChg = is_int( $this->_altRowColorKeyChange );
             if ( $_isAltrowKeyChg && $this->_colorChangeVal == $val ) {
                 $color = current( $this->_altRowColor );
             } else {
@@ -540,18 +543,20 @@ class Mumsys_Html_Table
      * to replace that items.
      *
      * @param string $str Value/ content to set
-     * @param integer $row Row number or "_" for all rows
-     * @param integer $col Number of the column or "_" for all columns
+     * @param int|string $row Row number or "_" for all rows
+     * @param int|string $col Number of the column or "_" for all columns
      */
     public function setColContents( $str, $row, $col )
     {
         try {
-            if ( !is_int( $row ) && $row != '_' ) {
+            if ( ! is_int( $row ) && $row != '_' ) {
                 throw new Exception( 'Invalid row value to set col contents' );
             }
-            if ( !is_int( $col ) && $col != '_' ) {
+
+            if ( ! is_int( $col ) && $col != '_' ) {
                 throw new Exception( 'Invalid column value to set col contents' );
             }
+
         } catch ( Exception $e ) {
             throw new Mumsys_Html_Exception( $e->getMessage() );
         }
@@ -659,7 +664,7 @@ class Mumsys_Html_Table
             // row begin
             $theHtml .= '<tr';
             if ( $this->_altRowColor ) {
-                if ( isset( $this->_altRowColorKeyChange ) ) {
+                if ( is_int( $this->_altRowColorKeyChange ) ) {
                     if ( !isset( $tmp[$this->_altRowColorKeyChange] ) ) {
                         $message = 'Column key not exists to change a color for rows: "'
                             . $this->_altRowColorKeyChange . '"';
@@ -672,7 +677,7 @@ class Mumsys_Html_Table
 
                 $theHtml .= ' bgcolor="' . $this->getAltRowColor( $row, $colorKey ) . '"';
 
-                if ( isset( $this->_altRowColorKeyChange ) ) {
+                if ( is_int( $this->_altRowColorKeyChange ) ) {
                     // memory
                     $this->_colorChangeVal = $tmp[$this->_altRowColorKeyChange];
                 }

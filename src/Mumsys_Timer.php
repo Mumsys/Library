@@ -66,9 +66,9 @@ class Mumsys_Timer
 
     /**
      * The number of seconds, micro seconds
-     * @var string
+     * @var float
      */
-    private $_elapsed = 0;
+    private $_elapsed = 0.0;
 
 
     /**
@@ -107,7 +107,7 @@ class Mumsys_Timer
     /**
      * Stop the timer and calculate the time between start and stop time.
      *
-     * @return string Returns the number of seconds, micro seconds
+     * @return float Returns the number of seconds, micro seconds
      */
     public function stop()
     {
@@ -132,11 +132,11 @@ class Mumsys_Timer
     /**
      * Sets the start time.
      *
-     * @param float Statr time as float value to be set
+     * @param float $timestamp Start time as float value to be set
      */
-    public function startTimeSet( $time )
+    public function startTimeSet( $timestamp )
     {
-        $this->_start = (float) $time;
+        $this->_start = (float) $timestamp;
     }
 
 

@@ -23,14 +23,23 @@ class Mumsys_Html_TableTest
     /**
      * @var Mumsys_Html_Table
      */
-    protected $_object;
+    private $_object;
 
     /**
      * List of colors for tests
      * @var array
      */
-    protected $_colors;
+    private $_colors;
 
+    /**
+     * @var string
+     */
+    private $_version;
+
+    /**
+     * @var array
+     */
+    private $_versions;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -55,7 +64,7 @@ class Mumsys_Html_TableTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

@@ -29,9 +29,9 @@ class Mumsys_Service_AbstractTestClass
 class Mumsys_Service_AbstractTest extends Mumsys_Unittest_Testcase
 {
     /**
-     * @var Mumsys_Service_AbstractTestClass
+     * @var string
      */
-    protected $_object;
+    private $_version;
 
 
     /**
@@ -41,7 +41,7 @@ class Mumsys_Service_AbstractTest extends Mumsys_Unittest_Testcase
     protected function setUp(): void
     {
         $this->_version = '1.0.0';
-        $this->_object = new Mumsys_Service_AbstractTestClass();
+        //$this->_object = new Mumsys_Service_AbstractTestClass();
     }
 
 
@@ -51,7 +51,7 @@ class Mumsys_Service_AbstractTest extends Mumsys_Unittest_Testcase
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
 

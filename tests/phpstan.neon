@@ -1,1 +1,58 @@
-../misc/testing/phpstan.neon-dist
+# first setup, to be updated
+parameters:
+    bootstrapFiles:
+        - bootstrap.php
+        # 4 eg: Mumsys_Db_Driver_Abstract
+        - testconstants.php
+
+    level: 1
+
+    # 2023-08-01 set to false for GetOpts implementation
+    treatPhpDocTypesAsCertain: false
+
+    # activate to check missing PhpDocs for class properties; default: false
+    #inferPrivatePropertyTypeFromConstructor: true
+
+    ignoreErrors:
+        #- '#Call to an undefined method [a-zA-Z0-9\\_]+::doFoo\(\)#'
+        - '#Call to an undefined method Mumsys_Logger_File::emerg\(\)#'
+        - '#Call to an undefined method Mumsys_Logger_File::alert\(\)#'
+        - '#Call to an undefined method Mumsys_Logger_File::crit\(\)#'
+        - '#Call to an undefined method Mumsys_Logger_File::err\(\)#'
+        - '#Call to an undefined method Mumsys_Logger_File::warn\(\)#'
+        - '#Call to an undefined method Mumsys_Logger_File::notice\(\)#'
+        - '#Call to an undefined method Mumsys_Logger_File::info\(\)#'
+        - '#Call to an undefined method Mumsys_Logger_File::debug\(\)#'
+        - '#Call to an undefined method Mumsys_Logger_File::invalid\(\)#'
+        - '#Call to an undefined method PHPMailer\\PHPMailer\\PHPMailer::mumsysMailMethod\(\)#'
+        - '#Access to an undefined property Mumsys_Php::\$unknownVariable#'
+        #- '#Call to an undefined static method Mumsys_Php::strstr\(\)#'
+        - '#Call to an undefined method Mumsys_Php::strstr\(\)#'
+
+    # Hints:
+    # Make sure not using a global /tmp dir by default.
+    # [project root]/tests/tmp/cache is a good place.
+    # Dont forget to update composer dependencies and autoload cache to be
+    # renewed when switching branches
+    tmpDir: %rootDir%/../../../tests/tmp/cache
+
+    scanDirectories:
+        - %rootDir%/../../../src
+        - %rootDir%/../../../tests/src
+        - %rootDir%/../../../tests/testfiles
+        - %rootDir%/../../../tests/benchmarks
+
+#    autoload_files:
+#        - %rootDir%/../../../vendor/autoload.php
+
+#    excludes_analyse:
+#        - %rootDir%/../../../src/www
+
+    excludePaths:
+#        # once you hide those you may forget to reenable!
+#        - %rootDir%/../../../src/Mumsys_Weather_*
+        - %rootDir%/../../../src/Mumsys_Db_Driver*
+        - %rootDir%/../../../src/Mumsys_Mvc_Display_Helper_Url*
+        - %rootDir%/../../../src/Mumsys_Weather*
+        #- %rootDir%/../../../src/Mumsys_ShellTools_Adapter_Exif*
+        - %rootDir%/../../../tests/src/Mumsys_Db_Driver*

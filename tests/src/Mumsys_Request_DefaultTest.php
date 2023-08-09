@@ -9,32 +9,27 @@ class Mumsys_Request_DefaultTest
     /**
      * @var Mumsys_Request_Default
      */
-    protected $_object;
+    private $_object;
 
     /**
      * @var array
      */
-    protected $_input;
+    private $_inputGet;
 
     /**
      * @var array
      */
-    protected $_inputGet;
-
-    /**
-     * @var array
-     */
-    protected $_inputPost;
+    private $_inputPost;
 
     /**
      * @var string
      */
-    protected $_version;
+    private $_version;
 
     /**
      * @var array
      */
-    protected $_versions;
+    private $_versions;
 
 
     /**
@@ -77,7 +72,7 @@ class Mumsys_Request_DefaultTest
      */
     protected function tearDown(): void
     {
-        $this->_object = null;
+        unset( $this->_object );
     }
 
     /**

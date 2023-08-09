@@ -11,6 +11,21 @@ class Mumsys_ContextTest
      */
     protected $_object;
 
+    /**
+     * @var string
+     */
+    private $_version;
+
+    /**
+     * @var array
+     */
+    private $_versions;
+
+    /**
+     * @var string
+     */
+    private $_logfile;
+
 
     /**
      * Sets up the fixture, for example, opens a network connection.

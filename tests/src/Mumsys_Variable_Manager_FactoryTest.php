@@ -8,11 +8,6 @@ class Mumsys_Variable_Manager_FactoryTest
     extends Mumsys_Unittest_Testcase
 {
     /**
-     * @var Mumsys_Variable_Manager_Factory
-     */
-    protected $_object;
-
-    /**
      * Version ID of Mumsys_Variable_Manager_Factory
      * @var string
      */

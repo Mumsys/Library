@@ -11,6 +11,21 @@
         <echo msg="./phing -h|--help gives you phing options" />
     </target>
 
+    <target name="all" depends="check,sca,test" description="Execute all main parts of the package (check,sca,test)">
+    </target>
+
+    <target name="check" description="Executes the coding style sniffer">
+        <echo msg="Executing the coding style sniffer" />
+        <exec command="./runCSCheck.sh -n --ignore=./config/credentials.php,./config/default.php ../src ./src bootstrap.php MumsysTestHelper.php"
+            dir="tests" checkreturn="true" logoutput="true"
+        />
+    </target>
+
+    <target name="sca" description="Executes the static code analysis (sca) (level=4)">
+        <echo msg="Executing the static code analysis (level=4, tests/src/, src)" />
+        <exec command="./runStaticCodeAnalysis.sh --level=4 ../src/ ./src/" dir="tests" checkreturn="true" logoutput="true" />
+    </target>
+
     <target name="test" description="Executes the unit tests">
         <echo msg="Executing unit tests" />
         <delete file="tests/phing-unittest.log" quiet="true" failonerror="false" />
@@ -24,7 +39,6 @@
         <exec command="./runTestsCoverageCreate.sh" dir="tests" checkreturn="true" logoutput="true" />
     </target>
 
-
     <target name="api" description="Generates the API">
         <echo msg="Generating the API currently not in" />
         <!--
@@ -33,30 +47,9 @@
         -->
     </target>
 
-    <target name="gitstats" description="Generates git statistics">
-        <echo msg="Generating git statistics" />
-        <exec command="gitstats . docs/GitStats" dir="./" checkreturn="true" logoutput="true" />
-    </target>
-
-
-    <target name="check" description="Executes the coding style sniffer">
-        <echo msg="Executing the coding style sniffer" />
-        <exec command="./runCSCheck.sh -n --ignore=./config/credentials.php,./config/default.php ../src ./src bootstrap.php MumsysTestHelper.php"
-            dir="tests" checkreturn="true" logoutput="true"
-        />
-    </target>
-
-    <target name="sca" description="Executes the static code analysis (sca) (low level here)">
-        <echo msg="Executing the static code analysis sniffer" />
-        <exec command="./runStaticCodeAnalysis.sh ../src/" dir="tests" checkreturn="true" logoutput="true" />
-    </target>
-
     <target name="benchmarks" description="Executes the benchmark scripts/tests (warning: takes some time!)">
         <echo msg="Executing the benchmark scripts/tests (warning: this takes some time!)" />
         <exec command="./runBenchmarks.sh benchmarks/src" dir="tests" checkreturn="true" logoutput="true" />
-    </target>
-
-    <target name="all" depends="check,coverage,api,benchmarks" description="Execute all main parts of the package check,coverage,api,benchmarks">
     </target>
 
     <!--
@@ -73,6 +66,10 @@
         <exec command="doctoc --title '**Table of contents**' --entryprefix '+'  ${docfile}" dir="." checkreturn="true" logoutput="true" />
     </target>
 
+    <target name="gitstats" description="Generates git statistics">
+        <echo msg="Generating git statistics" />
+        <exec command="gitstats . docs/GitStats" dir="./" checkreturn="true" logoutput="true" />
+    </target>
 
     <!-- travis-ci service see also .travis-ci.yml file -->
     <target name="travis" description="Run check,coverage,api on travis-ci">
@@ -92,4 +89,5 @@
             </else>
         </if>
     </target>
+
 </project>

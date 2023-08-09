@@ -1,4 +1,18 @@
-<?php
+<?php declare( strict_types=1 );
+
+/**
+ * Mumsys_GetOptsTest
+ * for MUMSYS Library for Multi User Management System (MUMSYS)
+ *
+ * @license LGPL Version 3 http://www.gnu.org/licenses/lgpl-3.0.txt
+ * @copyright (c) 2015 by Florian Blasel
+ * @author Florian Blasel <flobee.code@gmail.com>
+ *
+ * @category    Mumsys
+ * @package     Library
+ * @subpackage  GetOpts
+ */
+
 
 /**
  * Test class for Mumsys_GetOpts.
@@ -9,19 +23,45 @@ class Mumsys_GetOptsTest
     /**
      * @var Mumsys_GetOpts
      */
-    protected $_object;
+    private $_object;
 
     /**
-     * Initial options/configuration
+     * Initial options/configuration grouped in forms of configs:
+     * simple => simple,
+     * simpledesc => simple with descriptions
+     * simpleactions => simple with simple actions
+     * simpleactionsdesc => simple with simple actions and descriptions
+     *
      * @var array
      */
-    private $_opts;
+    private $_optionsSimple;
+    private $_optionsSimpleDesc;
+    private $_optionsSimpleActions;
+    private $_optionsSimpleActionsDesc;
 
     /**
      * Input parameters to work with.
      * @var array
      */
-    private $_input;
+    private $_inputSimple;
+    private $_inputSimpleDesc;
+    private $_inputSimpleActions;
+
+    /**
+     * Long help prefix string
+     * @var string
+     */
+    private $_helpLong;
+
+    /**
+     * @var string
+     */
+    private $_version;
+
+    /**
+     * @var array
+     */
+    private $_versions;
 
 
     /**
@@ -30,500 +70,86 @@ class Mumsys_GetOptsTest
      */
     protected function setUp(): void
     {
-        $this->_version = '3.6.1';
+        $this->_version = '4.0.0';
         $this->_versions = array(
-            'Mumsys_Abstract' => Mumsys_Abstract::VERSION,
             'Mumsys_GetOpts' => $this->_version,
+            'Mumsys_Abstract' => '3.0.3',
+            'Mumsys_Php_Globals' => '2.2.0',
         );
 
-        $this->_opts = array(
+        // simple
+        $this->_optionsSimple = array(
             '-v|--verbose', // v or verbose flag
-            '-i|--input:',  // i or input parameter with reguired value. e.g.:
-                            // --input /tmp/file.txt
-            '-b|--bits:',   // b or bits parameter with required value
-            '-f:', // f with input
-            '--help|-h' => 'help option and this value is the help info place',
+            '-i|--input:', // i or input parameter with reguired value. e.g.:
+            // --input /tmp/file.txt or --input=/tmp/file.txt
+            '-f:', // single short f with required input
+            '--file:', // single long --file with required input
+            '-h', // single short -h flag (eg: for help) not required
+            '--help', // single long --help flag (seperated for testing) not required
         );
-
-        $this->_input = array(
+        $this->_inputSimple = array(
             'programToCall', // program to call
             '--verbose',
             '-i',
             'tmp/file.txt',
-            '--bits',
-            'bits',
-            '-f:',
+            '-f',
             'f',
+            '--file',
+            'file',
+            '-h',
             '--help',
         );
 
-        $this->_object = new Mumsys_GetOpts( $this->_opts, $this->_input );
-    }
-
-
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown(): void
-    {
-        $this->_object = null;
-    }
-
-
-    /**
-     * @covers Mumsys_GetOpts::__construct
-     */
-    public function testConstruct1()
-    {
-        $_SERVER['argv'] = array();
-        $_SERVER['argc'] = 0;
-        // use server vars, not input parameters
-        $x = new Mumsys_GetOpts( $this->_opts );
-
-        $this->assertingInstanceOf( 'Mumsys_GetOpts', $x );
-
-        $regex = '/(Empty options detected. Can not parse shell arguments)/i';
-        $this->expectingExceptionMessageRegex( $regex );
-        $this->expectingException( 'Mumsys_GetOpts_Exception' );
-        new Mumsys_GetOpts();
-    }
-
-
-    /**
-     * @covers Mumsys_GetOpts::__construct
-     * @covers Mumsys_GetOpts::parse
-     */
-    public function testConstructException2()
-    {
-        $regex = '/(Missing value for parameter "-h" in action "_default_")/m';
-        $this->expectingExceptionMessageRegex( $regex );
-        $this->expectingException( 'Mumsys_GetOpts_Exception' );
-
-        $options = array(
-            '-h:', // a value required
-            '--action:' => 'Action to call: finalize, cron, import',
-            'cron' => 'Process listed jobs',
-            'import' => 'Create new jobs',
-            '--file:' => 'csv file location to/for import',
-            'finalize' => 'Bring cache to storage an drop cache after a successful execution',
+        // simple desc
+        $this->_optionsSimpleDesc = array(
+            '-v|--verbose' => 'description -v|--verbose',
+            '-i|--input:' => 'description -i|--input:',
+            '-f:' => 'description -f:',
+            '--file:' => 'description --file:',
+            '-h' => 'description -h',
+            '--help' => 'description --help',
         );
-        new Mumsys_GetOpts( $options, array('cmd', '-h') );
-    }
+        $this->_inputSimpleDesc = $this->_inputSimple;
 
-
-    /**
-     * @covers Mumsys_GetOpts::__construct
-     * @covers Mumsys_GetOpts::parse
-     */
-    public function testConstructExceptionWithNoFlag()
-    {
-        $inp = $this->_input;
-        $inp[] = '--no-unknown';
-
-        $this->expectingException( 'Mumsys_GetOpts_Exception' );
-        $regex = '/(Option "--no-unknown" not found in option list\/configuration)/';
-        $this->expectingExceptionMessageRegex( $regex );
-        new Mumsys_GetOpts( $this->_opts, $inp );
-    }
-
-
-    /**
-     * @covers Mumsys_GetOpts::__construct
-     * @covers Mumsys_GetOpts::verifyOptions
-     * @covers Mumsys_GetOpts::setMappingOptions
-     * @covers Mumsys_GetOpts::getMapping
-     */
-    public function testConstructVerifyOptionsAndMapping()
-    {
-        $input[] = 'programToCall';
-        $input[] = '--help';
-        $options = $this->_opts;
-        $newOpts = array('_default_' => $options);
-
-        $object = new Mumsys_GetOpts( $options, $input );
-
-        $incomming1 = $object->verifyOptions( $options );
-        $object->setMappingOptions( $incomming1 );
-        $mapping1 = $object->getMapping();
-
-        $incomming2 = $object->verifyOptions( $newOpts );
-        $object->setMappingOptions( $incomming2 );
-        $mapping2 = $object->getMapping();
-
-        $this->assertingEquals( $newOpts, $incomming1 );
-        $this->assertingEquals( $newOpts, $incomming2 );
-        $this->assertingEquals( $mapping1, $mapping2 );
-    }
-
-
-    /**
-     * @covers Mumsys_GetOpts::__construct
-     * @covers Mumsys_GetOpts::verifyOptions
-     */
-    public function testConstructVerifyOptionsException1()
-    {
-        $regex = '/(Invalid input config found)/i';
-        $this->expectingExceptionMessageRegex( $regex );
-        $this->expectingException( 'Mumsys_GetOpts_Exception' );
-
-        $opts = array(0, 1);
-        $this->_object->verifyOptions( $opts );
-    }
-
-
-    /**
-     * @covers Mumsys_GetOpts::__construct
-     * @covers Mumsys_GetOpts::verifyOptions
-     */
-    public function testConstructVerifyOptionsException2()
-    {
-        $regex = '/(Invalid input config found)/i';
-        $this->expectingExceptionMessageRegex( $regex );
-        $this->expectingException( 'Mumsys_GetOpts_Exception' );
-
-        $optsError = array('somevalue', '-v|--verbose');
-        $this->_object->verifyOptions( $optsError );
-    }
-
-
-    /**
-     * @covers Mumsys_GetOpts::parse
-     * @covers Mumsys_GetOpts::getResult
-     */
-    public function testParseGetResultSimple()
-    {
-        $config = array(
-            '--verbose|-v',
-            '--input:' => 'desc for input',
-            '--flag',
-            '-h'
-        );
-        $input = array('script.php', '--verbose', '--input', "file1.txt", '--flag', '-h');
-        $this->_object = new Mumsys_GetOpts( $config, $input );
-
-        $actual1 = $this->_object->getResult();
-        $expected1 = array(
-            'verbose' => true,
-            'input' => 'file1.txt',
-            'flag' => true,
-            'h' => true,
-        );
-
-        // test using --no-<option> removal which result in boolean false
-        $input = array(
-            'script.php', '--verbose', '--input', "file1.txt", '--flag',
-            '--no-flag', '--no-input', '--no-v', '-h', '--no-h'
-        );
-        $this->_object = new Mumsys_GetOpts( $config, $input );
-        $actual2 = $this->_object->getResult();
-        $expected2 = $expected1;
-        $expected2['flag'] = false;
-        $expected2['input'] = false;
-        $expected2['verbose'] = false;
-        $expected2['h'] = false;
-
-        $this->assertingEquals( $expected1, $actual1 );
-        $this->assertingEquals( $expected2, $actual2 );
-    }
-
-
-    /**
-     * Too many options/ not registered in config.
-     * @covers Mumsys_GetOpts::parse
-     */
-    public function testParseException1()
-    {
-        $config = array(
-            '--input:' => 'desc for input',
-            '--verbose',
-        );
-        $input = array('script.php', '--verbose', '--input', 'file.txt', '--others');
-
-        $regex = '/(Option "--others" not found in option list\/configuration for action "_default_")/i';
-        $this->expectingException( 'Mumsys_GetOpts_Exception' );
-        $this->expectingExceptionMessageRegex( $regex );
-        new Mumsys_GetOpts( $config, $input );
-    }
-
-
-    /**
-     * Missing reqired input
-     * @covers Mumsys_GetOpts::parse
-     */
-    public function testParseException2()
-    {
-        $config = array(
-            '--input:' => 'desc for input',
-            '--verbose',
-        );
-        $input = array('script.php', '--verbose', '--input');
-
-        $regex = '/(Missing value for parameter "--input" in action "_default_")/i';
-        $this->expectingExceptionMessageRegex( $regex );
-        $this->expectingException( 'Mumsys_GetOpts_Exception' );
-        new Mumsys_GetOpts( $config, $input );
-    }
-
-
-    /**
-     * @covers Mumsys_GetOpts::parse
-     * @covers Mumsys_GetOpts::getResult
-     */
-    public function testParseGetResultAdvanced()
-    {
-        // all in: all opts fits to an action
-        $opts = array(
-            '--verbose|-v' => true,
-            '--input:' => 'desc for input in action1',
-            '--flag' => true,
-        );
-        $allInConfig = array(
-            'action1' => $opts,
-            'action2' => $opts,
-        );
-        // eg: script.php action1 --verbose --input file1.txt --flag action2 --input file2.txt
-        $input = array(
-            'script.php',
-            'action1', '--verbose', '--input', "file1.txt", '--flag',
-            'action2', '--input', 'file2.txt', '-v', '--no-v',
-        );
-
-        $this->_object = new Mumsys_GetOpts( $allInConfig, $input );
-        $actual1 = $this->_object->getResult();
-        $expected1 = array(
-            'action1' => array('verbose' => true, 'input' => 'file1.txt', 'flag' => true),
-            'action2' => array('input' => 'file2.txt', 'verbose' => false),
-        );
-
-        $this->assertingEquals( $expected1, $actual1 );
-
-        // current implementation does NOT support this:
-        // a fixed configuration with two actions
-        $advConfig = array(
-            'action1' => array(
-                '--verbose' => true,
-                '--input:' => 'desc for input in action1',
-                '--flag' => true,
-            ),
-            'action2' => array(
-                '--verbose' => true,
-                '--xbc' => 'desc for input in action2',
-                '--set' => true,
-            ),
-        );
-        $input = array(
-            'script.php',
-            'action1', '--verbose', '--input', "file1.txt", '--flag',
-            'action2', '--xbc', 'file2.txt'
-        );
-
-//        $this->_object = new Mumsys_GetOpts($advConfig, $input);
-//print_r($this->_object);
-//        // a flexible config, same options for the program but several actions
-//        $flexConfig = array(
-//            '--verbose' => true,
-//            '--input:' => 'desc for input in action1',
-//            '--flag' => true,
-//            '--verbose' => true,
-//            '--xbc' => 'desc for input in action2',
-//            '--set' => true,
-//            'actions' => array('run','setconfig', 'showconfig'),
-//        );
-//
-//        $this->assertingEquals($expected, $actual);
-    }
-
-
-    /**
-     * Minimal test, for complete CC see parse() tests.
-     * @covers Mumsys_GetOpts::getResult
-     */
-    public function testGetResult()
-    {
-        $actual1 = $this->_object->getResult();
-        $actual2 = $this->_object->getResult();
-        $expected = array(
-            'verbose' => true,
-            'input' => 'tmp/file.txt',
-            'bits' => 'bits',
-            'f' => 'f',
-            'help' => true,
-        );
-
-        $this->assertingEquals( $expected, $actual1 );
-        $this->assertingEquals( $expected, $actual2 );
-    }
-
-
-    /**
-     * @covers Mumsys_GetOpts::getCmd
-     */
-    public function testGetCmd()
-    {
-        $actual = $this->_object->getCmd();
-        $expected = '--verbose --input tmp/file.txt --bits bits -f f --help';
-        $this->assertingEquals( $expected, $actual );
-
-        $input = array('program', '--verbose', '--input', "true", '--bits', 'false', '-f', 'f_param', '--no-f');
-        $this->_object = new Mumsys_GetOpts( $this->_opts, $input );
-
-        $actual = $this->_object->getCmd();
-        $expected = '--verbose --input true --bits false --no-f';
-        $this->assertingEquals( $expected, $actual );
-    }
-
-
-    /**
-     * @covers Mumsys_GetOpts::getCmd
-     */
-    public function testGetCmd2()
-    {
-        $o = new Mumsys_GetOpts( array('-y:'), array('cmd', '-y', 'yes') );
-        $actual = $o->getCmd();
-        $expected = '-y yes';
-        $this->assertingEquals( $expected, $actual );
-
-        $this->expectingException( 'Mumsys_GetOpts_Exception' );
-        $this->expectingExceptionMessageRegex( '/(Missing value for parameter "-x")/' );
-        $o = new Mumsys_GetOpts( array('-x:'), array('cmd', '-x') );
-        $actual = $o->getCmd();
-    }
-
-
-    /**
-     * @covers Mumsys_GetOpts::getCmd
-     */
-    public function testGetCmdAdv()
-    {
-        // all in: all opts fits to an action
-        $opts = array(
-            '--verbose|-v' => true,
-            '--input:' => 'desc for input in action',
-            '--flag' => true,
-        );
-        $allInConfig = array(
-            'action1' => $opts,
-            'action2' => $opts,
-        );
-        // eg: script.php action1 --verbose --input file1.txt --flag action2 --input file2.txt
-        $input = array(
-            'script.php',
-            'action1', '--verbose', '--input', "file1.txt", '--flag',
-            'action2', '--input', 'file2.txt', '-v', '--no-v',
-        );
-
-        $object = new Mumsys_GetOpts( $allInConfig, $input );
-
-        $actual = $object->getCmd();
-        $expected = 'action1 --verbose --input file1.txt --flag action2 '
-            . '--input file2.txt --no-verbose';
-        $this->assertingEquals( $expected, $actual );
-    }
-
-
-    /**
-     * @covers Mumsys_GetOpts::getMapping
-     */
-    public function testGetMapping()
-    {
-        $actual = $this->_object->getMapping();
-        $expected = array(
-            '_default_' => array(
-                '-v' => '--verbose',
-                '--verbose' => '--verbose',
-                '-i' => '--input',
-                '--input' => '--input',
-                '-b' => '--bits',
-                '--bits' => '--bits',
-                '-f' => '-f',
-                '-h' => '--help',
-                '--help' => '--help',
+        // simple actions
+        $this->_optionsSimpleActions = array_merge(
+            $this->_optionsSimple,
+            array(
+            'action1', // without a description or params
+            'action2' => array(), // with no params
+            'action3' => array(
+                '--long',
+                '-s'
+            ), // with params
             )
         );
-
-        $this->assertingEquals( $expected, $actual );
-    }
-
-
-    /**
-     * @covers Mumsys_GetOpts::getHelp
-     * @covers Mumsys_GetOpts::__toString
-     */
-    public function testGetHelp()
-    {
-        $actual = $this->_object->getHelp();
-        $expected = 'Actions/ options/ information:' . PHP_EOL
-            . '-v|--verbose' . PHP_EOL
-            . '-i|--input <yourValue/s>' . PHP_EOL
-            . '-b|--bits <yourValue/s>' . PHP_EOL
-            . '-f <yourValue/s>' . PHP_EOL
-            . '--help|-h' . PHP_EOL
-            . "    help option and this value is the help info place"
-            . PHP_EOL
-            . PHP_EOL
-        ;
-
-        $this->assertingEquals( $expected, $actual );
-        $this->assertingEquals( $expected, $this->_object );
-    }
-
-
-    /**
-     * @covers Mumsys_GetOpts::getHelp
-     * @covers Mumsys_GetOpts::__toString
-     */
-    public function testGetHelpAdv()
-    {
-        // all in: all opts fits to an action
-        $opts = array(
-            '--verbose|-v' => true,
-            '--input:' => 'desc for input in action',
-            '--flag' => true,
-        );
-        $allInConfig = array(
-            'action1' => $opts,
-            'action2' => $opts,
-        );
-        // eg: script.php action1 --verbose --input file1.txt --flag action2 --input file2.txt
-        $input = array(
-            'script.php',
-            'action1', '--verbose', '--input', "file1.txt", '--flag',
-            'action2', '--input', 'file2.txt', '-v', '--no-v',
+        $this->_inputSimpleActions = array(
+            'programToCall', // program to call
+            '--verbose',
+            '-i',
+            'tmp/file.txt',
+            '-f',
+            'f',
+            '--file',
+            'file',
+            '-h',
+            '--help',
+            'action1', // just a call
+            'action2', // just a call
+            'action3', // just a call
         );
 
-        $object = new Mumsys_GetOpts( $allInConfig, $input );
+        // simple actions desc
+        $this->_optionsSimpleActionsDesc = $this->_optionsSimpleDesc + array(
+            'action1' => 'action1 description',
+            'action2' => 'action2 description',
+            'action3' => array( // currently no action desc possible!
+                '--long' => 'action3 description --long',
+                '-s' => 'action3 description -s',
+            ), // with no params
+        );
 
-        $actual = $object->getHelp();
-        $expected = 'action1' . PHP_EOL
-            . "    --verbose|-v" . PHP_EOL
-            . "    --input <yourValue/s>" . PHP_EOL
-            . "        desc for input in action" . PHP_EOL . PHP_EOL
-            . "    --flag" . PHP_EOL
-            . PHP_EOL
-            . "action2" . PHP_EOL
-            . "    --verbose|-v" . PHP_EOL
-            . "    --input <yourValue/s>" . PHP_EOL
-            . "        desc for input in action" . PHP_EOL . PHP_EOL
-            . "    --flag" . PHP_EOL
-            . PHP_EOL
-        ;
-
-        $this->assertingEquals( $expected, $actual );
-        $this->assertingEquals( $expected, $object );
-    }
-
-
-    /**
-     * @covers Mumsys_GetOpts::getHelpLong
-     * @covers Mumsys_GetOpts::getHelp
-     */
-    public function testGetHelpLong()
-    {
-
-        $actual = $this->_object->getHelpLong();
-
-        $expected = <<<TEXT
+        $this->_helpLong = <<<HELPLONG
 Class to handle/ pipe shell arguments in php context.
 
 Shell arguments will be parsed and an array list of key/value pairs will be
@@ -543,38 +169,862 @@ The un-flag option will always disable/ remove a value.
 
 Your options:
 
-Actions/ options/ information:
 
-TEXT;
-        $expected .= ''
+HELPLONG;
+
+        $this->_object = new Mumsys_GetOpts( $this->_optionsSimple, array() );
+    }
+
+
+    /**
+     * Tears down the fixture, for example, closes a network connection.
+     * This method is called after a test is executed.
+     */
+    protected function tearDown(): void
+    {
+        unset( $this->_object );
+    }
+
+
+    /**
+     * @covers Mumsys_GetOpts::__construct
+     */
+    public function testConstructServerVars()
+    {
+        $_SERVER['argv'] = array();
+        $_SERVER['argc'] = 0;
+
+        // use server vars, not input parameters
+        $object = new Mumsys_GetOpts( $this->_optionsSimple );
+        $this->assertingInstanceOf( 'Mumsys_GetOpts', $object );
+    }
+
+
+    /**
+     * @covers Mumsys_GetOpts::__construct
+     */
+    public function testConstructInputVars()
+    {
+        $_SERVER['argv'] = array();
+        $_SERVER['argc'] = 0;
+
+        // use server vars, not input parameters
+        $object = new Mumsys_GetOpts( $this->_optionsSimple, $this->_inputSimple );
+        $this->assertingInstanceOf( 'Mumsys_GetOpts', $object );
+    }
+
+
+    /**
+     * @covers Mumsys_GetOpts::__construct
+     */
+    public function testConstructException()
+    {
+        $this->expectingException( 'TypeError' );
+        $regex = '/(Argument #1 (.*) must be of type array, int given)/i';
+        $this->expectingExceptionMessageRegex( $regex );
+        new Mumsys_GetOpts( 1, 1 );
+    }
+
+
+    /**
+     * @covers Mumsys_GetOpts::__construct
+     * @covers Mumsys_GetOpts::_verifyOptions
+     * @covers Mumsys_GetOpts::getOptions
+     *
+     */
+    public function testConstructVerifyOptions()
+    {
+        // A
+        $objectA = new Mumsys_GetOpts( $this->_optionsSimple );
+        $resultA = $objectA->getOptions();
+        $expectedA = array(
+            '_default_' => array(
+                '-v|--verbose' => 'No description',
+                '-i|--input:' => 'No description',
+                '-f:' => 'No description',
+                '--file:' => 'No description',
+                '-h' => 'No description',
+                '--help' => 'No description',
+            )
+        );
+
+        // B
+        $objectB = new Mumsys_GetOpts( $this->_optionsSimpleDesc );
+        $resultB = $objectB->getOptions();
+        $expectedB = array(
+            '_default_' => array(
+                '-v|--verbose' => 'description -v|--verbose',
+                '-i|--input:' => 'description -i|--input:',
+                '-f:' => 'description -f:',
+                '--file:' => 'description --file:',
+                '-h' => 'description -h',
+                '--help' => 'description --help',
+            )
+        );
+
+        // C
+        $objectC = new Mumsys_GetOpts( $this->_optionsSimpleActions );
+        $resultC = $objectC->getOptions();
+        $expectedC = $expectedA + array(
+            'action1' => array(),
+            'action2' => array(),
+            'action3' => array('--long', '-s'),
+        );
+
+        // D
+        $objectD = new Mumsys_GetOpts( $this->_optionsSimpleActionsDesc );
+        $resultD = $objectD->getOptions();
+        $expectedD = $expectedB + array(
+            'action1' => 'action1 description',
+            'action2' => 'action2 description',
+            'action3' => array(
+                '--long' => 'action3 description --long',
+                '-s' => 'action3 description -s'
+            ),
+        );
+
+        // compare
+        $this->assertingEquals( $expectedA, $resultA );
+        $this->assertingEquals( $expectedB, $resultB );
+        $this->assertingEquals( $expectedC, $resultC );
+        $this->assertingEquals( $expectedD, $resultD );
+
+        // exception
+        $this->expectingException( 'Mumsys_GetOpts_Exception' );
+        $regex = '/(Invalid input config found for key "0", value \(json\)\: "0")/i';
+        $this->expectingExceptionMessageRegex( $regex );
+        $objectE = new Mumsys_GetOpts( array(0, 1) );
+    }
+
+
+    /**
+     * @covers Mumsys_GetOpts::__construct
+     * @covers Mumsys_GetOpts::_generateMappingOptions
+     * @covers Mumsys_GetOpts::getMapping
+     */
+    public function testConstructSetMappingOptions()
+    {
+        // A
+        $objectA = new Mumsys_GetOpts( $this->_optionsSimple, $this->_inputSimple );
+        $resultA = $objectA->getMapping();
+        $expectedA = array(
+            '_default_' => array(
+                '-v' => '--verbose',
+                '--verbose' => '--verbose',
+                '-i' => '--input',
+                '--input' => '--input',
+                '-f' => '-f',
+                '--file' => '--file',
+                '-h' => '-h',
+                '--help' => '--help',
+            ),
+        );
+
+        // B
+        $objectB = new Mumsys_GetOpts( $this->_optionsSimpleDesc, $this->_inputSimpleDesc );
+        $resultB = $objectB->getMapping();
+        $expectedB = $expectedA;
+
+        // C
+        $objectC = new Mumsys_GetOpts( $this->_optionsSimpleActions, $this->_inputSimpleActions );
+        $resultC = $objectC->getMapping();
+        $expectedC = $expectedA + array(
+            'action1' => array(),
+            'action2' => array(),
+            'action3' => array(
+                '--long'=>'--long',
+                '-s' => '-s',
+            ),
+        );
+
+        // D
+        $objectD = new Mumsys_GetOpts( $this->_optionsSimpleActionsDesc, array() );
+        $resultD = $objectD->getMapping();
+        $expectedD = $expectedC;
+
+        // 4CC
+        // E toggle long and short opts for action
+        $optionsE = $this->_optionsSimpleActionsDesc;
+        $optionsE['action3'] = array(
+            '--long|-l' => 'action3 description --long|-l',
+            '-s' => 'action3 description -s',
+        );
+        $objectE = new Mumsys_GetOpts( $optionsE, array() );
+        $resultE = $objectE->getMapping();
+        $expectedE = $expectedC;
+        $expectedE['action3'] = array(
+                '--long'=>'--long',
+                '-l'=>'--long',
+                '-s' => '-s',
+            );
+
+        // compare
+        $this->assertingEquals( $expectedA, $resultA );
+        $this->assertingEquals( $expectedB, $resultB );
+        $this->assertingEquals( $expectedC, $resultC );
+        $this->assertingEquals( $expectedD, $resultD );
+        $this->assertingEquals( $expectedE, $resultE );
+    }
+
+
+    /**
+     * @covers Mumsys_GetOpts::__construct
+     * @covers Mumsys_GetOpts::parse
+     * @covers Mumsys_GetOpts::_parseArg
+     * @covers Mumsys_GetOpts::_argFindInOptions
+     * @covers Mumsys_GetOpts::_argIsReqired
+     */
+    public function testParseSimple()
+    {
+        // A
+        $objectA = new Mumsys_GetOpts( $this->_optionsSimple, $this->_inputSimple );
+        $this->assertingInstanceOf( 'Mumsys_GetOpts', $objectA );
+        $resultA = $objectA->getResult();
+        $expectedA = array(
+            'verbose' => true,
+            'input' => 'tmp/file.txt',
+            'f' => 'f',
+            'file' => 'file',
+            'h' => true,
+            'help' => true,
+        );
+
+        // b
+        $objectB = new Mumsys_GetOpts( $this->_optionsSimpleDesc, $this->_inputSimple );
+        $this->assertingInstanceOf( 'Mumsys_GetOpts', $objectB );
+        $resultB = $objectB->getResult();
+        $expectedB = $expectedA;
+
+        // c
+        $objectC = new Mumsys_GetOpts( $this->_optionsSimpleActions, $this->_inputSimpleActions );
+        $this->assertingInstanceOf( 'Mumsys_GetOpts', $objectC );
+        $resultC = $objectC->getResult();
+        $expectedC = $expectedA + array(
+            'action1' => array(),
+            'action2' => array(),
+            'action3' => array(),
+        );
+
+        // d
+        $objectD = new Mumsys_GetOpts( $this->_optionsSimpleActionsDesc, $this->_inputSimpleActions );
+        $this->assertingInstanceOf( 'Mumsys_GetOpts', $objectD );
+        $resultD = $objectD->getResult();
+        $expectedD = $expectedC;
+
+        // compare
+        $this->assertingEquals( $expectedA, $resultA );
+        $this->assertingEquals( $expectedB, $resultB );
+        $this->assertingEquals( $expectedC, $resultC );
+        $this->assertingEquals( $expectedD, $resultD );
+    }
+
+//    wont fix at php side!
+//    /**
+//     * negativ int as array keys and also a solution:
+//     * https://github.com/php/php-src/issues/11787
+//     *
+//     * @covers Mumsys_GetOpts::__construct
+//     * @covers Mumsys_GetOpts::parse
+//     * @covers Mumsys_GetOpts::_parseArg
+//     */
+//    public function testParseSimpleTestNumericArg()
+//    {
+//        $this->markTestIncomplete('Negativ int wont fix unless php will do for array keys');
+//
+//        // -9 opt: Wont fix at all undtil php fix it!
+//        // Use --9 works may be dont use it
+//        // negativ keys works only if given as negativ int and the order must fit!
+//        //  -9 then -1 wont work (php internal next key/int would be -8)
+//        // If you have all numbers set in config and parameters, ok.
+//        // Else: danger zone. Wont fix!
+//
+//        $options  = array(
+//            '--2' => 'two', // -> goes int -2
+//            '--1', // goes int -1
+//            '-0' => 'key -0 val string', // goes "-0" ... and result parser to positive int's.
+//        );
+//        $input = array(
+//            'program',
+//            '--2',
+//            '--1',
+//            '-0',
+//        );
+//
+//        $objectA = new Mumsys_GetOpts( $options, $input );
+//        $this->assertingInstanceOf( 'Mumsys_GetOpts', $objectA );
+//        $resultA = $objectA->getResult();
+//
+//        $expectedA = array(
+//            '--2' => true,
+//            '--1' => true,
+//            '-0' => true,
+//        );
+//
+//        // compare
+//        $this->assertingTrue( $expectedA === $resultA );
+//    }
+
+
+    /**
+     * @covers Mumsys_GetOpts::__construct
+     * @covers Mumsys_GetOpts::parse
+     * @covers Mumsys_GetOpts::_parseArg
+     */
+    public function testParseSimpleActionsRequiredDirectValueGiven()
+    {
+        // replace -f with -f=f, drop index 7, reindex array
+        $tmp = $this->_inputSimpleActions;
+        $tmp[4] = '-f=f'; // -f already set an this wont be tested 4cc
+        unset( $tmp[5] );
+        $input = array_values( $tmp );
+
+        $objectA = new Mumsys_GetOpts( $this->_optionsSimpleActions, $input );
+        $this->assertingInstanceOf( 'Mumsys_GetOpts', $objectA );
+        $resultA = $objectA->getResult();
+        $expectedA = array(
+            'verbose' => true,
+            'input' => 'tmp/file.txt',
+            'f' => 'f',
+            'file' => 'file',
+            'h' => true,
+            'help' => true,
+            'action1' => array(),
+            'action2' => array(),
+            'action3' => array(),
+        );
+
+        // compare
+        $this->assertingEquals( $expectedA, $resultA );
+    }
+
+
+    /**
+     * @covers Mumsys_GetOpts::__construct
+     * @covers Mumsys_GetOpts::parse
+     * @covers Mumsys_GetOpts::_parseArg
+     */
+    public function testParseArgException1TooManyInDirectValue()
+    {
+        // replace -f with -f=f+f2=f3 (hack test), drop index 7, reindex array
+        $tmp = $this->_inputSimpleActions;
+        $tmp[6] = '-f=f+f2=f3';
+        unset( $tmp[7] );
+        $input = array_values( $tmp );
+
+        $regex = '/(Arg value handling error for: "-f=f\+f2=f3")/m';
+        $this->expectingExceptionMessageRegex( $regex );
+        $this->expectingException( 'Mumsys_GetOpts_Exception' );
+        new Mumsys_GetOpts( $this->_optionsSimpleActions, $input );
+    }
+
+
+    /**
+     * 4CC
+     * @covers Mumsys_GetOpts::__construct
+     * @covers Mumsys_GetOpts::parse
+     * @covers Mumsys_GetOpts::_parseArg
+     * @covers Mumsys_GetOpts::_argFindInOptions
+     * @covers Mumsys_GetOpts::_argIsUntag
+     */
+    public function testParseArgUnTagGlobal1()
+    {
+        $input = $this->_inputSimple;
+        $input[1] = '--no-verbose';
+
+        $objectA = new Mumsys_GetOpts( $this->_optionsSimple, $input );
+        $this->assertingInstanceOf( 'Mumsys_GetOpts', $objectA );
+        $resultA = $objectA->getResult();
+        $expectedA = array(
+            'verbose' => false, // <-- this test 4CC
+            'input' => 'tmp/file.txt',
+            'f' => 'f',
+            'file' => 'file',
+            'h' => true,
+            'help' => true,
+        );
+
+        // compare
+        $this->assertingEquals( $expectedA, $resultA );
+    }
+
+
+    /**
+     * 4CC
+     * @covers Mumsys_GetOpts::__construct
+     * @covers Mumsys_GetOpts::parse
+     * @covers Mumsys_GetOpts::_parseArg
+     * @covers Mumsys_GetOpts::_argFindInOptions
+     * @covers Mumsys_GetOpts::_argIsUntag
+     * @covers Mumsys_GetOpts::getResult
+     *
+     * parseArg:366:if ( $action !== '_default_' && isset( $this->_mapping['_default_'][$argTag] ) ) {
+     * never reached! what happen?
+     */
+    public function testParseArgUnTagGlobalInsideAction()
+    {
+        $input = array(
+            'programToCall', // program to call
+            '--verbose',
+            'action3',
+            '--long',
+            '-s',
+            '--no-verbose', // <--- disable verbose, unTag in global
+            '--no-long', // <--- disable long, unTag in action
+            '--no-s', // <--- disable s, unTag in action 4CC in _argIsUntag()
+        );
+        $objectA = new Mumsys_GetOpts( $this->_optionsSimpleActions, $input );
+        $this->assertingInstanceOf( 'Mumsys_GetOpts', $objectA );
+        $resultA = $objectA->getResult();
+        $expectedA = array(
+            'verbose' => false,
+            'action3' => array(
+                'long' => false,
+                's' => false,
+            ),
+        );
+
+        // compare
+        $this->assertingEquals( $expectedA, $resultA );
+    }
+
+
+    /**
+     * @covers Mumsys_GetOpts::parse
+     * @covers Mumsys_GetOpts::_parseArg
+     */
+    public function testParseArgStartWithActionsAndThenUnTagGlobal()
+    {
+        $options = array(
+            '--help',
+            'action1',
+            'action2',
+            'action3' => array(
+                '--long' => 'action3 description --long',
+                '-s' => 'action3 description -s',
+            ),
+        );
+        $input = array(
+            'program',
+            'action1',
+            '--help',
+        );
+        $objectA = new Mumsys_GetOpts( $options, $input );
+        $resultA = $objectA->getResult();
+        $expectedA = array(
+            'help' => true,
+            'action1' => array(),
+        );
+
+        // compare
+        $this->assertingEquals( $expectedA, $resultA );
+    }
+
+
+    /**
+     * @covers Mumsys_GetOpts::parse
+     * @covers Mumsys_GetOpts::_parseArg
+     */
+    public function testParseArgWithJustActionsNoGlobals()
+    {
+        $options = array(
+            'action1',
+            'action2',
+            'action3' => array(
+                '--long' => 'action3 description --long',
+                '-s' => 'action3 description -s',
+            ),
+        );
+        $input = array(
+            'program',
+            'action2',
+            'action3',
+            '--long',
+            'action1',
+        );
+        $objectA = new Mumsys_GetOpts( $options, $input );
+        $resultA = $objectA->getResult();
+        $expectedA = array(
+            'action2' => array(),
+            'action3' => array('long' => true),
+            'action1' => array(),
+        );
+
+        // compare
+        $this->assertingEquals( $expectedA, $resultA );
+    }
+
+
+    /**
+     * @covers Mumsys_GetOpts::parse
+     * @covers Mumsys_GetOpts::_parseArg
+     * @covers Mumsys_GetOpts::getResult
+     */
+    public function testParseArgSingleRequiredDirectValueGiven()
+    {
+        $options = array('--file:' => 'description --file:');
+        $input = array('programm', '--file=file');
+
+        $objectA = new Mumsys_GetOpts( $options, $input );
+        $this->assertingInstanceOf( 'Mumsys_GetOpts', $objectA );
+        $resultA = $objectA->getResult();
+        $expectedA = array(
+            'file' => 'file',
+        );
+
+        // compare
+        $this->assertingEquals( $expectedA, $resultA );
+    }
+
+
+    /**
+     * @covers Mumsys_GetOpts::__construct
+     * @covers Mumsys_GetOpts::parse
+     * @covers Mumsys_GetOpts::_parseArg
+     */
+    public function testParseArgUnknownArgException()
+    {
+        $regex = '/(Option \"--iAmNotIn\" not found in option list\/configuration for action "_default_")/m';
+        $this->expectingExceptionMessageRegex( $regex );
+        $this->expectingException( 'Mumsys_GetOpts_Exception' );
+
+        $input = $this->_inputSimple;
+        $input[] = '--iAmNotIn';
+        new Mumsys_GetOpts( $this->_optionsSimple, $input );
+    }
+
+
+    /**
+     * 4CC simulate invalid input
+     * @covers Mumsys_GetOpts::__construct
+     * @covers Mumsys_GetOpts::parse
+     * @covers Mumsys_GetOpts::_parseArg
+     */
+    public function testParseArgInvalidRequiredException()
+    {
+        $options = array(
+            '--file:' => 'description --file:'
+        );
+        $input = array(
+            'programm',
+            '--file',
+            '--doException', // <-- invalid o text exception
+            'file'
+        );
+
+        $regex = '/(Missing or invalid value for parameter "(.*)" in action ".*")/m';
+        $this->expectingExceptionMessageRegex( $regex );
+        $this->expectingException( 'Mumsys_GetOpts_Exception' );
+
+        new Mumsys_GetOpts( $options, $input );
+
+    }
+
+
+    /**
+     * @covers Mumsys_GetOpts::parse
+     * @covers Mumsys_GetOpts::getResult
+     */
+    public function testResultCheckResultCache()
+    {
+        $object = new Mumsys_GetOpts( $this->_optionsSimple, $this->_inputSimple );
+
+        $actualA = $object->getResult();
+        $actualB = $object->getResult();
+        $expectedA = array(
+            'verbose' => true,
+            'input' => 'tmp/file.txt',
+            'f' => 'f',
+            'file' => 'file',
+            'h' => true,
+            'help' => true,
+        );
+
+        $this->assertingEquals( $expectedA, $actualA );
+    }
+
+
+    /**
+     * @covers Mumsys_GetOpts::getHelp
+     * @covers Mumsys_GetOpts::getHelpLong
+     * @covers Mumsys_GetOpts::_wordwrapHelp
+     * @covers Mumsys_GetOpts::__toString
+     */
+    public function testGetHelpSimple()
+    {
+        $object = new Mumsys_GetOpts( $this->_optionsSimple, $this->_inputSimple );
+        $actual = $object->getHelp();
+        $expected = 'Global options/ information:' . PHP_EOL
+             . PHP_EOL
             . '-v|--verbose' . PHP_EOL
+            . '    No description' . PHP_EOL
+            . '    ' . PHP_EOL
             . '-i|--input <yourValue/s>' . PHP_EOL
-            . '-b|--bits <yourValue/s>' . PHP_EOL
+            . '    No description' . PHP_EOL
+            . '    ' . PHP_EOL
             . '-f <yourValue/s>' . PHP_EOL
-            . '--help|-h' . PHP_EOL
-            . "    help option and this value is the help info place"
+            . '    No description' . PHP_EOL
+            . '    ' . PHP_EOL
+            . '--file <yourValue/s>' . PHP_EOL
+            . '    No description' . PHP_EOL
+            . '    ' . PHP_EOL
+            . '-h' . PHP_EOL
+            . '    No description' . PHP_EOL
+            . '    ' . PHP_EOL
+            . '--help' . PHP_EOL
+            . '    No description' . PHP_EOL
             . PHP_EOL
-            . PHP_EOL
-        ;
         ;
 
         $this->assertingEquals( $expected, $actual );
+        $this->assertingEquals( $expected, $object );
+        $this->assertingEquals( ( $this->_helpLong . $expected ), $object->getHelpLong() );
     }
 
+
+    /**
+     * @covers Mumsys_GetOpts::getHelp
+     * @covers Mumsys_GetOpts::getHelpLong
+     * @covers Mumsys_GetOpts::_wordwrapHelp
+     * @covers Mumsys_GetOpts::__toString
+     */
+    public function testGetHelpSimpleActions()
+    {
+        $object = new Mumsys_GetOpts( $this->_optionsSimpleActions, $this->_inputSimpleActions );
+        $actual = $object->getHelp();
+        $expected = 'Global options/ Actions and options/ information:' . PHP_EOL
+             . PHP_EOL
+            . '-v|--verbose' . PHP_EOL
+            . '    No description' . PHP_EOL
+            . '    ' . PHP_EOL
+            . '-i|--input <yourValue/s>' . PHP_EOL
+            . '    No description' . PHP_EOL
+            . '    ' . PHP_EOL
+            . '-f <yourValue/s>' . PHP_EOL
+            . '    No description' . PHP_EOL
+            . '    ' . PHP_EOL
+            . '--file <yourValue/s>' . PHP_EOL
+            . '    No description' . PHP_EOL
+            . '    ' . PHP_EOL
+            . '-h' . PHP_EOL
+            . '    No description' . PHP_EOL
+            . '    ' . PHP_EOL
+            . '--help' . PHP_EOL
+            . '    No description' . PHP_EOL
+            . PHP_EOL
+            . 'action1' . PHP_EOL
+            . '        No description' . PHP_EOL
+            . PHP_EOL
+            . 'action2' . PHP_EOL
+            . '        No description' . PHP_EOL
+            . PHP_EOL
+            . 'action3' . PHP_EOL
+            . '    --long' . PHP_EOL
+            . '        No description' . PHP_EOL
+            . '        ' . PHP_EOL
+            . '    -s' . PHP_EOL
+            . '        No description' . PHP_EOL
+            . PHP_EOL
+        ;
+
+        $this->assertingEquals( $expected, $actual );
+        $this->assertingEquals( $expected, $object );
+        $this->assertingEquals( ( $this->_helpLong . $expected ), $object->getHelpLong() );
+    }
+
+
+    /**
+     * @covers Mumsys_GetOpts::getHelp
+     * @covers Mumsys_GetOpts::getHelpLong
+     * @covers Mumsys_GetOpts::_wordwrapHelp
+     * @covers Mumsys_GetOpts::__toString
+     */
+    public function testGetHelpSimpleActionsWithDesc()
+    {
+        $object = new Mumsys_GetOpts( $this->_optionsSimpleActionsDesc, array() );
+        $actual = $object->getHelp();
+        $expected = 'Global options/ Actions and options/ information:' . PHP_EOL
+             . PHP_EOL
+            . '-v|--verbose' . PHP_EOL
+            . '    description -v|--verbose' . PHP_EOL
+            . '    ' . PHP_EOL
+            . '-i|--input <yourValue/s>' . PHP_EOL
+            . '    description -i|--input:' . PHP_EOL
+            . '    ' . PHP_EOL
+            . '-f <yourValue/s>' . PHP_EOL
+            . '    description -f:' . PHP_EOL
+            . '    ' . PHP_EOL
+            . '--file <yourValue/s>' . PHP_EOL
+            . '    description --file:' . PHP_EOL
+            . '    ' . PHP_EOL
+            . '-h' . PHP_EOL
+            . '    description -h' . PHP_EOL
+            . '    ' . PHP_EOL
+            . '--help' . PHP_EOL
+            . '    description --help' . PHP_EOL
+            . PHP_EOL
+            . 'action1' . PHP_EOL
+            . '    action1 description' . PHP_EOL
+            . PHP_EOL
+            . 'action2' . PHP_EOL
+            . '    action2 description' . PHP_EOL
+            . PHP_EOL
+            . 'action3' . PHP_EOL
+            . '    --long' . PHP_EOL
+            . '        action3 description --long' . PHP_EOL
+            . '        ' . PHP_EOL
+            . '    -s' . PHP_EOL
+            . '        action3 description -s' . PHP_EOL
+            . PHP_EOL
+        ;
+
+        $this->assertingEquals( $expected, $actual );
+        $this->assertingEquals( $expected, $object );
+        $this->assertingEquals( ( $this->_helpLong . $expected ), $object->getHelpLong() );
+    }
+
+    /**
+     * @covers Mumsys_GetOpts::getHelp
+     * @covers Mumsys_GetOpts::getHelpLong
+     * @covers Mumsys_GetOpts::_wordwrapHelp
+     * @covers Mumsys_GetOpts::__toString
+     */
+    public function testGetHelpActionsWithDescNoGlobals()
+    {
+        $options = array(
+            'action1' => 'action1 description',
+            'action2' => 'action2 description',
+            'action3' => array( // currently no action desc possible!
+                '--long' => 'action3 description --long',
+                '-s' => 'action3 description -s',
+            ),
+        );
+        $input = array(
+            'program',
+
+        );
+        $object = new Mumsys_GetOpts( $options, $input );
+        $actual = $object->getHelp();
+        $expected = 'Actions and options/ information:' . PHP_EOL
+            . PHP_EOL
+            . 'action1' . PHP_EOL
+            . '    action1 description' . PHP_EOL
+            . PHP_EOL
+            . 'action2' . PHP_EOL
+            . '    action2 description' . PHP_EOL
+            . PHP_EOL
+            . 'action3' . PHP_EOL
+            . '    --long' . PHP_EOL
+            . '        action3 description --long' . PHP_EOL
+            . '        ' . PHP_EOL
+            . '    -s' . PHP_EOL
+            . '        action3 description -s' . PHP_EOL
+            . PHP_EOL
+        ;
+
+        $this->assertingEquals( $expected, $actual );
+        $this->assertingEquals( $expected, $object );
+        $this->assertingEquals( ( $this->_helpLong . $expected ), $object->getHelpLong() );
+    }
+
+
+    /**
+     * @covers Mumsys_GetOpts::getCmd
+     */
+    public function testGetCmdSimple()
+    {
+        $objectA = new Mumsys_GetOpts( $this->_optionsSimple, $this->_inputSimple );
+        $this->assertingInstanceOf( 'Mumsys_GetOpts', $objectA );
+        $resultA = $objectA->getCmd();
+        $expectedA = 'programToCall --verbose --input tmp/file.txt -f f --file file -h --help';
+
+        // compare
+        $this->assertingEquals( $expectedA, $resultA );
+    }
+
+    /**
+     * @covers Mumsys_GetOpts::getCmd
+     */
+    public function testGetCmdActions()
+    {
+        $input = array_merge( $this->_inputSimpleActions, array('--no-help') );
+        $objectA = new Mumsys_GetOpts( $this->_optionsSimpleActionsDesc, $input );
+        $this->assertingInstanceOf( 'Mumsys_GetOpts', $objectA );
+        $resultA = $objectA->getCmd();
+        $expectedA = 'programToCall '
+            . '--verbose --input tmp/file.txt -f f --file file -h --no-help action1 action2 action3';
+
+        // compare
+        $this->assertingEquals( $expectedA, $resultA );
+    }
+
+//
+//    /**
+//     * @covers Mumsys_GetOpts::getCmd
+//     */
+//    public function testGetCmd2()
+//    {
+//        $o = new Mumsys_GetOpts( array('-y:'), array('cmd', '-y', 'yes') );
+//        $actual = $o->getCmd();
+//        $expected = '-y yes';
+//        $this->assertingEquals( $expected, $actual );
+//
+//        $this->expectingException( 'Mumsys_GetOpts_Exception' );
+//        $this->expectingExceptionMessageRegex( '/(Missing value for parameter "-x")/' );
+//        $o = new Mumsys_GetOpts( array('-x:'), array('cmd', '-x') );
+//        $actual = $o->getCmd();
+//    }
+//
+//
+//    /**
+//     * @covers Mumsys_GetOpts::getCmd
+//     */
+//    public function testGetCmdAdv()
+//    {
+//        // all in: all opts fits to an action
+//        $opts = array(
+//            '--verbose|-v' => true,
+//            '--input:' => 'desc for input in action',
+//            '--flag' => true,
+//        );
+//        $allInConfig = array(
+//            'action1' => $opts,
+//            'action2' => $opts,
+//        );
+//        // eg: script.php action1 --verbose --input file1.txt --flag action2 --input file2.txt
+//        $input = array(
+//            'script.php',
+//            'action1', '--verbose', '--input', "file1.txt", '--flag',
+//            'action2', '--input', 'file2.txt', '-v', '--no-v',
+//        );
+//
+//        $object = new Mumsys_GetOpts( $allInConfig, $input );
+//
+//        $actual = $object->getCmd();
+//        $expected = 'action1 --verbose --input file1.txt --flag action2 '
+//            . '--input file2.txt --no-verbose';
+//        $this->assertingEquals( $expected, $actual );
+//    }
+//
+//
+//
+//
+//
 
     /**
      * @covers Mumsys_GetOpts::getRawData
      */
     public function testGetRawData()
     {
-        $actual = $this->_object->getRawData();
+        $object = new Mumsys_GetOpts( $this->_optionsSimple, $this->_inputSimple );
+        $actual = $object->getRawData();
         $expected = array(
             '_default_' => array(
                 '--verbose' => true,
                 '--input' => 'tmp/file.txt',
-                '--bits' => 'bits',
                 '-f' => 'f',
-                '--help' => true
+                '--file' => 'file',
+                '-h' => true,
+                '--help' => true,
             )
         );
 
@@ -587,8 +1037,10 @@ TEXT;
      */
     public function testGetRawInput()
     {
-        $actual = $this->_object->getRawInput();
-        $this->assertingEquals( $this->_input, $actual );
+        $object = new Mumsys_GetOpts( $this->_optionsSimple, $this->_inputSimple );
+        $actual = $object->getRawInput();
+
+        $this->assertingEquals( $this->_inputSimple, $actual );
     }
 
 
@@ -597,10 +1049,10 @@ TEXT;
      */
     public function testResetResult()
     {
-        $this->_object->resetResults();
-
-        $this->assertingEquals( array(), $this->_object->getMapping() );
-        $this->assertingEquals( array(), $this->_object->getResult() );
+        $object = new Mumsys_GetOpts( $this->_optionsSimple, $this->_inputSimple );
+        $object->resetResults();
+        $this->assertingEquals( array(), $object->getMapping() );
+        $this->assertingEquals( array(), $object->getResult() );
     }
 
 
@@ -610,7 +1062,9 @@ TEXT;
      */
     public function testgetVersions()
     {
-        $possible = $this->_object->getVersions();
+        $object = new Mumsys_GetOpts( $this->_optionsSimple, $this->_inputSimple );
+
+        $possible = $object->getVersions();
 
         foreach ( $this->_versions as $must => $value ) {
             $this->assertingTrue( isset( $possible[$must] ) );

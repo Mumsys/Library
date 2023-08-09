@@ -94,6 +94,7 @@ class Mumsys_Db_Factory
     public static function createManager( Mumsys_Config_Interface $config,
         string $driver = 'Default' ): Mumsys_Db_Manager_Interface
     {
+        /** @var Mumsys_Db_Manager_Interface|string $class 4SCA */
         $class = 'Mumsys_Db_Manager_' . $driver;
         $file = __DIR__ . DIRECTORY_SEPARATOR . $class . '.php';
 

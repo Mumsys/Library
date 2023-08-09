@@ -28,8 +28,8 @@ interface Mumsys_Logger_Decorator_Interface
     /**
      * Initialize the decorator logger object
      *
-     * @param Mumsys_Logger_Interface Logger object to be decorated
+     * @param Mumsys_Logger_Interface $logger Logger object to be decorated
      */
-    public function __construct( Mumsys_Logger_Interface $object );
+    public function __construct( Mumsys_Logger_Interface $logger );
 
 }

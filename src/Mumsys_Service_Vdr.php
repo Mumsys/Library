@@ -50,9 +50,9 @@ class Mumsys_Service_Vdr
      * 'vdr_id', 'name', 'bouquet', 'frequency', 'parameter', 'source', 'symbolrate',
      * 'VPID', 'APID', 'TPID', 'CAID', 'SID', 'NID', 'TID', 'RID'
      * @link http://vdr-wiki.de/wiki/index.php/Channels.conf VDR Specs
-     * @var array
+     * @ v ar array
      */
-    private $_channels = array();
+    //private $_channels = array(); disabled 4SCA
 
 
     /**
@@ -605,7 +605,7 @@ class Mumsys_Service_Vdr
      * Returns a timer record from given timer string format.
      *
      * @param string $timerString The timer string from svdrp program
-     * @return array|false Returns the timer record or false if record ID is missing.
+     * @return array Returns the timer record or false if record ID is missing.
      */
     private function _timerString2ItemGet( $timerString = null )
     {
@@ -638,7 +638,7 @@ class Mumsys_Service_Vdr
     /**
      * Returns a timer string format from given timer record to set/ update the timer.
      *
-     * @param string $timerString The timer string from svdrp program
+     * @param array $record The timer record
      * @return string Returns the timer string.
      */
     public function timerItem2StringGet( array $record = array() )

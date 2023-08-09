@@ -49,18 +49,16 @@ class Mumsys_Db_Driver_None_None
             }
 
             $options = array(
-                'options' => array(
-                    $this->_dbc,
-                    $this->_host,
-                    $this->_username,
-                    $this->_password,
-                    $this->_dbName,
-                    $this->_port,
-                    $this->_socket
-                ),
+                $this->_dbc,
+                $this->_host,
+                $this->_username,
+                $this->_password,
+                $this->_dbName,
+                $this->_port,
+                $this->_socket
             );
-            $this->_dbc = new stdClass( $options );
-
+            $this->_dbc = new stdClass();
+            $this->_dbc->options = $options;
             $this->_isConnected = true;
 
         }
@@ -194,7 +192,8 @@ class Mumsys_Db_Driver_None_None
             return $this->_setError( $error );
         }
 
-        $result = new stdClass( array('sql' => $this->_sql) );
+        $result = new stdClass();
+        $result->sql = $this->_sql;
         $oRes = new Mumsys_Db_Driver_None_None_Result( $this, $result );
 
         return $oRes;
@@ -436,7 +435,8 @@ class Mumsys_Db_Driver_None_None
      */
     protected function _save( $params, $action = 'update' )
     {
-        return $this->query( $sql );
+        //ups!?: return $this->query( $sql );
+        throw new Exception( 'Not implemented' );
     }
 
 
