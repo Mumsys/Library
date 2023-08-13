@@ -28,13 +28,13 @@ class Mumsys_Upload_MockTest
     private $_object;
 
     /**
-     * Base dir for test files
+     * Base dir for test files 'tests/testfiles/Domain/Upload
      * @var string
      */
     private $_dirTestFiles;
 
     /**
-     * Tmp file for testing
+     * Tmp file for testing 'tests/tmp'
      * @var string
      */
     private $_dirTmpFiles;
@@ -101,8 +101,8 @@ class Mumsys_Upload_MockTest
      */
     public function testMove_uploaded_fileEception1()
     {
-        $to = $this->_dirTestFiles . '/notExists/c.file';
         $from = $this->_dirTestFiles . '/c.file';
+        $to = $this->_dirTestFiles . '/notExists/c.file';
 
         $this->expectingException( 'Mumsys_Upload_Exception' );
         $mesg = '/(Target path )(.*)( not writeable)/i';
@@ -122,7 +122,8 @@ class Mumsys_Upload_MockTest
         }
 
         $from = $this->_dirTestFiles . '/a.file';
-        $to =  '/tmp/Upload_MockTest/test';
+        // work before, now that way: unknown err if this comes up again: 2023-08
+        $to = /* $this->_dirTmpFiles . */'/tmp/Upload_MockTest/test';
         // works with /tmp but not eg. in /home/... hmm.
         //$to =  $this->_dirTmpFiles . '/Upload_MockTest/test'; //
         $errBak = error_reporting();
