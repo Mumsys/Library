@@ -1,8 +1,9 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
 
-require_once 'bootstrap.php';
-
+//chdir( __DIR__ );
+require_once __DIR__ . '/bootstrap.php';
+//echo 'xx:'.print_r($_SERVER, true).':xx'; -> PWD
 $denyList = array('root', 'admin', 'administrator', 'sysadmin');
 if ( in_array( strtolower( @$_SERVER['USER'] ), $denyList ) ) {
     $userList = '\'' . implode( '\', ', $denyList ) . '\'';
@@ -52,7 +53,9 @@ $adapterList = array(
     new Mumsys_ShellTools_Adapter_ExifMeta2Filename( $oLogger ), // exiftool
     new Mumsys_ShellTools_Adapter_ExifFilename2Meta( $oLogger ), // exiftool
     new Mumsys_ShellTools_Adapter_FfmpegCutTrimVideo( $oLogger ), // ffmpeg
-    new Mumsys_ShellTools_Adapter_ResizeImages( $oLogger ), // imagemagick
+    new Mumsys_ShellTools_Adapter_ResizeImages( $oLogger ), // imagemagick: convert
+    new Mumsys_ShellTools_Adapter_ResizeVideos( $oLogger ), // ffmpeg
+//    new Mumsys_ShellTools_Adapter_ColorImagesToGrayscale( $oLogger ), // imagemagick, exiftool 4 thmbs
     //new Mumsys_ShellTools_Adapter_Demo( $oLogger ),
 );
 $oConfig = new Mumsys_Config_Default();
