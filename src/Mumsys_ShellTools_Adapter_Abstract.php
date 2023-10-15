@@ -112,6 +112,14 @@ abstract class Mumsys_ShellTools_Adapter_Abstract
         $this->_logger = $logger;
         $this->_requires = $requires;
         $this->_options = $options;
+
+        /**
+         * global options, eg: ?
+         * sourcePath
+         * sourceFile
+         * targetPath
+         * targetFile
+         */
         $this->_optionDefaults = $optionDefaults;
         //$this->_logger->log( get_called_class() . '::__construct()', 7 );
     }
@@ -201,7 +209,7 @@ abstract class Mumsys_ShellTools_Adapter_Abstract
     protected function _execCommand( string $command, $hideStdErr = false ): array
     {
         $data = $code = null;
-        $_cmd = escapeshellcmd( $command );
+        $_cmd = escapeshellcmd( $command ); // too many excapes? see meta2filename
         if ( $hideStdErr ) {
             $_cmd .= ' 2>/dev/null';
         }
@@ -549,7 +557,7 @@ abstract class Mumsys_ShellTools_Adapter_Abstract
     /**
      * Checks if variable given or takes the default value.
      *
-     * Note: if abs. phth did not succeed it checks for relativ location and
+     * Note: if abs. path did not succeed it checks for relativ location and
      * returns the value if a match was found.
      *
      * Dont use this if you dont have a default value and if the value is not
