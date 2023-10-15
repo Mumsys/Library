@@ -63,7 +63,10 @@ class Mumsys_ShellTools_Adapter_ResizeImages
             . 'Eg: suffix: _x, size: 1600 will create a file from source to '
             . '[filename]_x1600[.ext] => photo_x1600.jpg' . PHP_EOL
             . 'If (optional) --target (path!) given that path would be used to '
-            . 'store resized images. Default: source path = target path'
+            . 'store resized images. Default: source path = target path.' . PHP_EOL
+            . PHP_EOL
+            . 'Currently limitations: Problems with network drives found '
+            . 'combined with utf8 characters in the location string.'
             ,
         'resizeimages' => array(
             '--source:' => 'The directory or location to the file to use',
@@ -243,7 +246,7 @@ class Mumsys_ShellTools_Adapter_ResizeImages
 
         $cmdList = array();
 
-        // source validation was made in validate()
+        // source validation was made in validate() in shelltools.php
         if ( is_dir( $this->_results['source'] . DIRECTORY_SEPARATOR ) ) {
             /** @var array<string> $fileList 4SCA */
             $fileList = (array) scandir( $this->_results['source'] );
@@ -316,7 +319,7 @@ class Mumsys_ShellTools_Adapter_ResizeImages
             //  convert "$src" -resize "$format" "$target/$src";
 
             $cmd = sprintf(
-                '%1$s "%2$s" -resize "%3$s" %4$s',
+                '%1$s "%2$s" -resize "%3$s" "%4$s"',
                 $cmdBase,
                 $workingDir . '/' . $filename,
                 $this->_results['size'],
