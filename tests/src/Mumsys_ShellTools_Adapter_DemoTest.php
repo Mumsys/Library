@@ -181,6 +181,28 @@ class Mumsys_ShellTools_Adapter_DemoTest
 
 
     /**
+     * @covers Mumsys_ShellTools_Adapter_Demo::setRequirementConfig
+     */
+    public function testSetRequirementConfig()
+    {
+        $actualA = $this->_object->getRequirementConfig();
+        $this->_object->setRequirementConfig( $actualA );
+        $expectedA = array(
+            'cli' => array(
+                'linux' => array(
+                    'testalias' => array(
+                        'test' => ' -d',
+                        'test',
+                    ),
+                ),
+            ),
+        );
+
+        $this->assertingEquals( $expectedA, $actualA );
+    }
+
+
+    /**
      * @covers Mumsys_ShellTools_Adapter_Demo::validate
      */
     public function testValidateEmptyInput()

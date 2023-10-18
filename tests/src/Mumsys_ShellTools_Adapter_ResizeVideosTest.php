@@ -1,7 +1,7 @@
 <?php declare( strict_types=1 );
 
 /**
- * Mumsys_ShellTools_Adapter_ResizeImagesTest
+ * Mumsys_ShellTools_Adapter_ResizeVideosTest
  * for MUMSYS Library for Multi User Management System (MUMSYS)
  *
  * @license LGPL Version 3 http://www.gnu.org/licenses/lgpl-3.0.txt
@@ -17,11 +17,11 @@
 /**
  * Generated 2023-08-11 at 17:15:00.
  */
-class Mumsys_ShellTools_Adapter_ResizeImagesTest
+class Mumsys_ShellTools_Adapter_ResizeVideosTest
     extends Mumsys_Unittest_Testcase
 {
     /**
-     * @var Mumsys_ShellTools_Adapter_ResizeImages
+     * @var Mumsys_ShellTools_Adapter_ResizeVideos
      */
     private $_object;
 
@@ -93,7 +93,7 @@ class Mumsys_ShellTools_Adapter_ResizeImagesTest
         );
         $this->_logger = new Mumsys_Logger_File( $loggerOpts );
 
-        $this->_object = new Mumsys_ShellTools_Adapter_ResizeImages( $this->_logger );
+        $this->_object = new Mumsys_ShellTools_Adapter_ResizeVideos( $this->_logger );
     }
 
 
@@ -115,38 +115,35 @@ class Mumsys_ShellTools_Adapter_ResizeImagesTest
 
 
     /**
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::__construct
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::__construct
      */
     public function test__construct(): void
     {
-        $object = new Mumsys_ShellTools_Adapter_ResizeImages( $this->_logger );
-        $this->assertingInstanceOf( 'Mumsys_ShellTools_Adapter_ResizeImages', $object );
+        $object = new Mumsys_ShellTools_Adapter_ResizeVideos( $this->_logger );
+        $this->assertingInstanceOf( 'Mumsys_ShellTools_Adapter_ResizeVideos', $object );
     }
 
 
     /**
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::getCliOptions
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::getCliOptions
      */
     public function testGetCliOptions(): void
     {
         $actualA = $this->_object->getCliOptions();
         $expectedA = array(
-            'Action "resizeimages"' => 'Resize images and keep ratio (dimensions) '
-                . 'using imagemagick "convert" command.' . PHP_EOL
-                . 'Suffix and size will be merged.' . PHP_EOL
-                . 'Eg: suffix: _x, size: 1600 will create a file from source to '
-                . '[filename]_x1600[.ext] => photo_x1600.jpg' . PHP_EOL
-                . 'If (optional) --target (path!) given that path would be used to '
-                . 'store resized images. Default: source path = target path.' . PHP_EOL
-                . PHP_EOL
-                . 'Currently limitations: Problems with network drives found '
-                . 'combined with utf8 characters in the location string.'
-                ,
-            'resizeimages' => array(
-                '--source:' => 'The directory or location to the file to use',
-                '--size:' => 'Size in pixel. Default 1600',
+            'Action "resizevideos"' => 'Resize videos and keep ratio (dimensions) '
+            . 'using ffmpeg command.' . PHP_EOL
+            . 'Filename for the target: Suffix and size will be merged.' . PHP_EOL
+            . 'Eg: suffix: _x, size: 720 (x axis) will create a file from source to '
+            . '[filename]_x720[.ext] => video_x720.jpg' . PHP_EOL
+            . 'If (optional) --target (path!) given that path would be used to '
+            . 'store resized videos. Default: source path = target path.' . PHP_EOL
+            ,
+            'resizevideos' => array(
+                '--source:' => 'The directory or location to the file/path to use',
+                '--size:' => 'Size (x axis) in pixel. Default 720',
                 '--suffix:' => 'Default: "_x". Suffix for resized files. ',
-                '--target:' => 'Optional; Target path to store resized images. By '
+                '--target:' => 'Optional; Target path to store resized videos. By '
                     . 'default it would use the path from --source',
                 '--help|-h' => 'Show the help for this action',
             ),
@@ -157,14 +154,14 @@ class Mumsys_ShellTools_Adapter_ResizeImagesTest
 
 
     /**
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::getCliOptionsDefaults
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::getCliOptionsDefaults
      */
     public function testGetCliOptionsDefaults(): void
     {
         $actualA = $this->_object->getCliOptionsDefaults();
         $expectedA = array(
-            'resizeimages' => array(
-                'size' => '1600',
+            'resizevideos' => array(
+                'size' => '720',
                 'suffix' => '_x',
             )
         );
@@ -174,7 +171,7 @@ class Mumsys_ShellTools_Adapter_ResizeImagesTest
 
 
     /**
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::getRequirementConfig
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::getRequirementConfig
      */
     public function testGetRequirementConfig(): void
     {
@@ -183,7 +180,7 @@ class Mumsys_ShellTools_Adapter_ResizeImagesTest
             // [PHP_SAPI][strtolower( PHP_OS_FAMILY )]
             'cli' => array(
                 'linux' => array(
-                    'imagemagick:convert' => array('convert' => '') // no global params
+                    'ffmpeg' => array('ffmpeg' => '-hide_banner') // global params
                 ),
             ),
         );
@@ -193,7 +190,7 @@ class Mumsys_ShellTools_Adapter_ResizeImagesTest
 
 
     /**
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::validate
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::validate
      */
     public function testValidateNoInput(): void
     {
@@ -207,13 +204,13 @@ class Mumsys_ShellTools_Adapter_ResizeImagesTest
 
     /**
      * 4CC + Abstract test.
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::validate
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::validate
      * @covers Mumsys_ShellTools_Adapter_Abstract::_checkVarExistsWithDefaultsLocationExists
      */
     public function testValidateInputSourceValid(): void
     {
         $inputA = array(
-            'resizeimages' => array(
+            'resizevideos' => array(
                 'source' => $this->_testsDir,
             )
         );
@@ -224,18 +221,18 @@ class Mumsys_ShellTools_Adapter_ResizeImagesTest
 
     /**
      * 4CC Abstract test.
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::validate
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::validate
      * @covers Mumsys_ShellTools_Adapter_Abstract::_checkVarExistsWithDefaultsLocationExists
      */
     public function testValidateInputSourceInalid(): void
     {
         $inputA = array(
-            'resizeimages' => array(
+            'resizevideos' => array(
                 'source' => '/tmp/should/not/exists/exception',
             )
         );
         $this->expectingException( 'Mumsys_ShellTools_Adapter_Exception' );
-        $regex = '/Error! Not found: resizeimages --source "(.*)exception"/i';
+        $regex = '/Error! Not found: resizevideos --source "(.*)exception"/i';
         $this->expectingExceptionMessageRegex( $regex );
         $this->_object->validate( $inputA );
     }
@@ -243,13 +240,13 @@ class Mumsys_ShellTools_Adapter_ResizeImagesTest
 
     /**
      * 4CC Abstract test.
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::validate
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::validate
      * @covers Mumsys_ShellTools_Adapter_Abstract::_checkVarExistsWithDefaultsLocationExists
      */
     public function testValidateInputTargetUseDefault(): void
     {
         $inputA = array(
-            'resizeimages' => array(
+            'resizevideos' => array(
                 //'target' => '/tmp', // not given, use default 4CC
             )
         );
@@ -260,13 +257,13 @@ class Mumsys_ShellTools_Adapter_ResizeImagesTest
 
     /**
      * 4CC + Abstract test.
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::validate
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::validate
      * @covers Mumsys_ShellTools_Adapter_Abstract::_checkVarExistsNoDefaultsNotRequired
      */
     public function testValidateInputTargetValid(): void
     {
         $inputA = array(
-            'resizeimages' => array(
+            'resizevideos' => array(
                 'target' => '/tmp',
             )
         );
@@ -278,14 +275,14 @@ class Mumsys_ShellTools_Adapter_ResizeImagesTest
     /**
      * Just run the action.
      *
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::execute
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::execute
      * @covers Mumsys_ShellTools_Adapter_Abstract::_prepareExecution
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::_prepareCommands
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::_prepareCommands
      */
     public function testExecuteWithDefaults(): void
     {
         $inputA = array(
-            'resizeimages' => array(
+            'resizevideos' => array(
                 'source' => '/tmp',
             )
         );
@@ -297,16 +294,16 @@ class Mumsys_ShellTools_Adapter_ResizeImagesTest
 
 
     /**
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::execute
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::execute
      * @covers Mumsys_ShellTools_Adapter_Abstract::_prepareExecution
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::_prepareCommands
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::_prepareCommands
      */
     public function testExecute_prepareCommandsSourceAsFile(): void
     {
         $inputA = array(
-            'resizeimages' => array(
+            'resizevideos' => array(
                 'source' => $this->_testsDir
-                    . '/testfiles/Domain/ShellTools/images/file.png',
+                    . '/testfiles/Domain/ShellTools/videos/test.mp4',
             )
         );
         $this->_object->validate( $inputA );
@@ -317,9 +314,9 @@ class Mumsys_ShellTools_Adapter_ResizeImagesTest
 
 
     /**
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::execute
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::execute
      * @covers Mumsys_ShellTools_Adapter_Abstract::_prepareExecution
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::_prepareCommands
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::_prepareCommands
      */
     public function testExecute_prepareExecutionFalse(): void
     {
@@ -334,14 +331,14 @@ class Mumsys_ShellTools_Adapter_ResizeImagesTest
 
 
     /**
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::execute
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::execute
      * @covers Mumsys_ShellTools_Adapter_Abstract::_prepareExecution
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::_prepareCommands
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::_prepareCommands
      */
     public function testExecute_prepareCommandsTargetNotExists(): void
     {
         $inputA = array(
-            'resizeimages' => array(
+            'resizevideos' => array(
                 'source' => '/tmp',
                 'target' => '/should/not/exists',
             )
@@ -357,14 +354,14 @@ class Mumsys_ShellTools_Adapter_ResizeImagesTest
 
 
     /**
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::execute
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::execute
      * @covers Mumsys_ShellTools_Adapter_Abstract::_prepareExecution
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::_prepareCommands
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::_prepareCommands
      */
     public function testExecute_prepareCommandsSizeInvalid(): void
     {
         $inputA = array(
-            'resizeimages' => array(
+            'resizevideos' => array(
                 'source' => '/tmp',
                 'size' => 'notANumber',
             )
@@ -380,16 +377,16 @@ class Mumsys_ShellTools_Adapter_ResizeImagesTest
 
 
     /**
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::execute
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::execute
      * @covers Mumsys_ShellTools_Adapter_Abstract::_prepareExecution
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::_prepareCommands
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::_prepareCommands
      */
     public function testExecute_prepareCommandsNoFilesFoundException(): void
     {
         $inputA = array(
-            'resizeimages' => array(
+            'resizevideos' => array(
                 'source' => $this->_testsDir . '/testfiles',
-                'size' => '1234',
+                'size' => '360',
                 'target' => $this->_testsDir . '/tmp',
             )
         );
@@ -404,31 +401,44 @@ class Mumsys_ShellTools_Adapter_ResizeImagesTest
 
 
     /**
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::execute
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::execute
      * @covers Mumsys_ShellTools_Adapter_Abstract::_prepareExecution
-     * @covers Mumsys_ShellTools_Adapter_ResizeImages::_prepareCommands
+     * @covers Mumsys_ShellTools_Adapter_ResizeVideos::_prepareCommands
      */
     public function testExecuteRealExecution(): void
     {
         $inputA = array(
-            'resizeimages' => array(
-                'source' => $this->_testsDir . '/testfiles/Domain/ShellTools/images/file.png',
-                'size' => '1234',
-                'suffix' => '_resizeimages_x',
+            'resizevideos' => array(
+                'source' => $this->_testsDir . '/testfiles/Domain/ShellTools/videos/test.mp4',
+                'size' => '360',
+                'suffix' => '_resizevideos_x',
                 'target' => $this->_testsDir . '/tmp',
             )
         );
         $actualA = $this->_object->validate( $inputA );
         $this->assertingTrue( $actualA );
 
-        $actualB = $this->_object->execute( true );
-        $this->assertingTrue( $actualB );
-
-        // cleanup
-        $testfile = $this->_testsDir . '/tmp/file_resizeimages_x1234.png';
+        // cleanup before
+        $testfile = $this->_testsDir . '/tmp/test_resizevideos_x360.mp4';
         if ( file_exists( $testfile ) ) {
             unlink( $testfile );
         }
+
+        // hide ffmpeg output in this case
+        $configBak = $configA = $this->_object->getRequirementConfig();
+        $configA[PHP_SAPI][strtolower( PHP_OS )]['ffmpeg']['ffmpeg'] .= ' -loglevel quiet';
+        $this->_object->setRequirementConfig( $configA );
+
+        $actualB = $this->_object->execute( true );
+        $this->assertingTrue( $actualB );
+
+        // cleanup after
+        $testfile = $this->_testsDir . '/tmp/test_resizevideos_x360.mp4';
+        if ( file_exists( $testfile ) ) {
+            unlink( $testfile );
+        }
+
+        $this->_object->setRequirementConfig( $configBak );
     }
 
 

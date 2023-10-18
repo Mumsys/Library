@@ -151,7 +151,10 @@ class Mumsys_ShellTools_Adapter_ExifFixTimestampsTest
 
                 '--datetimeFormatNew:' =>
                     'Datetime format of the --datetimeValueNew to be used. Default: \'Y-m-d H:i:s\'',
+
                 'Hint for \'DateTime\' formats' => 'See: https://www.php.net/manual/en/datetime.format.php',
+
+                '--help|-h' => 'Show the help for this action'
             ),
         );
 

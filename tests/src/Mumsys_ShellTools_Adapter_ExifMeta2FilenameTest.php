@@ -139,6 +139,7 @@ class Mumsys_ShellTools_Adapter_ExifMeta2FilenameTest
                 '--location:' => 'The path or location to the file to correct your file/s',
                 '--run-compare' => 'Compare the file/s and the found datetime value by hand',
                 '--run-meta2filename' => 'Execute the given command. Rename the files! Make backups first!',
+                '--help|-h' => 'Show the help for this action'
             ),
         );
 

@@ -39,7 +39,7 @@ class Mumsys_ShellTools_Adapter_ResizeVideos
         // [PHP_SAPI][strtolower( PHP_OS_FAMILY )]
         'cli' => array(
             'linux' => array(
-                'ffmpeg' => array('ffmpeg' => '') // no global params
+                'ffmpeg' => array('ffmpeg' => '-hide_banner') // global params
             ),
         ),
     );
@@ -67,10 +67,11 @@ class Mumsys_ShellTools_Adapter_ResizeVideos
             ,
         'resizevideos' => array(
             '--source:' => 'The directory or location to the file/path to use',
-            '--size:' => 'Size in pixel. Default 1920',
+            '--size:' => 'Size (x axis) in pixel. Default 720',
             '--suffix:' => 'Default: "_x". Suffix for resized files. ',
             '--target:' => 'Optional; Target path to store resized videos. By '
                 . 'default it would use the path from --source',
+            '--help|-h' => 'Show the help for this action',
         ),
     );
 
@@ -303,7 +304,7 @@ class Mumsys_ShellTools_Adapter_ResizeVideos
             // base cmd (cmd + global params)
             $binParts = $this->_getBinaryParts( 'ffmpeg' );
             // expect only one: foreach ( $binParts as $command => $globalParams ) {}
-            $cmdBase = key( $binParts ) . current( $binParts );
+            $cmdBase = key( $binParts ) . ' ' . current( $binParts );
             //
 
             $target = sprintf(

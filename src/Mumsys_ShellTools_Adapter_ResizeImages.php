@@ -74,6 +74,7 @@ class Mumsys_ShellTools_Adapter_ResizeImages
             '--suffix:' => 'Default: "_x". Suffix for resized files. ',
             '--target:' => 'Optional; Target path to store resized images. By '
                 . 'default it would use the path from --source',
+            '--help|-h' => 'Show the help for this action',
         ),
     );
 
@@ -306,7 +307,7 @@ class Mumsys_ShellTools_Adapter_ResizeImages
             // base cmd (cmd + global params)
             $binParts = $this->_getBinaryParts( 'imagemagick:convert' );
             // expect only one: foreach ( $binParts as $command => $globalParams ) {}
-            $cmdBase = key( $binParts ) . current( $binParts );
+            $cmdBase = key( $binParts ) . ' ' . current( $binParts );
             //
 
             $target = sprintf(

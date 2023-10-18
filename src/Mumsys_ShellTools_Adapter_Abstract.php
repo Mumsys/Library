@@ -136,6 +136,21 @@ abstract class Mumsys_ShellTools_Adapter_Abstract
         return $this->_requires;
     }
 
+
+    /**
+     * Sets the requirement config.
+     *
+     * [PHP_SAPI][strtolower( PHP_OS_FAMILY )][ programID ] [ key => mixed ] pairs
+     *
+     * @param array<string, array<string, array<string, array<string>>>> $config List of
+     * key/value pairs of the _requires config
+     */
+    public function setRequirementConfig( array $config = array() ): void
+    {
+        $this->_requires = $config;
+    }
+
+
     /**
      * Returns the config (a Mumsys_Getopts config needs) for the actions this
      * program should share to be used.

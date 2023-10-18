@@ -115,6 +115,8 @@ class Mumsys_ShellTools_Adapter_ExifFixTimestamps
 
             'Hint for \'DateTime\' formats' =>
                 'See: https://www.php.net/manual/en/datetime.format.php',
+
+            '--help|-h' => 'Show the help for this action',
         ),
     );
 
@@ -366,7 +368,7 @@ class Mumsys_ShellTools_Adapter_ExifFixTimestamps
         // base cmd (cmd + global params)
         $binParts = $this->_getBinaryParts( 'exiftool' );
         // expect only one: foreach ( $binParts as $command => $globalParams ) {}
-        $cmdBase = key( $binParts ) . current( $binParts );
+        $cmdBase = key( $binParts ) . ' ' . current( $binParts );
         //
 
         // exiftool "-AllDates+=14:5:16 22:13:14" /path

@@ -93,10 +93,12 @@ class Mumsys_ShellTools_Adapter_ExifFilename2Meta
             '--set' => 'Default "AllDates". Key of the metadata to set: Possible values: '
                 . 'AllDates, DateTimeOriginal, CreateDate or ModifyDate',
             '--locationFilter:' => 'Allow only this extension/s. E.g: "jpg". Default: "jpg,png",'
-                . ' All supported extensions by exiftool: "*"'
+                . ' All supported extensions by exiftool: "*"',
 //            . 'Default: DateTimeOriginal; Possible values: DateTimeOriginal, CreateDate or ModifyDate',
 //            '--run-compare' => 'Compare the file/s and the found datetime value by hand',
 //            '--run-filename2meta' => 'Execute the given command. Rename the files! Make backups first!',
+
+            '--help|-h' => 'Show the help for this action',
         ),
     );
 
@@ -395,7 +397,7 @@ class Mumsys_ShellTools_Adapter_ExifFilename2Meta
             // base cmd (cmd + global params)
             $binParts = $this->_getBinaryParts( 'exiftool' );
             // expect only one: foreach ( $binParts as $command => $globalParams ) {}
-            $cmdBase = key( $binParts ) . current( $binParts );
+            $cmdBase = key( $binParts ) . ' ' . current( $binParts );
             //
 
             // Examples:

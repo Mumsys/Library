@@ -21,7 +21,7 @@
  * This is mostly used as Mock for tests and static code analysis to the highest
  * level as possible.
  * And also to get an idea how things can work for own implementations/ adapter.
- * Plese share adapters!
+ * Pleqse share adapters!
  * Study the abstact class for helper to limit code or huge if else constructs.
  * The interface should have the best informations for todo's and open tasks and
  * future changes.
@@ -82,7 +82,6 @@ class Mumsys_ShellTools_Adapter_Demo
             '--forexec:' => 'Value for real exec test',
             '--regex:' => 'Regex test as required value',
             '--regexerror:' => 'Regexerror to test an invalid regex',
-
         ),
     );
 

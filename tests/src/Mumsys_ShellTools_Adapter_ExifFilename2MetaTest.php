@@ -167,6 +167,7 @@ class Mumsys_ShellTools_Adapter_ExifFilename2MetaTest
                     . 'AllDates, DateTimeOriginal, CreateDate or ModifyDate',
                 '--locationFilter:' => 'Allow only this extension/s. E.g: "jpg". Default: "jpg,png",'
                     . ' All supported extensions by exiftool: "*"',
+                '--help|-h' => 'Show the help for this action'
             ),
         );
 

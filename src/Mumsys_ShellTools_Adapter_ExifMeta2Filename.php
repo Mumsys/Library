@@ -78,6 +78,8 @@ class Mumsys_ShellTools_Adapter_ExifMeta2Filename
 
             '--run-meta2filename' => 'Execute the given command. Rename the '
                 . 'files! Make backups first!',
+
+            '--help|-h' => 'Show the help for this action',
         ),
     );
 
@@ -235,7 +237,7 @@ class Mumsys_ShellTools_Adapter_ExifMeta2Filename
         // base cmd (cmd + global params)
         $binParts = $this->_getBinaryParts( 'exiftool' );
         // expect only one: foreach ( $binParts as $command => $globalParams ) {}
-        $cmdBase = key( $binParts ) . current( $binParts );
+        $cmdBase = key( $binParts ) . ' ' . current( $binParts );
         //
 
         // e.g: exiftool '-FileName<DateTimeOriginal' -d %Y%m%d_%H%M%S%%-c.%%e /tmp/my/pictures/

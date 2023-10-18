@@ -1,17 +1,29 @@
 #!/usr/bin/env php
 <?php declare(strict_types=1);
 
-//chdir( __DIR__ );
+/**
+ * shelltools.php Runner for mixed adapters of the ShellTools domain.
+ * for MUMSYS Library for Multi User Management System (MUMSYS)
+ *
+ * @license LGPL Version 3 http://www.gnu.org/licenses/lgpl-3.0.txt
+ * @copyright Copyright (c) 2023 by Florian Blasel for FloWorks Company
+ * @author Florian Blasel <flobee.code@gmail.com>
+ *
+ * @category    Mumsys
+ * @package     Library
+ * @subpackage  ShellTools
+ * Created: 2023-08-10
+ */
+
 require_once __DIR__ . '/bootstrap.php';
-//echo 'xx:'.print_r($_SERVER, true).':xx'; -> PWD
+
 $denyList = array('root', 'admin', 'administrator', 'sysadmin');
 if ( in_array( strtolower( @$_SERVER['USER'] ), $denyList ) ) {
     $userList = '\'' . implode( '\', ', $denyList ) . '\'';
-    $mesg = 'Something belongs to ' . $userList
+    $mesg = 'Something belongs to ' . $userList . PHP_EOL
         . ' Use a different user! Security exit.' . PHP_EOL;
     exit( $mesg );
 }
-
 
 //
 // app config
@@ -19,8 +31,6 @@ $options = array(
     'debug' => false,// e.g: sets all loggers to max level, never checks maxfilesize
     'verbose' => true,
 );
-
-//$oContext = new Mumsys_Context_Item();
 
 $loggerOpts = array(
     'logfile' => __DIR__ . '/../logs/' . basename( __FILE__ ) . '.log',
@@ -30,7 +40,7 @@ $loggerOpts = array(
     'maxfilesize' => (1024 * 1000 * 10),
     'debug' => $options['debug'],
     // for Mumsys_Logger_Decorator_Messages
-    'msgLineFormat' => '%3$s' . "\t" . '%5$s', //'%5$s', //
+    'msgLineFormat' => '%3$s' . "\t" . '%5$s',
     'msgColors' => false,
 );
 
@@ -47,7 +57,7 @@ $oLogger->log( 'Logfile goes to: ' . $loggerOpts['logfile'], 6 );
 //$oLogger->log( 'Argv:', 7 );
 //$oLogger->log( $_SERVER['argv'], 7 );
 
-// list of programs/ adapter this tools should use
+// list of programs/ adapter this tool should use
 $adapterList = array(
     new Mumsys_ShellTools_Adapter_ExifFixTimestamps( $oLogger ), // exiftool
     new Mumsys_ShellTools_Adapter_ExifMeta2Filename( $oLogger ), // exiftool
@@ -65,15 +75,22 @@ try {
     $cliOpts = new Mumsys_GetOpts( $oConfig->get( 'getopts' ) );
     $cliOptsResult = $cliOpts->getResult();
 
+    // check if a global or local (action) help is requested
+    $helpToShow = $cliOpts->getHelpCheckGlobalOrLocal();
+
     if ( $cliOptsResult === array()
         || isset( $cliOptsResult['help'] )
-        || isset( $cliOptsResult['helplong'] ) ) {
+        || isset( $cliOptsResult['helplong'] )
+        || $helpToShow !== null ) {
 
-        if ( $cliOptsResult === array() || isset( $cliOptsResult['help'] ) ) {
-            echo $cliOpts->getHelp() . PHP_EOL;
+        $doHelp = ($helpToShow || isset( $cliOptsResult['help'] ));
+
+        if ( $cliOptsResult === array() || $doHelp === true ) {
+            echo $cliOpts->getHelp( $helpToShow ) . PHP_EOL;
         }
 
-            if ( isset( $cliOptsResult['helplong'] ) ) {
+        if ( isset( $cliOptsResult['helplong'] ) ) {
+            // $helpToShow --helplong need to be set in adapter options
             echo $cliOpts->getHelpLong() . PHP_EOL;
         }
 

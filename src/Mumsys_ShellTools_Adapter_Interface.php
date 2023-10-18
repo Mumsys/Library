@@ -42,7 +42,7 @@ interface Mumsys_ShellTools_Adapter_Interface
      *      'linux' => array(
      *         'test' => array('test' => ' -h'), //
      *                                     ^^ global option -h
-     *                          ^^^^ command
+     *                          ^^^^ command (may be OS dependend)
      *          ^^^^ command alias
      *      ),
      *      // demo: cross OS not implemented yet
@@ -53,6 +53,18 @@ interface Mumsys_ShellTools_Adapter_Interface
      * key/value pairs of the _requires config
      */
     public function getRequirementConfig(): array;
+
+    /**
+     * Sets the requirement config.
+     *
+     * [PHP_SAPI][strtolower( PHP_OS_FAMILY )][ programID/alias ] [ key => mixed ] pairs
+     *
+     * programID/alias: eg. for /path/xy and c:\path\xy.exe. @see getRequirementConfig()
+     *
+     * @param array<string, array<string, array<string, array<string>>>> $config List of
+     * key/value pairs of the _requires config
+     */
+    public function setRequirementConfig( array $config = array() ): void;
 
     /**
      * Returns the config (a Mumsys_Getopts config needs) for the actions this

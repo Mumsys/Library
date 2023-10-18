@@ -180,7 +180,9 @@ class Mumsys_ShellTools_Adapter_FfmpegCutTrimVideoTest
 
                 '--allowext' => 'File extensions to be allowed when using a '
                     . 'directory for "--location".' . PHP_EOL
-                    . 'Default: mp4,mpg,avi,mpeg'
+                    . 'Default: mp4,mpg,avi,mpeg',
+
+                '--help|-h' => 'Show the help for this action'
             ),
         );
 

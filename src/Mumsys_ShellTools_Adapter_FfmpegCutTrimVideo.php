@@ -130,7 +130,8 @@ class Mumsys_ShellTools_Adapter_FfmpegCutTrimVideo
 
             '--allowext' => 'File extensions to be allowed when using a '
                 . 'directory for "--location".' . PHP_EOL
-                . 'Default: mp4,mpg,avi,mpeg'
+                . 'Default: mp4,mpg,avi,mpeg',
+            '--help|-h' => 'Show the help for this action',
         ),
     );
 
@@ -448,7 +449,7 @@ class Mumsys_ShellTools_Adapter_FfmpegCutTrimVideo
             $binParts = $this->_getBinaryParts( 'ffmpeg' );
             // expect only one: foreach ( $binParts as $command => $globalParams ) {}
             // ffmpeg -y
-            $cmdBase = key( $binParts ) . current( $binParts );
+            $cmdBase = key( $binParts ) . ' ' . current( $binParts );
             //
 
             foreach ( $fileList as $filename ) {
