@@ -62,7 +62,7 @@ class Mumsys_ShellTools_Adapter_FfmpegCutTrimVideo
         // [PHP_SAPI][strtolower( PHP_OS_FAMILY )]
         'cli' => array(
             'linux' => array(
-                'ffmpeg' => array('ffmpeg' => ' -y') // -y as global param
+                'ffmpeg' => array('ffmpeg' => ' -y -hide_banner') // global params
             ),
         ),
     );

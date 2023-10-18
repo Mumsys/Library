@@ -17,9 +17,11 @@ BEFORE YOU START: CREATE BACKUPS OF YOUR FILES!!!
       + [Action exiffixtimestamps](#action-exiffixtimestamps)
       + [Action exifmeta2filename](#action-exifmeta2filename)
       + [Action exiffilename2meta](#action-exiffilename2meta)
+    + [Adapters for imagemagic:convert](#adapters-for-imagemagicconvert)
+      + [Adapter resizeimages](#adapter-resizeimages)
     + [Adapters for ffmpeg](#adapters-for-ffmpeg)
       + [Action ffmpegcuttrimvideo](#action-ffmpegcuttrimvideo)
-    + [Adapter resizeimages](#adapter-resizeimages)
+      + [Adapter resizevideos](#adapter-resizevideos)
     + [General hints for ffmpeg](#general-hints-for-ffmpeg)
     + [General hints for exiftool and in php context](#general-hints-for-exiftool-and-in-php-context)
 
@@ -46,7 +48,7 @@ output for the shell commands on a linux system but no real execution.
 This program has several actions to solve common problems with media files. 
 Photos or videos.
 
-Currently: exif timestamp manipulation or video cutting.
+Currently: exif timestamp manipulation or video cutting or video and image resizing.
 
 Because of the generic implementation, other tools will be integrated here also.
 
@@ -89,7 +91,7 @@ This adapters can solve some of this problems.
 
 #### Action exiffixtimestamps
 
-`bin/shelltools.php exiffixtimestamps`
+`bin/shelltools.php exiffixtimestamps --help`
 
 Calculates time differences to fix photos later using `exiftool`.
 
@@ -134,7 +136,7 @@ Action `exifmeta2filename` can solve this. E.g: Rename "GoPro-1234.jpg" to
 
 #### Action exifmeta2filename
 
-`./bin/shelltools.php exifmeta2filename`
+`./bin/shelltools.php exifmeta2filename --help`
 
 Reads a dateime value in the exif metadata of a photo/image (maybe a video if 
 supported by exiftool) file and renames the filename to given format of the 
@@ -176,25 +178,9 @@ time value when it was created.
 
 
 
-### Adapters for ffmpeg
+### Adapters for imagemagic:convert
 
-ffmpeg is THE video editor/ converter for the shell. Nearly ervery problem can 
-be solved with it. Cutting, converting, resizing and much more for videos.
-
-
-#### Action ffmpegcuttrimvideo
-
-Cut a video by given start, end datetime value in different flavours. Possible
-ways:
-+ 'range' cut at start until stop value
-+ 'duration' cat at start until given value for endtime. Were endtime is ment as
-  duration and not the stop time! E.g cat a start and 10minutes long
-+ 'reverse' start time in negativ form. start from the end of the file. E.g:
-  Give the last 10minutes of the video
-
-
-
-### Adapter resizeimages
+#### Adapter resizeimages
 
 It uses imagemagick package and the 'convert' command.
 
@@ -219,6 +205,51 @@ Example using a source path:
         --size=1600
     # Scans all files in source and will create:
     # /tmp/gopro/[sourcefile]_x1600[.ext]
+```
+
+
+
+### Adapters for ffmpeg
+
+ffmpeg is THE video editor/ converter for the shell. Nearly every problem can
+be solved with it. Cutting, converting, resizing and much more for videos.
+
+
+#### Action ffmpegcuttrimvideo
+
+Cut a video by given start, end datetime value in different flavours. Possible
+ways:
++ 'range' cut at start until stop value
++ 'duration' cat at start until given value for endtime. Were endtime is ment as
+  duration and not the stop time! E.g cat at start and 10minutes long
++ 'reverse' start time in negativ form. start from the end of the file. E.g:
+  Give the last 10minutes of the video
+
+
+
+#### Adapter resizevideos
+
+It uses ffmpeg package to resize a video by keeping the ratio! x,y axis.
+
+Resize videos to a given size of pixel for the x-axis. E.g:
+```
+    bin/shelltools.php --test resizevideos \
+        --source=/tmp/gopro/20120802_192919.mp4 \
+        --suffix=_x \
+        --size=720
+    # will create: /tmp/gopro/20120802_192919_x720.mp4
+```
+
+Example using a source path:
+Be sure having only the same type of files/ videos when using a `--source` as
+path and not a file!
+```
+    bin/shelltools.php --test resizevideos \
+        --source=/tmp/gopro \
+        --suffix=_x \
+        --size=720
+    # Scans all files in source and will create:
+    # /tmp/gopro/[sourcefile]_x720[.ext]
 ```
 
 
