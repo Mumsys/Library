@@ -10,6 +10,40 @@
 
 # Changes
 
+2023-10
+
++ Mumsys_ShellTools* improvements
+    - Adds feature to get help text only from a selected action
+    - Adds --help|-h option to each adapter
+    - Updates tests
+
+    Abstract class/ interface
+      - Add setRequirementConfig() to abstract class to change required
+        settings on runtime
+    ResizeVideo adapter
+      - Adds cli global param '-hide_banner' to reduce
+      - Fixes $cmdBase in _prepareCommands()
+    ResizeImages adapter
+      - Fixes $cmdBase in _prepareCommands()
+    FfmpegCutTrimVideo adapter
+      - Fixes $cmdBase in _prepareCommands()
+    ExifMeta2Filename adapter
+      - Fixes $cmdBase in _prepareCommands()
+    ExifFixTimestamps adapter
+      - Fixes $cmdBase in _prepareCommands()
+    ExifFilename2Meta adapter
+      - Fixes $cmdBase in _prepareCommands()
+
++ Mumsys_GetOpts
+  - Adds getHelp([action]) feature to list only a selected action with
+    help informations
+  - Adds getHelpCheckGlobalOrLocal() to detect what to list with getHelp()
+    in controllers or scripts
+  - Fixes CS
+  - Updates inline docs
+
+
+
 2023-08
 
 + Mumsys_ShellTools_Adapter*
