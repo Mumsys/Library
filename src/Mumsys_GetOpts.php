@@ -193,8 +193,6 @@ class Mumsys_GetOpts
         $this->_verifyOptions( $configOptions ); // gen: $this->_options
         $this->_generateMappingOptions( $this->_options ); // gen: $this->_mapping
 
-//print_r($this->_mapping);
-
         $this->_rawResult = $this->parse();
     }
 
@@ -210,7 +208,6 @@ class Mumsys_GetOpts
     public function parse(): array
     {
         $argPos = 1; // zero is the calling program
-        $argv = & $this->_argv;
         $return = array();
         $inAction = '_default_';
 
@@ -244,7 +241,7 @@ class Mumsys_GetOpts
         //    [3] => --location=/tmp (in action fixtimestamps)
 
         while ( $argPos < $this->_argc ) {
-            $argValue = $argv[$argPos];
+            $argValue = $this->_argv[$argPos];
 
             if ( isset( $argValue[0] ) && $argValue[0] == '-' ) {
                 // its an arg. parseArg() with the last state of action or _default_
@@ -654,9 +651,11 @@ class Mumsys_GetOpts
     /**
      * Returns help/ parameter informations by given options on initialisation.
      *
+     * @param string $onlyForAction Reduce help for a specific action
+     *
      * @return string Help informations
      */
-    public function getHelp(): string
+    public function getHelp( ?string $onlyForAction = null ): string
     {
         $str = '';
         $tab = '';
@@ -670,6 +669,10 @@ class Mumsys_GetOpts
         }
 
         foreach ( $this->_options as $action => $values ) {
+            if ( $onlyForAction && $onlyForAction !== $action ) {
+                continue;
+            }
+
             if ( $action !== '_default_' ) {
                 $str .= "" . $action . '' . PHP_EOL;
                 $tab = "    "; // as 4 spaces
@@ -720,9 +723,11 @@ class Mumsys_GetOpts
      * Returns help/ parameter informations by given options on initialisation
      * including usage informations.
      *
+     * @param string $onlyForAction Reduce help for a specific action
+     *
      * @return string Long help informations
      */
-    public function getHelpLong(): string
+    public function getHelpLong( ?string $onlyForAction = null ): string
     {
         $string = <<<TEXT
 Class to handle/ pipe shell arguments in php context.
@@ -746,7 +751,36 @@ Your options:
 
 
 TEXT;
-        return $string . $this->getHelp();
+        return $string . $this->getHelp( $onlyForAction );
+    }
+
+
+    /**
+     * Checks for a help flag and return the action if used for a specific action.
+     *
+     * Note: For huge script options or a collection of several adapters this
+     * feature makes sence. To make the feature available all actions should
+     * become a --help|-h option.
+     * FIFO: first match will show the help. if an adapter or action has no help
+     * option it will act as a global help and shows all.
+     *
+     * @return string|null Name of the action or null for the global help
+     */
+    public function getHelpCheckGlobalOrLocal(): ?string
+    {
+        $result = $this->getResult();
+        if ( isset( $result['help'] ) ) {
+            // global  help given. no need to test for an action help
+            return null;
+        }
+
+        foreach ( $result as $action => $actionOpts ) {
+            if ( isset( $actionOpts['help'] ) && $actionOpts['help'] === true ) {
+                return $action;
+            }
+        }
+        // nothing found
+        return null;
     }
 
 
@@ -788,7 +822,8 @@ TEXT;
 
 
     /**
-     * Return the list of actions and list of key/value pairs the parser accepted.
+     * Return the list of actions and list of key/value pairs the parser
+     * accepted (_rawResult).
      *
      * @return array<string, array<string, scalar>> List of key/value pairs of
      * the incoming parameters
@@ -800,7 +835,7 @@ TEXT;
 
 
     /**
-     * Returns the raw input.
+     * Returns the raw input (_argv).
      *
      * @return array<string> Returns the given input array or _SERVER['argv'] array
      */
@@ -813,10 +848,12 @@ TEXT;
     /**
      * Free/ cleanup collected, calculated results to generate them new. Given
      * default/ setup data will be still available.
+     *
+     * @todo _isModified is never true
      */
     public function resetResults(): void
     {
-        $this->_isModified = false;
+        $this->_isModified = false; // ?? really? to test! its never true!
         $this->_resultCache = array();
         $this->_mapping = array();
         $this->_rawResult = array();
