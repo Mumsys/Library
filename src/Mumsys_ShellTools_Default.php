@@ -82,8 +82,7 @@ class Mumsys_ShellTools_Default
 
             foreach ( $oAdapter->getCliOptions() as $optKey => $optValues ) {
                 $this->_config->register(
-                    $getOptsPrefixKey . '/' . $optKey,
-                    $optValues
+                    $getOptsPrefixKey . '/' . $optKey, $optValues
                 );
             }
         }
