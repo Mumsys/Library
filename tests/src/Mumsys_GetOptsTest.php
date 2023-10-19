@@ -900,7 +900,6 @@ HELPLONG;
         );
         $input = array(
             'program',
-
         );
         $object = new Mumsys_GetOpts( $options, $input );
         $actual = $object->getHelp();
@@ -924,6 +923,130 @@ HELPLONG;
         $this->assertingEquals( $expected, $actual );
         $this->assertingEquals( $expected, $object );
         $this->assertingEquals( ( $this->_helpLong . $expected ), $object->getHelpLong() );
+    }
+
+
+    /**
+     * 4CC global usage
+     * @covers Mumsys_GetOpts::getHelpCheckGlobalOrLocal
+     */
+    public function testGetHelpCheckGlobalOrLocal_global()
+    {
+        $options = array(
+            'action3' => array( // currently no action desc possible!
+                '--help|-h' => 'action3 description --help',
+            ),
+            '--help|-h' => 'Show the complete help'
+        );
+
+        $input = array(
+            'program',
+            '-h'
+        );
+        $object = new Mumsys_GetOpts( $options, $input );
+        $helpAction = $object->getHelpCheckGlobalOrLocal();
+
+        $actual = $object->getHelp();
+        $expected = 'Global options/ Actions and options/ information:' . PHP_EOL
+            . PHP_EOL
+            . '--help|-h' . PHP_EOL
+            . '    Show the complete help' . PHP_EOL
+            . PHP_EOL
+            . 'action3' . PHP_EOL
+            . '    --help|-h' . PHP_EOL
+            . '        action3 description --help' . PHP_EOL
+            . '' . PHP_EOL
+        ;
+
+        $this->assertingNull( $helpAction );
+        $this->assertingEquals( $expected, $actual );
+        $this->assertingEquals( $expected, $object );
+        $this->assertingEquals( $expected, $object->getHelp() );
+    }
+
+
+    /**
+     * 4CC local/action help usage limited the that action
+     * @covers Mumsys_GetOpts::getHelp
+     * @covers Mumsys_GetOpts::getHelpCheckGlobalOrLocal
+     */
+    public function testGetHelpCheckGlobalOrLocal_local()
+    {
+        $options = array(
+            'action3' => array( // currently no action desc possible!
+                '--help|-h' => 'action3 description --help',
+            ),
+            '--help|-h' => 'Show the complete help',
+        );
+
+        $input = array(
+            'program',
+            'action3',
+            '-h'
+        );
+        $object = new Mumsys_GetOpts( $options, $input );
+        $helpAction = $object->getHelpCheckGlobalOrLocal();
+
+        $actual = $object->getHelp( $helpAction );
+        $expectedGlobal = 'Global options/ Actions and options/ information:' . PHP_EOL
+            . PHP_EOL
+            . '--help|-h' . PHP_EOL
+            . '    Show the complete help' . PHP_EOL
+            . PHP_EOL
+            . 'action3' . PHP_EOL
+            . '    --help|-h' . PHP_EOL
+            . '        action3 description --help' . PHP_EOL
+            . '' . PHP_EOL
+        ;
+        $expected = 'Global options/ Actions and options/ information:' . PHP_EOL
+            . PHP_EOL
+            . 'action3' . PHP_EOL
+            . '    --help|-h' . PHP_EOL
+            . '        action3 description --help' . PHP_EOL
+            . '' . PHP_EOL
+        ;
+
+        $this->assertingEquals( 'action3', $helpAction );
+        $this->assertingEquals( $expected, $actual );
+        $this->assertingEquals( $expectedGlobal, $object );
+        $this->assertingEquals( $expected, $object->getHelp( $helpAction ) );
+    }
+
+    /**
+     * 4CC no help exists, shows all available
+     * @covers Mumsys_GetOpts::getHelpCheckGlobalOrLocal
+     */
+    public function testGetHelpCheckGlobalOrLocal_noHelpSet()
+    {
+        $options = array(
+            'action3' => array( // currently no action desc possible!
+                '--long|-l' => 'action3 description --long|-l',
+            ),
+            '--long|-l' => 'global option --long|-l'
+        );
+
+        $input = array(
+            'program',
+        );
+        $object = new Mumsys_GetOpts( $options, $input );
+        $helpAction = $object->getHelpCheckGlobalOrLocal();
+
+        $actual = $object->getHelp();
+        $expected = 'Global options/ Actions and options/ information:' . PHP_EOL
+            . PHP_EOL
+            . '--long|-l' . PHP_EOL
+            . '    global option --long|-l' . PHP_EOL
+            . PHP_EOL
+            . 'action3' . PHP_EOL
+            . '    --long|-l' . PHP_EOL
+            . '        action3 description --long|-l' . PHP_EOL
+            . '' . PHP_EOL
+        ;
+
+        $this->assertingNull( $helpAction );
+        $this->assertingEquals( $expected, $actual );
+        $this->assertingEquals( $expected, $object );
+        $this->assertingEquals( $expected, $object->getHelp() );
     }
 
 
