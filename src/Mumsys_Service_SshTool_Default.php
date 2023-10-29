@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 /**
  * Mumsys_Service_SshTool_Default
@@ -7,7 +6,7 @@ declare(strict_types=1);
  *
  * @license LGPL Version 3 http://www.gnu.org/licenses/lgpl-3.0.txt
  * @copyright Copyright (c) 2018 by Florian Blasel for FloWorks Company
- * @author Florian Blasel <flobee.code@gmail.com>
+ * @author Florian Blasel <[ba|z|a]sh: echo 1l2b33.code@EmAil.c2m | tr 123AE foeag>
  *
  * @category    Mumsys
  * @package     Library
