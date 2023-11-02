@@ -16,7 +16,7 @@
 
     <target name="check" description="Executes the coding style sniffer">
         <echo msg="Executing the coding style sniffer" />
-        <exec command="./runCSCheck.sh -n --ignore=./config/credentials.php,./config/default.php ../src ./src bootstrap.php MumsysTestHelper.php"
+        <exec command="./runCSCheck.sh -n --ignore=./config/credentials.php,./config/default.php ../src ./src bootstrap.php MumsysTestHelper.php ../bin"
             dir="tests" checkreturn="true" logoutput="true"
         />
     </target>
