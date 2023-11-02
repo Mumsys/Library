@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 /**
  * Mumsys_Multirename
@@ -31,7 +31,7 @@ class Mumsys_Multirename
     /**
      * Version ID information.
      */
-    const VERSION = '1.4.5';
+    const VERSION = '1.4.6';
 
     /**
      * Logger to log and output messages.
@@ -1226,6 +1226,11 @@ class Mumsys_Multirename
                     }
                 }
             } else {
+
+                if ( is_int( $search ) ) {
+                    $search = (string) $search;
+                }
+
                 foreach ( $paths as $pk => $pv ) {
                     $newValue = str_replace( $pk, $pv, $search );
                     if ( $newValue != $search ) {
@@ -1276,6 +1281,9 @@ class Mumsys_Multirename
             if ( ( is_array( $search ) && is_array( $replace ) )
                 || ( is_scalar( $search ) && is_scalar( $replace ) )
             ) {
+                if ( is_int( $search ) ) {
+                    $search = (string) $search;
+                }
                 $name = str_replace( $search, $replace, $name );
             } else {
                 /** @todo escape operators? do tests */
@@ -1409,7 +1417,7 @@ class Mumsys_Multirename
             '--substitutions|-s:' => 'Semicolon separated list with key value pairs for substitution eg:'
             . ' --substitutions ä=ae;ö=oe;ß=ss; =_;\'regex:/^(\d{5})$/i=x_\$1\'... .'
             . 'As simple feature you can use %path1%...%pathN% parameters to substitute '
-            . 'path informations in substitution values the file belongs to. For more'
+            . 'path informations in substitution values the file belongs to. For more '
             . 'information see --sub-paths but only use --sub-paths if you really need '
             . 'it. It can became strange side effects when enabling it. * Required',
             //
@@ -1441,8 +1449,9 @@ class Mumsys_Multirename
             '--link:' => 'Don\'t rename, create symlinks or hardlinks, relativ or absolut to target '
             . '(Values: soft|hard[:rel|abs]). If the second parameter is not given relativ links will be created',
             //
-            '--linkway:' => 'Type of the link to be created relative or absolut: ("rel"|"abs"), default: "rel". '
-            . 'This will be used internally if you use --link soft;rel the linkway will be extracted from that line',
+            '--linkway:' => 'Optional for --link: Type of the link to be created: Relative or absolut ("rel"|"abs"), '
+            . 'default: "rel". This will be used internally if you use e.g: --link soft:rel or --link soft:abs the '
+            . 'linkway will be extracted from that line. Otherwise use --link soft --linkway rel|abs',
             //
             '--history|-h' => 'Flag; If set this will enable the history and tracks all actions for a later undo',
             //
@@ -1471,8 +1480,8 @@ class Mumsys_Multirename
             //
             '--del-config' => 'Flag; Deletes the config from given --path',
             //
-            '--show-config' => 'Flag; Shows the config parameter from a saved config to check or rebuild it. '
-            . 'Use it with --from-config',
+            '--show-config' => 'Flag; Shows the config parameters from a saved config to check or rebuild it. '
+            . 'Use it with --from-config=/some/path/movies/ --show-config (see --save-config)',
             //
             '--loglevel|--ll:' => 'Logging level for the output of messages (0=Emerg ... 7=verbose/debug). '
             . 'For testing use 6 or 7; For cronjob etc. do not use lower than 5 to get important messages',
