@@ -262,9 +262,13 @@ class Mumsys_Db_Driver_Mysql_Mysqli
         if ( $unbuffered ) {
             return $this->_setError( 'Unbuffered querys not implemented yet' );
         } else {
-            $result = mysqli_query( $this->_dbc, $this->_sql );
+            try {
+                $result = mysqli_query( $this->_dbc, $this->_sql );
+            }
+            catch ( Throwable $ex ) {
+                // ???
+            }
         }
-
         $this->_numQuerys++;
 
         if ( $this->_debug ) {
