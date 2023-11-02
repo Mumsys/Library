@@ -37,7 +37,7 @@ $loggerOpts = array(
     'logLevel' => 7,
     'msglogLevel' => 7,
     'way' => 'a', // w=log only last run; def: a=append
-    'maxfilesize' => (1024 * 1000 * 10),
+    'maxfilesize' => ( 1024 * 1000 * 10 ),
     'debug' => $options['debug'],
     // for Mumsys_Logger_Decorator_Messages
     'msgLineFormat' => '%3$s' . "\t" . '%5$s',
@@ -83,7 +83,7 @@ try {
         || isset( $cliOptsResult['helplong'] )
         || $helpToShow !== null ) {
 
-        $doHelp = ($helpToShow || isset( $cliOptsResult['help'] ));
+        $doHelp = ( $helpToShow || isset( $cliOptsResult['help'] ) );
 
         if ( $cliOptsResult === array() || $doHelp === true ) {
             echo $cliOpts->getHelp( $helpToShow ) . PHP_EOL;
