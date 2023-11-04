@@ -31,7 +31,7 @@ class Mumsys_Multirename
     /**
      * Version ID information.
      */
-    const VERSION = '1.4.6';
+    const VERSION = '2.4.6';
 
     /**
      * Logger to log and output messages.
