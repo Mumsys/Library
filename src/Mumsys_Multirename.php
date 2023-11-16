@@ -1350,7 +1350,7 @@ class Mumsys_Multirename
      */
     public static function getVersionLong()
     {
-        $version = self::getVersionShort();
+        $version = self::getVersionShort() . PHP_EOL;
         $versions = parent::getVersions();
 
         $verGlobal = array(0, 0, 0);
@@ -1378,17 +1378,19 @@ class Mumsys_Multirename
 
     public static function getVersionShort()
     {
-        $version = 'multirename %1$s by Florian Blasel' . PHP_EOL . PHP_EOL;
+        $version = 'multirename %1$s by Florian Blasel' . PHP_EOL;
         return sprintf( $version, self::VERSION );
     }
 
 
     /**
      * Outputs the version information.
+     *
+     * @todo methode obsolete?
      */
     public static function showVersion()
     {
-        echo self::getVersionLong();
+        echo self::getVersionShort();
     }
 
 
@@ -1488,7 +1490,8 @@ class Mumsys_Multirename
             //
             '--stats' => 'Print some stats after execution',
             //
-            '--version|-v' => 'Flag; Return version informations',
+            '--version|-v' => 'Flag; Return version information',
+            '--version-long' => 'Flag; Return version informations incl. dependencies',
         );
 
         if ( $shellOptions !== true ) {
