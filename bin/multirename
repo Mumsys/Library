@@ -1,0 +1,25 @@
+#!/usr/bin/env php
+<?php
+
+/*{{{*/
+/**
+ * Multirename
+ * for MUMSYS Library for Multi User Management System
+ * ----------------------------------------------------------------------------
+ * @license LGPL Version 3 http://www.gnu.org/licenses/lgpl-3.0.txt
+ * @copyright (c) 2015 by Florian Blasel
+ * @author Florian Blasel <flobee.code@gmail.com>
+ * ----------------------------------------------------------------------------
+ * @category    Mumsys
+ * @package     Library
+ * @subpackage  Multirename
+ * @version     2.4.6
+ * @see         multirename.php
+ * Created on 2015-04-08
+ */
+/*}}}*/
+
+/**
+ * Wrapper for multirename using the shebang to call it from the shell
+ */
+require_once __DIR__ . '/multirename.php';

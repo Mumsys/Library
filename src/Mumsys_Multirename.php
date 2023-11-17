@@ -135,9 +135,9 @@ class Mumsys_Multirename
         $serverHome = Mumsys_Php_Globals::getServerVar( 'HOME', '' );
         if ( is_dir( $serverHome . DIRECTORY_SEPARATOR ) ) {
             $this->_pathHome = $serverHome;
-        } else {
+        }/* else {
             $this->_pathHome = $this->_pathHome;
-        }
+        }*/
 
         $this->_collection = $this->_pathHome . '/.multirename/collection';
         $this->_logger = $logger;
@@ -216,6 +216,10 @@ class Mumsys_Multirename
                 $actions = array('version' => 'version');
             }
 
+            if ( isset( $config['version-long'] ) ) {
+                $actions = array('version-long' => 'version-long');
+            }
+
             if ( isset( $config['stats'] ) ) {
                 $actions['stats'] = 'stats';
             }
@@ -245,6 +249,10 @@ class Mumsys_Multirename
 
                     case 'version':
                         $this->showVersion();
+                        break;
+
+                    case 'version-long':
+                        $this->showVersion( true );
                         break;
 
                     case 'stats':
@@ -1344,23 +1352,23 @@ class Mumsys_Multirename
 
 
     /**
-     * Retuns the version of this program.
+     * Retuns the versions of this program and components.
      *
-     * @return string Returns the version string
+     * @return string Returns the versions string
      */
     public static function getVersionLong()
     {
         $version = self::getVersionShort() . PHP_EOL;
         $versions = parent::getVersions();
 
-        $verGlobal = array(0, 0, 0);
-        $verFallback = $verGlobal;
+        $verGlobal = $verFallback = array(0, 0, 0);
         foreach ( $versions as $class => $ver ) {
             $version .= str_pad( $class, 35, ' ', STR_PAD_RIGHT ) . ' ' . $ver . PHP_EOL;
 
             $verParts = explode( '.', $ver );
             if ( count( $verParts ) !== 3 ) {
-                // Version probably not set or not setable (eg. from generic stdClass()
+                // Version probably not set or not setable (for global version
+                // calculation or eg. from generic stdClass()
                 $verParts = $verFallback;
             }
 
@@ -1386,11 +1394,16 @@ class Mumsys_Multirename
     /**
      * Outputs the version information.
      *
-     * @todo methode obsolete?
+     * @param bool $long True to return long version informations Default false
+     * for a simple string
      */
-    public static function showVersion()
+    public static function showVersion( bool $long = false )
     {
-        echo self::getVersionShort();
+        if ( $long === true ) {
+            echo self::getVersionLong();
+        } else {
+            echo self::getVersionShort();
+        }
     }
 
 

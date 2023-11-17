@@ -15,6 +15,16 @@
 
 
 /**
+ * 4CC - Test class will be init by autoloader and the version will be fetched
+ * by eg: getVersionLong(). To take a fallback version string
+ */
+class Mumsys_MultirenameTest_LimitedVersionString extends Mumsys_Multirename
+{
+    const VERSION = '9.8.7.6.5';
+}
+
+
+/**
  * Test class for Mumsys_Multirename.
  */
 class Mumsys_MultirenameTest
@@ -192,14 +202,7 @@ class Mumsys_MultirenameTest
 
         // this needs in the single test
         $expected = array(
-            'multirename ' . Mumsys_Multirename::VERSION . ' by Florian Blasel' . PHP_EOL . PHP_EOL,
-            'Mumsys_Abstract                     ' . Mumsys_Abstract::VERSION . PHP_EOL,
-            'Mumsys_FileSystem_Common_Abstract   ' . Mumsys_FileSystem_Common_Abstract::VERSION . PHP_EOL,
-            'Mumsys_FileSystem                   ' . Mumsys_FileSystem::VERSION . PHP_EOL,
-            'Mumsys_Logger_File                  ' . Mumsys_Logger_File::VERSION . PHP_EOL,
-            'Mumsys_Logger_Abstract              ' . Mumsys_Logger_Abstract::VERSION . PHP_EOL,
-            'Mumsys_File                         ' . Mumsys_File::VERSION . PHP_EOL,
-            'Mumsys_Multirename                  ' . Mumsys_Multirename::VERSION . PHP_EOL,
+            'multirename ' . Mumsys_Multirename::VERSION . ' by Florian Blasel' . PHP_EOL,
         );
 
         foreach ( $expected as $toCheck ) {
@@ -222,10 +225,10 @@ class Mumsys_MultirenameTest
      * classes and implementation comes in
      * @runInSeparateProcess
      */
-    public function testConstructorGetShowVersionB()
+    public function testConstructorGetShowVersionLong()
     {
         ob_start();
-        $this->_config['version'] = true;
+        $this->_config['version-long'] = true;
         $object = new Mumsys_Multirename(
             $this->_config,
             $this->_oFiles,
@@ -249,9 +252,9 @@ class Mumsys_MultirenameTest
         $current3 = $object->getVersion();
         $expected3 = 'Mumsys_Multirename ' . Mumsys_Multirename::VERSION;
 
-        foreach ( $expected as $toCheck ) {
+        foreach ( $expected as $key => $toCheck ) {
             $res = ( preg_match( '/' . $toCheck . '/im', $current ) ? true : false );
-            $this->assertingTrue( $res );
+            $this->assertingTrue( $res, "$key: $toCheck , out: $current" );
         }
         $this->assertingEquals( $expected2, $current2 );
         $this->assertingEquals( $expected3, $current3 );
