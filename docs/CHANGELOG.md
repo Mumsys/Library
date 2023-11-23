@@ -10,6 +10,55 @@
 
 # Changes
 
+2023-11
+
++ Mumsys_Multirename VERSION 2.5.19
+
+    - Repository broken due to restrictions at github.com. Solving the problems
+      results in: rewrite the git history to fix old problem github.com dont
+      support anymore: Done. clone force if you have a clone.
+        - Because of that change and the lib self: 
+          VERSION 1.4.6 goes >2.4.6+ and PHP >= 8
+
+    - Fixes bugs and parameter annotations using phpstan (SCA) level=9
+        - Adds warning if HOME dir not exists 2.4.7
+        - Allow colletion path to be changed on construction (default: users 
+          home directory). -> V 2.5.7
+        - initSetup() - Updates, fixes parameter checks including lazy false 
+          checks ($a==false) which can be a value (e.g.: 0 (zero)) for 
+          substitution. -> 4x -> 2.5.11
+        - _execute(), _undoRename - throws exception if a rename fails and
+          reports it correctly now. Befor history entries were written wrong 2x
+          2.5.13
+        - _getRelevantFiles() Fixes if scan of files fails 2.5.14
+        - _getRelevantFiles() Fixes --exclude: did not the expected work 2.5.15
+        - _addActionHistory(), _getActionHistory()  Fixes file handling and 
+          throws exception on errors 2.5.17
+        - _mkConfigDir() throws exception if creation of config/ history files
+          fails 2.5.18
+        - _getCollection(), _setCollection() throws exception file/ json
+          handling fails 2.5.18
+        - getConfig() throws exception on error reading/handling a config 2.5.19
+
+    - Updates getSetup(), --help text
+    - Improves, updates tests
+    - Removes comments/code for version <= 1.3.3
+
++ Mumsys_FileSystem_Default 3.1.1 -> 3.2.2
+
+    - Updates inline docs
+    - Fixes bugs and parameter annotations using phpstan (SCA) level=9
+    - Requires fileinfo extension (if not buildin) see composer.json as 
+      requirement
+    - Throw exception if fetching mime type fails
+    - Updates tests
+
++ Update phpstan (composer.[json|lock] version 1.10.42
+
++ docs/TODO.txt
+
+
+    
 2023-10
 
 + Mumsys_ShellTools* improvements

@@ -52,11 +52,11 @@ Mumsys_GetOpts
 - [99%] Mumsys_GetOpts: add actions/operation mode(s) e.g.:
         call thisAction --opt1 --opt2 or
         call secondAction --dryrun --no-history anotherAction --thatFlag
-- [00%] A value can contain a "-" or '--' or -9. Extend the parser or redesign?
+- [00%] A value can contain a "-" or '--' or -9. Test, find a solution
 - [00%] Some parameters can be required in combination
 
 
 Mumsys_Multirename
 ==================
 
-see at the docs of multirename: https://github.com/flobee/multirename
+See at the docs of multirename: https://github.com/Multirename/multirename

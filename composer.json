@@ -2,7 +2,7 @@
     "name": "mumsys/library",
     "description": "PHP library for the MUMSYS project",
     "keywords": ["PHP", "Library", "Web", "Shell", "DTO", "DAO"],
-    "homepage": "https://mumsys.org",
+    "homepage": "https://github.com/mumsys",
     "license": "LGPL-3.0-or-later",
     "type": "project",
     "authors": [
@@ -15,6 +15,7 @@
 
     "require": {
         "php": "^8.0|^8.1|^8.2|^8.3",
+        "ext-fileinfo": "*",
         "ext-intl": "*",
         "ext-xml": "*",
         "ext-curl": "*",

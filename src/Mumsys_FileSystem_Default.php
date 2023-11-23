@@ -28,7 +28,7 @@ class Mumsys_FileSystem_Default
     /**
      * Version ID information.
      */
-    const VERSION = '3.1.0';
+    const VERSION = '3.2.2';
 
     /**
      * Buffer/ memory keeper of scanned directories.
@@ -36,7 +36,8 @@ class Mumsys_FileSystem_Default
      * Note: Each object ha its own buffer! scanning several times you may have
      * dublicate records which is not a fault!
      *
-     * @var array
+     * @var array<string, array{file:string, name:string, path:string, size:int,
+     *  type:string}>
      */
     private $_dirInfo;
 
@@ -44,7 +45,7 @@ class Mumsys_FileSystem_Default
     /**
      * Initialise the object.
      *
-     * @param array $options Not implemented yet.
+     * @param array<string> $options Not implemented yet.
      */
     public function __construct( array $options = array() )
     {
@@ -62,17 +63,20 @@ class Mumsys_FileSystem_Default
      *
      * Links if can be detected will be ignored. Depending on start path.
      *
+     * @todo use spl dir interator
      * @todo follow symlinks?
      *
      * @param string $dir Directory/ Path to start the scan
      * @param boolean $hideHidden Flag to decide to skip hidden files or directories
      * @param boolean $recursive Flag to deside to scan recursive or not
-     * @param array $filters List of regular expressions to look for a match
+     * @param array<string> $filters List of regular expressions to look for a match
      * (the list will used AND conditions)
      * @param integer $offset Optional; Start point to collect data
-     * @param integer $limit Optional; Limit of results. 0 (zero): no limit, Max 500 default: 0
+     * @param integer $limit Optional; Limit of results. 0(zero):no limit, Max 500 default: 0
      *
-     * @return array|false Returns list of file/link/directory details like path, name, size, type
+     * @return array<string, array{name:string, file:string, path:string, type:string}>|false
+     * Returns a list of file/links/directories details like path, name, size, type
+     * or false if dir not readable or the dir itselfs is a (sym)link
      */
     public function scanDirInfo( $dir, $hideHidden = true, $recursive = false,
         array $filters = array(), $offset = 0, $limit = 0 )
@@ -81,7 +85,7 @@ class Mumsys_FileSystem_Default
             $offset = 0;
         }
 
-        if ( $limit && $limit > 1000 ) {
+        if ( $limit && $limit > 500 ) {
             $limit = 500;
         }
 
@@ -91,7 +95,7 @@ class Mumsys_FileSystem_Default
             $cnt = 0;
             if ( $dh = @opendir( $dir ) ) {
                 while ( ( $file = readdir( $dh ) ) !== false ) {
-                    if ( $file == '.' || $file == '..' ) {
+                    if ( $file === '.' || $file === '..' ) {
                         continue;
                     }
 
@@ -110,13 +114,13 @@ class Mumsys_FileSystem_Default
                             $limit
                         );
                     } else {
-                        $this->_dirInfo[$test] = $this->getFileDetails(
-                            $dir, $file
-                        );
+                        $this->_dirInfo[$test] = $this->getFileDetails( $dir, $file );
                     }
                 }
+
+                @closedir( $dh );
             }
-            @closedir( $dh );
+
         } else {
             return false;
         }
@@ -147,9 +151,9 @@ class Mumsys_FileSystem_Default
      * filename will be required as second parameter.
      * @param string|false $filename Name of the file without the path
      *
-     * @return array Returns an array containing the "filename", "path" and
-     * "file" as the hole location of the file or directory.
-     *
+     * @return array{filename:string, file: string, path:string} Returns an
+     * array containing the "filename", "path" and "file" as the hole location
+     * of the file or directory.
      * @throws Exception Throws exception if file, link or directory could not be found
      */
     private function _getFileDetailsPrepare( $fileOrPath, $filename = false )
@@ -168,7 +172,7 @@ class Mumsys_FileSystem_Default
                 $filename = basename( $filepath );
             }
             if ( !$path ) {
-                $path = substr( $filepath, 0, strrpos( $filepath, '/' ) );
+                $path = substr( $filepath, 0, (int)strrpos( $filepath, '/' ) );
             }
         } else {
             throw new Mumsys_FileSystem_Exception( 'File "' . $filepath . '" not found' );
@@ -189,8 +193,9 @@ class Mumsys_FileSystem_Default
      * will be required as second parameter.
      * @param string|false $filename Optional; Name of the file without the path
      *
-     * @return array Returns an array containing the filename "name", "path", "filesize"
-     * and the filetype "type" (like: "link", file", "dir")
+     * @return array{file:string, name:string, path:string, size:int,
+     *  type:string} Returns an array containing the filename "name", "path",
+     *  "filesize" and the filetype "type" (like: "link", file", "dir")
      *
      * @throws Exception Throws exception if file, link or directory could not be found
      */
@@ -201,8 +206,8 @@ class Mumsys_FileSystem_Default
             'file' => $prepared['file'],
             'name' => $prepared['filename'],
             'path' => $prepared['path'],
-            'size' => is_link( $prepared['file'] ) ? 0 : @filesize( $prepared['file'] ),
-            'type' => filetype( $prepared['file'] )
+            'size' => is_link( $prepared['file'] ) ? 0 : (int)@filesize( $prepared['file'] ),
+            'type' => (string)filetype( $prepared['file'] )
         );
     }
 
@@ -221,7 +226,7 @@ class Mumsys_FileSystem_Default
      * will be required as second parameter.
      * @param string|false $filename Optional; Name of the file without the path
      *
-     * @return array Returns an array containing the following array keys (if
+     * @return array<string, string|scalar> Returns an array containing the following array keys (if
      * available):
      *  'file' string file location,
      *  'name' string filename
@@ -286,10 +291,12 @@ class Mumsys_FileSystem_Default
             }
 
             if ( function_exists( 'posix_getpwuid' ) ) {
-                $info['owner_name'] = @reset( posix_getpwuid( $info['owner'] ) );
+                $username = (array)posix_getpwuid( $info['owner'] );
+                $info['owner_name'] = (string)@reset( $username );
             }
             if ( function_exists( 'posix_getgrgid' ) ) {
-                $info['group_name'] = @reset( posix_getgrgid( $info['group'] ) );
+                $groupname = (array)posix_getgrgid( $info['group'] );
+                $info['group_name'] = (string)@reset( $groupname );
             }
         }
         return $info;
@@ -306,6 +313,7 @@ class Mumsys_FileSystem_Default
      * @param string $file Location of the file
      *
      * @return string Returns the content file type or an empty string
+     * @throws Mumsys_FileSystem_Exception If getting the type failed
      */
     public function getFileType( $file )
     {
@@ -314,10 +322,19 @@ class Mumsys_FileSystem_Default
         if ( class_exists( 'finfo' ) ) {
             $finfo = new finfo( FILEINFO_PRESERVE_ATIME );
             $info = $finfo->file( $file, FILEINFO_DEVICES );
+
+        // @codeCoverageIgnoreStart
         } else if ( function_exists( 'mime_content_type' ) ) {
             $info = mime_content_type( $file );
+
         } else if ( PHP_SHLIB_SUFFIX != 'dll' ) {
             $info = shell_exec( 'file -b -p "' . $file . '";' );
+        }
+        // @codeCoverageIgnoreEnd
+
+        if ( $info === null || $info === false ) {
+            $mesg = sprintf( 'Error getting mime type for file: "%s"', $file );
+            throw new Mumsys_FileSystem_Exception( $mesg );
         }
 
         return $info;
@@ -379,9 +396,9 @@ class Mumsys_FileSystem_Default
      * @param string $source Source file or directory to be renamed
      * @param string $destination Target file or directory name
      * @param boolean $keepCopy Flag to decide what to do if target exists
-     * @param mixed|resource $streamContext optional stream functions
+     * @param null|resource $streamContext optional stream functions
      *
-     * @return string Returns the new/target filename on success
+     * @return string|false Returns the new/target filename on success
      * @throws Mumsys_FileSystem_Exception Throws exception on error
      */
     public function rename( $source, $destination, $keepCopy = true,
@@ -467,11 +484,11 @@ class Mumsys_FileSystem_Default
             $toIsLink = is_link( $to );
 
             if ( $keepCopy && ( $toExists || $toIsLink ) ) {
-                return $this->link( $file, $to . '.lnk', $type, $keepCopy );
+                return $this->link( $file, $to . '.lnk', $type, $way, $keepCopy );
             }
 
             if ( $way == 'rel' ) {
-                $dirFrom = realpath( dirname( $file ) );
+                $dirFrom = (string)realpath( dirname( $file ) );
                 $linkName = basename( $to );
 
                 $dirTo = realpath( dirname( $to ) );
@@ -668,8 +685,11 @@ class Mumsys_FileSystem_Default
     /**
      * Removes a path recursivly.
      *
+     * @todo log deletions of files and paths?
+     *
      * @param string $basePath Path to be deleted
      *
+     * @return bool True for success and if target no exists (e.g. already deleted)
      * @throws Mumsys_FileSystem_Exception
      */
     public function rmdirs( $basePath )

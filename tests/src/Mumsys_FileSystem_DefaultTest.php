@@ -36,7 +36,7 @@ class Mumsys_FileSystem_DefaultTest
 
     protected function setUp(): void
     {
-        $this->_version = '3.1.0';
+        $this->_version = '3.2.2';
         $this->_versions = array(
             'Mumsys_FileSystem_Default' => $this->_version,
             'Mumsys_FileSystem_Common_Abstract' => '3.1.1',
@@ -56,6 +56,7 @@ class Mumsys_FileSystem_DefaultTest
         );
         touch( $this->_testdirs['file'] );
 
+        clearstatcache();
         $this->_object = new Mumsys_FileSystem_Default();
     }
 
@@ -86,31 +87,31 @@ class Mumsys_FileSystem_DefaultTest
      */
     public function testScanDirInfo()
     {
+        // setup
         @mkdir( $this->_testdirs['dir'], 0755 );
         @mkdir( $this->_testdirs['dirs'], 0755 );
         @touch( $this->_testdirs['dir'] . '/testfile' );
         @touch( $this->_testdirs['dirs'] . '/testfile' );
+        // polly and hidden checks:
+        @touch( $this->_testdirs['dirs'] . '/...anThenCamePolly.avi' );
+        @touch( $this->_testdirs['dirs'] . '/.testdotfile' ); // 4CC, polly check, not in results
 
         $filters = array('/(unittest)/i');
 
         // simple directory
         $actual1 = $this->_object->scanDirInfo(
-            $this->_testdirs['dir'], true, false, array(), -1, 1001
+            $this->_testdirs['dir'], /*hidden*/ true, /*recurs*/ false, array(), -1, 1001
         );
         $path11 = $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs';
         $path12 = $this->_testsBaseDir . '/tmp/unittest-mkdir/testfile';
-        $actual1[$path11]['size'] =
-            ( ( $actual1[$path11]['size'] === 22 ) || ( $actual1[$path11]['size'] === 4096 ) ) ? true : false
-        ;
-        $actual1[$path12]['size'] =
-            ( ( $actual1[$path12]['size'] === 22 ) || ( $actual1[$path12]['size'] === 4096 ) ) ? true : false
-        ;
+        $actual1[$path11]['size'] = 123456789;
+        //$actual1[$path12]['size'] = 0;
         $expected1 = array(
             $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs' => array(
                 'file' => $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs',
                 'name' => 'mkdirs',
                 'path' => $this->_testsBaseDir . '/tmp/unittest-mkdir',
-                'size' => true,
+                'size' => 123456789,
                 'type' => 'dir',
             ),
             $this->_testsBaseDir . '/tmp/unittest-mkdir/testfile' => array(
@@ -124,28 +125,18 @@ class Mumsys_FileSystem_DefaultTest
 
         // recursive directory + filter
         $actual2 = $this->_object->scanDirInfo(
-            $this->_testdirs['dir'], true, true, $filters
+            $this->_testdirs['dir'], /*hidden*/ true, /*recurs*/ true, $filters
         );
 
         $path2A = $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs';
-        $path2B = $this->_testsBaseDir . '/tmp/unittest-mkdir/testfile';
-        $path2C = $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs/testfile';
+        $actual2[$path2A]['size'] = 123456789;
 
-        $actual2[$path2A]['size'] =
-            ( ( $actual2[$path2A]['size'] == 22 ) || ( $actual2[$path2A]['size'] == 4096 ) ) ? true : false
-        ;
-        $actual2[$path2B]['size'] =
-            ( ( $actual2[$path2B]['size'] == 22 ) || ( $actual2[$path2B]['size'] == 4096 ) ) ? true : false
-        ;
-        $actual2[$path2C]['size'] =
-            ( ( $actual2[$path2C]['size'] == 22 ) || ( $actual2[$path2C]['size'] == 4096 ) ) ? true : false
-        ;
         $expected2 = array(
             $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs' => array(
                 'file' => $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs',
                 'name' => 'mkdirs',
                 'path' => $this->_testsBaseDir . '/tmp/unittest-mkdir',
-                'size' => true,
+                'size' => 123456789,
                 'type' => 'dir',
             ),
             $this->_testsBaseDir . '/tmp/unittest-mkdir/testfile' => array(
@@ -162,9 +153,18 @@ class Mumsys_FileSystem_DefaultTest
                 'size' => 0,
                 'type' => 'file',
             ),
+            $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs/...anThenCamePolly.avi' => array(
+                'file' => $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs/...anThenCamePolly.avi',
+                'name' => '...anThenCamePolly.avi',
+                'path' => $this->_testsBaseDir . '/tmp/unittest-mkdir/mkdirs',
+                'size' => 0,
+                'type' => 'file',
+            ),
         );
         unlink( $this->_testdirs['dir'] . '/testfile' );
         unlink( $this->_testdirs['dirs'] . '/testfile' );
+        unlink( $this->_testdirs['dirs'] . '/...anThenCamePolly.avi' );
+        unlink( $this->_testdirs['dirs'] . '/.testdotfile' ); // 4CC in $noPolly check
 
         // test unreadable path
         $actual3 = $this->_object->scanDirInfo( '/root', true, true );
@@ -310,10 +310,10 @@ class Mumsys_FileSystem_DefaultTest
      */
     public function testGetFileType()
     {
-        $actual = $this->_object->getFileType( '/bin/sh' );
+        $actualA = $this->_object->getFileType( '/bin/sh' );
 
         // OS related output
-        $expecteds = array(
+        $expectedA = array(
             "cannot open `/usr/bin/sh' (No such file or directory)\n",
             "ERROR: cannot open `/usr/bin/sh' (No such file or directory)\n",
             "finfo::file(/usr/bin/sh): failed to open stream: No such file or "
@@ -325,7 +325,24 @@ class Mumsys_FileSystem_DefaultTest
             "symbolic link to dash\n",
         );
 
-        $this->assertingTrue( in_array( $actual, $expecteds ) );
+        $this->assertingTrue( in_array( $actualA, $expectedA ) );
+
+        // test exception
+        $errRepBak = error_reporting();
+        $regex = '/(Error getting mime type for file: ".*)/';
+        $this->expectingExceptionMessageRegex( $regex );
+        $this->expectingException( 'Mumsys_FileSystem_Exception' );
+
+        error_reporting( 0 );
+        try {
+            $actualA = $this->_object->getFileType(
+                $this->_testsBaseDir . '/tmp/Mumsys_FileSystem_Default/getFileTypeShouldNotExists'
+            );
+        } catch ( Throwable $thex ) {
+            error_reporting( $errRepBak );
+            throw $thex;
+        }
+        error_reporting( $errRepBak );
     }
 
 
