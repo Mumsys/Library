@@ -226,12 +226,12 @@ class Mumsys_Php_Globals
      *
      * If $key is NULL it will return all file parameter BUT in a new/
      * normalised way.: E.g:
-     * upload file[] and file[]
+     * upload file[] and file...:
      * files[file][0][name] and files[file][1][name] are available and NOT:
      * files[file][name][0] and files[file][name][1] (PHP default style)
      *
      * @param string $key ID to check for
-     * @param mixed $default Default return value if key not exists
+     * @param null|scalar $default Default return value if key not exists
      *
      * @return mixed Value or $default if $key is not set/null
      */

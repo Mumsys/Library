@@ -614,7 +614,8 @@ class Mumsys_Php
 
 
     /**
-     * Combines two arrays.
+     * Combines two arrays/ Merges an array config, existing keys will be
+     * untouched (FIFO).
      *
      * Like array_merge_* but replaces the values from the right to the left and
      * returns the new array. Go it? Left is the default, right is the new data

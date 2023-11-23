@@ -221,18 +221,9 @@ class Mumsys_ShellTools_Adapter_FfmpegCutTrimVideoTest
             'cli' => array(
                 'linux' => array(
                     'ffmpeg' => array(
-                        'ffmpeg' => ' -y', // force overwrite existing files
+                        'ffmpeg' => ' -y -hide_banner', // force overwrite existing files
                         //'ffmpeg', // without params
                     ),
-                ),
-            ),
-        );
-
-        array(
-            'cli' => array(
-                'linux' => array(
-                    'ffmpeg' => ' -y', // force overwrite existing files
-                    //'ffmpeg', // without params
                 ),
             ),
         );

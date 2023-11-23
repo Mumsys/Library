@@ -233,6 +233,7 @@ class Mumsys_Config_File
      */
     protected function _merge( array $left, array $right )
     {
+        // return \Mumsys_Php::array_combine( $left, $right );
         foreach ( $right as $key => $value ) {
             if ( isset( $left[$key] ) && is_array( $left[$key] ) && is_array( $value ) ) {
                 $left[$key] = $this->_merge( $left[$key], $value );

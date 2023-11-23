@@ -56,6 +56,15 @@ abstract class Mumsys_Logger_Decorator_Abstract
     }
 
 
+//    public function __call( $name, $args)
+//    {
+//        $obj = $this->_getObject();
+//        if ( method_exists( $obj, $name ) ) {
+//            $obj->$name($args);
+//        }
+//    }
+
+
     /**
      * Get the name of a log level.
      *
@@ -111,7 +120,7 @@ abstract class Mumsys_Logger_Decorator_Abstract
     /**
      * Returns the decorated/ the base object.
      *
-     * @return Mumsys_Logger_Interface Config object
+     * @return Mumsys_Logger_Interface Logger object
      */
     protected function _getObject()
     {
