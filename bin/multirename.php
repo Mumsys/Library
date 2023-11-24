@@ -11,7 +11,7 @@
  * @category    Mumsys
  * @package     Library
  * @subpackage  Multirename
- * @version     2.4.6
+ * @version     2.5.19
  * Created 28.02.2015
  */
 
