@@ -387,7 +387,7 @@ class Mumsys_MultirenameTest
      * @covers Mumsys_Multirename::_substitute
      * @covers Mumsys_Multirename::_substitutePaths
      *
-     * @ r u nInSeparateProcess
+     * @ r u n InSeparateProcess
      */
     public function testExecute_substitudeException()
     {
@@ -404,26 +404,31 @@ class Mumsys_MultirenameTest
         $config['hidden'] = true;
         $config['recursive'] = true;
         $config['sub-paths'] = true;
-        //  Mumsys_Multirename::_substitute for 100% code coverage
-        $config['substitutions'] = 'regex:/%path1%=xTMPx'; // invalid regex
+        // Mumsys_Multirename::_substitute for 100% code coverage
+        // invalid regex 4SCA, exception
+        $config['substitutions'] = 'regex:/%path1%=xTMPx';
         $config['find'] = 'm;regex:/m/i';
         $config['exclude'] = 'regex:/toHide/;Hide';
         $config['history'] = true;
         $config['show-history'] = true;
 
+        //
+        // test setup 4CC, text exception and restore
+
         $this->expectingException( 'Mumsys_Multirename_Exception' );
         $mesg = '#(Replace error: "/tmp", "xTMPx", "Mumsys_LoggerTest_defaultfile)#';
-        $this->expectingExceptionMessageRegex( $mesg );
+        $regexmesg = '#(Replace error: "/tmp", "xTMPx", ".*")#';
+        $this->expectingExceptionMessageRegex( $regexmesg );
 
-        // test and restore
         try {
             $this->_object->run( $config );
-        }
-        catch ( Throwable $thex ) {
+        } catch ( Throwable $thex ) {
             error_reporting( $errBak );
             throw $thex;
         }
         error_reporting( $errBak );
+
+        $this->assertingTrue( false ); // run until her: error
     }
 
 
@@ -432,7 +437,6 @@ class Mumsys_MultirenameTest
      */
     public function testExecuteAndUndo()
     {
-
         $config = array(
             'test' => false,
             //'link' => 'soft:abs',

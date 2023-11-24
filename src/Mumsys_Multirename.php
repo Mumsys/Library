@@ -1419,7 +1419,7 @@ class Mumsys_Multirename
                 foreach ( $replace as $regex => $repl ) {
                     //if (is_int($regex) ) {continue;}
                     if ( ( $nameResult = preg_replace( (string)$regex, $repl, $name, -1 ) ) === null ) {
-                        $mesg = sprintf( 'Replace error: "%s", "%s", "%s', $regex, $repl, $name );
+                        $mesg = sprintf( 'Replace error: "%s", "%s", "%s"', $regex, $repl, $name );
                         throw new Mumsys_Multirename_Exception( $mesg );
                     }
                     $name = $nameResult;
